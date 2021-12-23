@@ -1,14 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Login from '../views/auth/Login.vue'
+import SignUp from '../views/auth/SignUp.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: SignUp
   },
   {
     path: '/about',
@@ -21,6 +28,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  mode: "history",
   routes
 })
 
