@@ -1,21 +1,20 @@
 <template>
+
     <v-snackbar
-      v-model="snackbar"
+      :value="snackbar"
       :timeout="timeout"
-      absolute
+      height="3"
       top
       right
       outlined
-      multi-line
-      transition="slide-x-reverse-transition"
+      transition="slide-x-transition"
       :color="type"
     >
       <P class="text-body-1"> {{ text }}</P>
      
-
       <template v-slot:action="{ attrs }">
         <v-btn
-          color="blue"
+          :color="type"
           text
           v-bind="attrs"
           @click="snackbar = false"

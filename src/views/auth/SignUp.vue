@@ -3,7 +3,13 @@
         fluid
         class="fill-height"
     >
-        <Snackbar type="success" :snackbar="true" text="Test" timeout="2000"/>
+        <Snackbar 
+            :type="snackbarType" 
+            :snackbar="snackbar" 
+            :text="snackbarText" 
+            :timeout="snackbarTimeout"
+        />
+
         <v-row 
             justify="center" 
             dense
@@ -18,7 +24,8 @@
                 class="text-center" 
                 align-self="end"
             >
-                <v-card class="elevation-12 signing-card">
+                <v-card class="elevation-12 signing-card mt-5">
+                    <p class=" text-center  inputtext title font-weight-regular mb-4 mt-6 "> Create Account</p>
                     <v-card-text>
                         <v-row>
                             <v-col cols=12>
@@ -33,10 +40,10 @@
                                                 <v-text-field 
                                                     v-model="email"
                                                     height="45"
-                                                    label="E-mail" 
                                                     outlined
                                                     class="mt-1 inputtext" 
                                                     color="primary" 
+                                                    label="Email"
                                                     type="text"
                                                     background-color="transparent"
                                                     dense
@@ -48,6 +55,9 @@
                                                     @blur="$v.email.$touch()"
                                                     v-on:keyup.enter="signup()"
                                                     > 
+                                                    <!-- <template #label>
+                                                        <span class="red--text"><strong>* </strong></span>Email
+                                                    </template> -->
                                                 </v-text-field>
                                             </v-card>
                                         </template>
@@ -63,10 +73,10 @@
                                                 <v-text-field 
                                                     v-model="userName"
                                                     height="45"
-                                                    label="User Name" 
                                                     outlined
                                                     class="mt-1 inputtext" 
                                                     color="primary" 
+                                                    label="User Name"
                                                     type="text"
                                                     background-color="transparent"
                                                     dense
@@ -78,6 +88,10 @@
                                                     @blur="$v.userName.$touch()"
                                                     v-on:keyup.enter="signup()"
                                                     > 
+
+                                                    <!-- <template #label>
+                                                        <span class="red--text"><strong>* </strong></span>User Name
+                                                    </template> -->
                                                 </v-text-field>
                                             </v-card>
                                         </template>
@@ -108,6 +122,9 @@
                                                     @blur="$v.password.$touch()"
                                                     v-on:keyup.enter="signup()"
                                                     > 
+                                                     <!-- <template #label>
+                                                        <span class="red--text"><strong>* </strong></span>Password
+                                                    </template> -->
                                                 </v-text-field>
                                             </v-card>
                                         </template>
@@ -136,6 +153,9 @@
                                                     @blur="$v.repeatPassword.$touch()"
                                                     v-on:keyup.enter="signup()"
                                                     > 
+                                                    <!-- <template #label>
+                                                        <span class="red--text"><strong>* </strong></span>Repeat Password
+                                                    </template> -->
                                                 </v-text-field>
                                             </v-card>
                                         </template>
@@ -145,6 +165,7 @@
                                         style="background:#136772"
                                         class="mt-4"
                                         width="300"
+                                        :disabled="disableSignUp"
                                         dark 
                                         @click="signup()" >
                                         <p style="color:white" class="mb-0 text-capitalize font-weight-bold body-1">sign up</p>
@@ -168,33 +189,122 @@
                 </v-card>
             </v-col> 
         </v-row>
-
-
+        <LinearLoader :loading="LinearLoading"/>
     </v-container>
 </template>
 
 <script>
 import { required, email, minLength, numeric, sameAs } from 'vuelidate/lib/validators'
 import Snackbar from '../../components/Snackbar.vue'
+import {projectMixin} from '../../mixins/mixins'
+import LinearLoader from '../../components/LinearLoader.vue'
+import ApiService from '../../services/api'
+
 export default {
-    components: {Snackbar},
+    components: {Snackbar,LinearLoader},
+
+    mixins: [projectMixin],
 
     data: ()=>({
+
+        //form fields
         email:"",
         userName: "",
         showPassword:false,
         password:"",
         repeatPassword:"",
+
+        //disable signup false
+        disableSignUp: false
+
     }),
 
     methods: {
 
         signup(){
-            console.log("login up")
+            
+            if
+            (
+                this.email != '' &&
+                this.password != '' &&
+                this.userName != '' &&
+                this.repeatPassword != ''
+            )
+            
+            {
+                if(this.password !== this.repeatPassword){
+
+                    this.clearAlerts();
+                    this.setAlert("warning",true,"Password and Reset Password fields must match",-1);
+                             
+                    setTimeout(()=>{
+                        this.snackbar = false;
+                    },4000);
+
+                } else {
+
+                    //sending data to the server
+                    const data = {
+                        userName: this.userName,
+                        email: this.email,
+                        password: this.password
+                    }
+
+                    this.LinearLoading = true;
+
+                    ApiService.post("auth/register",data).then((response)=>{
+
+                        if(response.data.error){
+
+                            this.clearAlerts();
+                            this.disableSignUp = false;
+                            this.LinearLoading = false;
+                            this.setAlert("error",true,response.data.message,-1);
+
+                        } else {
+
+                            this.clearAlerts();
+                            this.disableSignUp = true;
+                            this.LinearLoading = false;
+                            this.setAlert("success",true,response.data.message,-1);
+
+                            setTimeout(()=>{
+                                this.$router.push("/");
+                            },20000);
+                        
+                        }
+                        console.log(response.data)
+
+                        }).catch(()=>{
+
+                            this.LinearLoading = false;
+                            this.clearAlerts();
+                            this.setAlert("error",true,"There is an internal problem",-1);
+                    })
+                }
+                
+            } else {
+
+                this.clearAlerts();
+                this.setAlert("warning",true,"You need to fill all fields",-1); 
+
+                setTimeout(()=>{
+                    this.snackbar = false;
+                },4000);
+            }
         },
+
         toggleShowPassword(){
             this.showPassword = !this.showPassword
         },
+
+        clearForm(){
+
+            this.email = "";
+            this.password = "";
+            this.userName = "";
+            this.repeatPassword = "";
+        }
     },
 
     validations: {
@@ -242,32 +352,5 @@ export default {
 </script>
 
 <style>
-.signing-card{
-    border: 1px solid #ffffff !important;
-    
-}
-.inputtext {
-    color: #136772 !important;
-    border-color: #136772 !important;
-}
 
-.inputtext .v-text-field__slot input{
-    color: #136772 !important;
-    border-color: #136772 !important;
-}
-
-.inputtext .v-icon{
-  color: #136772 !important;
-  margin-top: 3px;
-}
-
-.inputtext .v-label{
-  color: #136772 !important;
-  margin-left:0px ;
-  margin-top: 3px;
-}
-
-.inputtext :hover {
-   border-color: #136772 !important;
-}
 </style>
