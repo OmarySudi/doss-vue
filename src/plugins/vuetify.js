@@ -9,4 +9,14 @@ export default new Vuetify({
     icons: {
         iconfont: 'mdi', // default - only for display purposes
     },
+
+    theme: {
+        themes: {
+           
+          light: {
+            primary: '#136772',
+            secondary: '#B97016',
+          }
+        },
+      }
 });
