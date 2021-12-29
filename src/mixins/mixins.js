@@ -1,3 +1,5 @@
+import router from '../router'
+
 export const projectMixin = {
 
     data: ()=>({
@@ -28,5 +30,26 @@ export const projectMixin = {
             this.snackbarText = "";
             this.snackbarTimeout = -1;
         },
+
+        displayAlert(type,text,timeout){
+
+            this.clearAlerts();
+            this.setAlert(type,true,text,-1); 
+
+            setTimeout(()=>{
+                this.snackbar = false;
+            },timeout);
+        },
+
+        displayAlertAndRedirect(type,text,timeout,path){
+            
+            this.clearAlerts();
+            this.setAlert(type,true,text,-1); 
+
+            setTimeout(()=>{
+                this.snackbar = false;
+                router.push(path)
+            },timeout);
+        }
     }
 }

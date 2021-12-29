@@ -85,6 +85,7 @@
                                                     @blur="$v.password.$touch()"
                                                     v-on:keyup.enter="signup()"
                                                     > 
+                                                    <span color="red">*</span>
                                                 </v-text-field>
                                             </v-card>
                                         </template>

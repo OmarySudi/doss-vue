@@ -1,5 +1,13 @@
 <template>
     <v-container fluid>
+    
+        <Snackbar 
+            :type="snackbarType" 
+            :snackbar="snackbar" 
+            :text="snackbarText" 
+            :timeout="snackbarTimeout"
+        />
+
         <v-row>
             <v-col cols="12">
                 <v-stepper v-model="step">
@@ -30,7 +38,7 @@
                                         <v-row class="mb-3">
 
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Full Name</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Full Name <span class="red--text"><strong>* </strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -48,6 +56,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="fullNameErrors"
+                                                                @input="$v.fullName.$touch()"
+                                                                @blur="$v.fullName.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -56,7 +67,9 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Email</p>
+                                                <template>
+                                                     <p class="body-1 mb-1 ml-2 mr-2 primary--text">Email <span class="red--text"><strong>* </strong></span></p>
+                                                </template>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -74,6 +87,10 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="emailErrors"
+                                                                @input="$v.email.$touch()"
+                                                                @blur="$v.email.$touch()"
+
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -82,7 +99,7 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Mobile Number(s)</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Mobile Number(s) <span class="red--text"><strong>* </strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -100,6 +117,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="mobileNumberErrors"
+                                                                @input="$v.mobileNumber.$touch()"
+                                                                @blur="$v.mobileNumber.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -110,7 +130,7 @@
 
                                         <v-row class="mb-3">
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Country</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Country <span class="red--text"><strong>* </strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -128,6 +148,9 @@
                                                                 menu-props="auto"
                                                                 dense
                                                                 outlined
+                                                                :error-messages="countryErrors"
+                                                                @input="$v.country.$touch()"
+                                                                @blur="$v.country.$touch()"
                                                                 >
                                                             </v-select>                                        
                                                         </v-card>
@@ -136,7 +159,7 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Address</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Address <span class="red--text"><strong>* </strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -154,6 +177,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="addressErrors"
+                                                                @input="$v.address.$touch()"
+                                                                @blur="$v.address.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -162,7 +188,7 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Job Title</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Job Title <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -180,6 +206,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="jobTitleErrors"
+                                                                @input="$v.jobTitle.$touch()"
+                                                                @blur="$v.jobTitle.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -190,7 +219,7 @@
 
                                         <v-row class="mb-3">
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Identification No</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Identification No <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -208,6 +237,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="idNoErrors"
+                                                                @input="$v.idNo.$touch()"
+                                                                @blur="$v.idNo.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -227,7 +259,7 @@
                                                         >
                                                             <v-text-field 
                                                                 height="40"
-                                                                v-model="address"
+                                                                v-model="passportNo"
                                                                 outlined
                                                                 class="mt-1 inputtext" 
                                                                 color="primary" 
@@ -242,7 +274,7 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Bank Name</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Bank Name <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -260,6 +292,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="bankNameErrors"
+                                                                @input="$v.bankName.$touch()"
+                                                                @blur="$v.bankName.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -270,7 +305,7 @@
 
                                         <v-row class="mb-3">
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Account Number</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Account Number <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -288,6 +323,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="accountNumberErrors"
+                                                                @input="$v.accountNumber.$touch()"
+                                                                @blur="$v.accountNumber.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -296,7 +334,7 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Swift Code</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Swift Code <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -314,6 +352,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="swiftCodeErrors"
+                                                                @input="$v.swiftCode.$touch()"
+                                                                @blur="$v.swiftCode.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -322,7 +363,7 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="4">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">IBAN</p>
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">IBAN <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover>
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -340,6 +381,9 @@
                                                                 type="text"
                                                                 background-color="transparent"
                                                                 dense
+                                                                :error-messages="IBANErrors"
+                                                                @input="$v.IBAN.$touch()"
+                                                                @blur="$v.IBAN.$touch()"
                                                             > 
                                                             </v-text-field>                                         
                                                         </v-card>
@@ -401,8 +445,8 @@
                                                 </v-hover>
                                             </v-col>
 
-                                                    <v-col cols="12" sm="3">
-                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Identification Card</p>
+                                            <v-col cols="12" sm="3">
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">ID <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover class="filepond">
                                                     <template v-slot="{hover}">
                                                         <v-card 
@@ -443,7 +487,7 @@
                                                                 ref="passport"
                                                                 color="primary"
                                                                 label-idle="Drop/Choose a file"
-                                                                accepted-file-types="image/jpeg, image/png"
+                                                                accepted-file-types="application/pdf"
                                                                 v-bind:allowMultiple="false"
                                                                 v-bind:allowReplace="true"
                                                                 v-bind:allowProcess="true"
@@ -473,7 +517,7 @@
                                                                 ref="cv"
                                                                 color="primary"
                                                                 label-idle="Drop/Choose a file"
-                                                                accepted-file-types="image/jpeg, image/png"
+                                                                accepted-file-types="application/pdf"
                                                                 v-bind:allowMultiple="false"
                                                                 v-bind:allowReplace="true"
                                                                 v-bind:allowProcess="true"
@@ -508,7 +552,7 @@
                                         <v-btn
                                             outlined
                                             color="primary"
-                                            @click="testFileUpload()"
+                                            @click="createStaff()"
                                         >
                                             FINISH
                                         </v-btn>
@@ -520,22 +564,27 @@
                 </v-stepper>
             </v-col>
         </v-row>
+         <LinearLoader :loading="LinearLoading"/>
     </v-container>
 </template>
 
 <script>
-// Import Vue FilePond
 import vueFilePond from 'vue-filepond';
-
-// Import FilePond styles
 import 'filepond/dist/filepond.min.css';
-
-// import filepond file validation type
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import FilePondPluginFileRename from 'filepond-plugin-file-rename';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+
+import { required,email,minLength,numeric} from 'vuelidate/lib/validators'
+
+
+import Snackbar from '../../components/Snackbar.vue'
+import {projectMixin} from '../../mixins/mixins'
+import LinearLoader from '../../components/LinearLoader.vue'
+
+import ApiService from '../../services/api'
 
 const FilePond = vueFilePond(
           FilePondPluginFileValidateType,
@@ -544,24 +593,32 @@ const FilePond = vueFilePond(
           FilePondPluginImagePreview
 )
 
-
 export default {
-    components: {FilePond},
+
+    components: {FilePond,Snackbar,LinearLoader},
+    mixins: [projectMixin],
+
     data: ()=>({
 
         // form details
 
-        fullName: '',
-        email:'',
-        mobileNumber:'',
-        country:'',
-        address:'',
-        jobTitle:'',
-        idNo:'',
-        bankName:'',
-        accountNumber:'',
-        swiftCode:'',
-        IBAN:'',
+        fullName:"",
+        email:"",
+        mobileNumber:"",
+        country:"",
+        address:"",
+        jobTitle:"",
+        idNo:"",
+        passportNo:"",
+        bankName:"",
+        accountNumber:"",
+        swiftCode:"",
+        IBAN:"",
+
+        photo_url:"",
+        passport_url:"",
+        cv_url:"",
+        identification_url:"",
 
         //others 
         step: 1,
@@ -578,10 +635,230 @@ export default {
     }),
 
     methods: {
-        testFileUpload(){
-            console.log("during file upload")
-            console.log(this.$refs.photo.getFiles()[0].filename);
-        },       
+
+        async getUrl(file){
+
+            let url = '';
+
+            await ApiService.get(`http://localhost:5000/s3Url/${file.fileExtension}`).then(async(response)=>{
+
+                let secret_url = response.data
+
+                let formData = new FormData();
+                formData.append('file',file.file)
+
+                await ApiService.put(secret_url,formData,{ headers: {  'Content-Type': 'multipart/form-data'}}).then((response)=>{
+                    console.log(response.status)
+                    url = secret_url.split('?')[0];
+                }).catch((error)=>{
+                    console.log(error);
+                })
+            })
+
+            return url;
+        },
+
+        async createStaff(){
+
+            if(this.fullName !="" &&
+                this.mobileNumber !="" &&
+                this.country !="" &&
+                this.address !="" &&
+                this.jobTitle !="" &&
+                this.idNo !="" &&
+                this.bankName !="" &&
+                this.accountNumber !="" &&
+                this.swiftCode !="" &&
+                this.IBAN != "" &&
+                this.$refs.photo.getFiles().length > 0
+            )
+            {
+                ApiService.removeHeader();
+
+                this.LinearLoading = true;
+
+                const photo = this.$refs.photo.getFiles()[0];
+                this.photo_url = await this.getUrl(photo);
+                
+                if(this.$refs.identification.getFiles().length > 0){
+
+                    const identification = this.$refs.identification.getFiles()[0];
+                    this.identification_url = await this.getUrl(identification);
+                }
+
+                 if(this.$refs.identification.getFiles().length > 0){
+
+                    const passport = this.$refs.passport.getFiles()[0];
+                    this.passport_url = await this.getUrl(passport);
+                }
+
+                 if(this.$refs.identification.getFiles().length > 0){
+
+                    const cv = this.$refs.cv.getFiles()[0];
+                    this.cv_url = await this.getUrl(cv);
+                }
+               
+                console.log("id:" +this.identification_url);
+                console.log("photo: "+this.photo_url);
+                console.log("passport: "+this.passport_url);
+                console.log("cv: "+this.cv_url);
+
+                ApiService.setHeader();
+            
+                if(this.identification_url == ""){
+
+                    this.LinearLoading = false;
+                    this.displayAlert("warning","There is a problem in uploading files, try again",4000);
+
+                } else {
+
+                    console.log("sending other data");
+
+                    const staff = {
+                            fullName: this.fullName,
+                            email: this.email,
+                            phoneNumber: this.mobileNumber,
+                            address: this.address,
+                            profilePhoto: this.profilePhoto,
+                            jobTitle: this.jobTitle,
+                            country: this.country,
+                            identityCardNo: this.idNo,
+                            identityCardCopy: this.identification_url,
+                            cv: this.cv_url,
+                            passport: this.passport_url,
+                            passportNo: this.passportNo,
+                            bankAccountNumber: this.accountNumber,
+                            bankName: this.bankName,
+                            swiftCode: this.swiftCode,
+                            IBAN: this.IBAN
+                    }
+
+                    ApiService.post("staffs/",staff).then((response)=>{
+
+                        this.LinearLoading = false
+                        this.displayAlertAndRedirect("success",response.data.message,4000,'/staffs');
+
+                    }).catch((err)=>{
+                        
+                        this.LinearLoading = false
+                        this.displayAlert("error","Server error: "+err,4000)
+                    })
+                }
+
+            } else {
+
+                this.displayAlert("warning","You need to fill all required fields",4000);
+            }
+            
+        },  
+    },
+
+     validations: {
+
+        email: { required, email },
+        fullName: { required},
+        mobileNumber: { required},
+        country: {required},
+        address: { required},
+        jobTitle: { required},
+        idNo: { required},
+        bankName: { required},
+        accountNumber: { required,numeric},
+        swiftCode: { required},
+        IBAN: { required},
+    },
+
+    computed: {
+
+        fullNameErrors(){
+
+            const errors = []
+            if (!this.$v.fullName.$dirty) return errors
+            !this.$v.fullName.required && errors.push('Full Name is required')
+            return errors
+        },
+
+        emailErrors(){
+
+            const errors = []
+            if (!this.$v.email.$dirty) return errors
+            !this.$v.email.required && errors.push('Email is required')
+            !this.$v.email.email && errors.push('Must be valid e-mail')
+            return errors
+        },
+
+        mobileNumberErrors(){
+
+            const errors = []
+            if (!this.$v.mobileNumber.$dirty) return errors
+            !this.$v.mobileNumber.required && errors.push('Mobile Number is required')
+            return errors
+        },
+
+        countryErrors(){
+
+            const errors = []
+            if (!this.$v.country.$dirty) return errors
+            !this.$v.country.required && errors.push('Country is required')
+            return errors
+        },
+
+        addressErrors(){
+
+            const errors = []
+            if (!this.$v.address.$dirty) return errors
+            !this.$v.address.required && errors.push('Address is required')
+            return errors
+        },
+
+        jobTitleErrors(){
+
+            const errors = []
+            if (!this.$v.jobTitle.$dirty) return errors
+            !this.$v.jobTitle.required && errors.push('Job Title is required')
+            return errors
+        },
+
+        idNoErrors(){
+
+            const errors = []
+            if (!this.$v.idNo.$dirty) return errors
+            !this.$v.idNo.required && errors.push('Identification No is required')
+            return errors
+        },
+
+        bankNameErrors(){
+
+            const errors = []
+            if (!this.$v.bankName.$dirty) return errors
+            !this.$v.bankName.required && errors.push('Bank Name is required')
+            return errors
+        },
+
+        accountNumberErrors(){
+
+            const errors = []
+            if (!this.$v.accountNumber.$dirty) return errors
+            !this.$v.accountNumber.required && errors.push('Account Number is required')
+            !this.$v.accountNumber.numeric && errors.push('Accepts numbers only')
+            return errors
+        },
+
+        swiftCodeErrors(){
+
+            const errors = []
+            if (!this.$v.swiftCode.$dirty) return errors
+            !this.$v.swiftCode.required && errors.push('Swift Code is required')
+            return errors
+        },
+
+        IBANErrors(){
+
+            const errors = []
+            if (!this.$v.IBAN.$dirty) return errors
+            !this.$v.IBAN.required && errors.push('IBAN Code is required')
+            return errors
+        }
     }
 }
 </script>

@@ -100,6 +100,7 @@
 <script>
 import {mapGetters,mapActions} from 'vuex'
 import { SidebarMenu } from 'vue-sidebar-menu'
+import { create } from 'filepond';
 
 export default {
   name: 'App',
@@ -125,6 +126,10 @@ export default {
 
   methods: {
     ...mapActions(['logout'])
+  },
+
+  create(){
+    console.log("authenticated is "+this.authenticated)
   }
 
 };
