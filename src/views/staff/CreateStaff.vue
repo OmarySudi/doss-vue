@@ -670,29 +670,29 @@ export default {
                 this.accountNumber !="" &&
                 this.swiftCode !="" &&
                 this.IBAN != "" &&
-                this.$refs.photo.getFiles().length > 0
+                this.$refs.identification.getFiles().length > 0
             )
             {
                 ApiService.removeHeader();
 
                 this.LinearLoading = true;
 
-                const photo = this.$refs.photo.getFiles()[0];
-                this.photo_url = await this.getUrl(photo);
+                const identification = this.$refs.identification.getFiles()[0];
+                this.identification_url = await this.getUrl(identification);
                 
-                if(this.$refs.identification.getFiles().length > 0){
+                if(this.$refs.photo.getFiles().length > 0){
 
-                    const identification = this.$refs.identification.getFiles()[0];
-                    this.identification_url = await this.getUrl(identification);
+                    const photo = this.$refs.photo.getFiles()[0];
+                    this.photo_url = await this.getUrl(photo);
                 }
 
-                 if(this.$refs.identification.getFiles().length > 0){
+                 if(this.$refs.passport.getFiles().length > 0){
 
                     const passport = this.$refs.passport.getFiles()[0];
                     this.passport_url = await this.getUrl(passport);
                 }
 
-                 if(this.$refs.identification.getFiles().length > 0){
+                if(this.$refs.cv.getFiles().length > 0){
 
                     const cv = this.$refs.cv.getFiles()[0];
                     this.cv_url = await this.getUrl(cv);
@@ -746,7 +746,6 @@ export default {
                 }
 
             } else {
-
                 this.displayAlert("warning","You need to fill all required fields",4000);
             }
             
