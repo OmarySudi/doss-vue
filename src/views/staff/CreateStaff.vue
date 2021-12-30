@@ -673,78 +673,95 @@ export default {
                 this.$refs.identification.getFiles().length > 0
             )
             {
-                ApiService.removeHeader();
-
-                this.LinearLoading = true;
-
-                const identification = this.$refs.identification.getFiles()[0];
-                this.identification_url = await this.getUrl(identification);
-                
-                if(this.$refs.photo.getFiles().length > 0){
-
-                    const photo = this.$refs.photo.getFiles()[0];
-                    this.photo_url = await this.getUrl(photo);
-                }
-
-                 if(this.$refs.passport.getFiles().length > 0){
-
-                    const passport = this.$refs.passport.getFiles()[0];
-                    this.passport_url = await this.getUrl(passport);
-                }
-
-                if(this.$refs.cv.getFiles().length > 0){
-
-                    const cv = this.$refs.cv.getFiles()[0];
-                    this.cv_url = await this.getUrl(cv);
-                }
-               
-                console.log("id:" +this.identification_url);
-                console.log("photo: "+this.photo_url);
-                console.log("passport: "+this.passport_url);
-                console.log("cv: "+this.cv_url);
-
-                ApiService.setHeader();
-            
-                if(this.identification_url == ""){
-
-                    this.LinearLoading = false;
-                    this.displayAlert("warning","There is a problem in uploading files, try again",4000);
+                if(
+                    this.fullNameErrors.length > 0 || 
+                    this.mobileNumberErrors.length > 0 ||
+                    this.countryErrors.length > 0 ||
+                    this.addressErrors.length > 0 ||
+                    this.jobTitleErrors.length > 0 ||
+                    this.idNoErrors.length > 0 ||
+                    this.bankNameErrors.length > 0 ||
+                    this.accountNumberErrors.length > 0 ||
+                    this.swiftCodeErrors.length > 0 ||
+                    this.IBANErrors.length > 0 
+                )
+                {
+                     this.displayAlert("warning","There are validation errors, fix before proceed",4000);
 
                 } else {
 
-                    console.log("sending other data");
+                    ApiService.removeHeader();
 
-                    const staff = {
-                            fullName: this.fullName,
-                            email: this.email,
-                            phoneNumber: this.mobileNumber,
-                            address: this.address,
-                            profilePhoto: this.profilePhoto,
-                            jobTitle: this.jobTitle,
-                            country: this.country,
-                            identityCardNo: this.idNo,
-                            identityCardCopy: this.identification_url,
-                            cv: this.cv_url,
-                            passport: this.passport_url,
-                            passportNo: this.passportNo,
-                            bankAccountNumber: this.accountNumber,
-                            bankName: this.bankName,
-                            swiftCode: this.swiftCode,
-                            IBAN: this.IBAN
+                    this.LinearLoading = true;
+
+                    const identification = this.$refs.identification.getFiles()[0];
+                    this.identification_url = await this.getUrl(identification);
+                    
+                    if(this.$refs.photo.getFiles().length > 0){
+
+                        const photo = this.$refs.photo.getFiles()[0];
+                        this.photo_url = await this.getUrl(photo);
                     }
 
-                    ApiService.post("staffs/",staff).then((response)=>{
+                    if(this.$refs.passport.getFiles().length > 0){
 
-                        this.LinearLoading = false
-                        this.displayAlertAndRedirect("success",response.data.message,4000,'/staffs');
+                        const passport = this.$refs.passport.getFiles()[0];
+                        this.passport_url = await this.getUrl(passport);
+                    }
 
-                    }).catch((err)=>{
-                        
-                        this.LinearLoading = false
-                        this.displayAlert("error","Server error: "+err,4000)
-                    })
+                    if(this.$refs.cv.getFiles().length > 0){
+
+                        const cv = this.$refs.cv.getFiles()[0];
+                        this.cv_url = await this.getUrl(cv);
+                    }
+                
+                    console.log("id:" +this.identification_url);
+                    console.log("photo: "+this.photo_url);
+                    console.log("passport: "+this.passport_url);
+                    console.log("cv: "+this.cv_url);
+
+                    ApiService.setHeader();
+                
+                    if(this.identification_url == ""){
+
+                        this.LinearLoading = false;
+                        this.displayAlert("warning","There is a problem in uploading files, try again",4000);
+
+                    } else {
+
+                        console.log("sending other data");
+
+                        const staff = {
+                                fullName: this.fullName,
+                                email: this.email,
+                                phoneNumber: this.mobileNumber,
+                                address: this.address,
+                                profilePhoto: this.profilePhoto,
+                                jobTitle: this.jobTitle,
+                                country: this.country,
+                                identityCardNo: this.idNo,
+                                identityCardCopy: this.identification_url,
+                                cv: this.cv_url,
+                                passport: this.passport_url,
+                                passportNo: this.passportNo,
+                                bankAccountNumber: this.accountNumber,
+                                bankName: this.bankName,
+                                swiftCode: this.swiftCode,
+                                IBAN: this.IBAN
+                        }
+
+                        ApiService.post("staffs/",staff).then((response)=>{
+
+                            this.LinearLoading = false
+                            this.displayAlertAndRedirect("success",response.data.message,4000,'/staffs');
+
+                        }).catch((err)=>{
+                            
+                            this.LinearLoading = false
+                            this.displayAlert("error","Server error: "+err,4000)
+                        })
+                    }
                 }
-
             } else {
                 this.displayAlert("warning","You need to fill all required fields",4000);
             }
