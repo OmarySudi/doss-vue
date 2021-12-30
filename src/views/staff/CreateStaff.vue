@@ -686,7 +686,7 @@ export default {
                     this.IBANErrors.length > 0 
                 )
                 {
-                     this.displayAlert("warning","There are validation errors, fix before proceed",4000);
+                     this.displayAlert("warning","There are validation errors, fix before you proceed",4000);
 
                 } else {
 
