@@ -50,6 +50,7 @@
                     <v-card
                       width="200px"
                       :elevation="hover? 10:3"
+                      @click.prevent="redirectToStaff(item._id)"
                     >
                       <v-img v-if="item.profilePhoto"
 
@@ -139,6 +140,10 @@ export default {
       }).catch((error)=>{
                 console.log(error);
       });
+    },
+
+    redirectToStaff(staffId){
+      this.$router.push('/staffs/'+staffId)
     }
 
   },
