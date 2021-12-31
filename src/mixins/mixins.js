@@ -50,6 +50,34 @@ export const projectMixin = {
                 this.snackbar = false;
                 router.push(path)
             },timeout);
-        }
+        },
+
+        async getUrl(file){
+
+            let fileUrl = '';
+            
+            const {url} = await fetch(`http://localhost:5000/s3Url/${file.fileExtension}`).
+                                        then(response => response.json()).
+                                            catch((error)=>{
+                                                console.log(error)
+                                            });
+
+            await fetch(url,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    },
+                    body: file.file
+                }
+            ).then((res) => {
+                if(res.ok)
+                    fileUrl = url.split('?')[0];
+            }).catch((error)=>{
+                console.log(error)
+            });
+
+            return fileUrl;
+        },
     }
 }

@@ -636,28 +636,6 @@ export default {
 
     methods: {
 
-        async getUrl(file){
-
-            let url = '';
-
-            await ApiService.get(`http://localhost:5000/s3Url/${file.fileExtension}`).then(async(response)=>{
-
-                let secret_url = response.data
-
-                let formData = new FormData();
-                formData.append('file',file.file)
-
-                await ApiService.put(secret_url,formData,{ headers: {  'Content-Type': 'multipart/form-data'}}).then((response)=>{
-                    console.log(response.status)
-                    url = secret_url.split('?')[0];
-                }).catch((error)=>{
-                    console.log(error);
-                })
-            })
-
-            return url;
-        },
-
         async createStaff(){
 
             if(this.fullName !="" &&
@@ -690,8 +668,6 @@ export default {
 
                 } else {
 
-                    ApiService.removeHeader();
-
                     this.LinearLoading = true;
 
                     const identification = this.$refs.identification.getFiles()[0];
@@ -720,8 +696,6 @@ export default {
                     console.log("passport: "+this.passport_url);
                     console.log("cv: "+this.cv_url);
 
-                    ApiService.setHeader();
-                
                     if(this.identification_url == ""){
 
                         this.LinearLoading = false;
@@ -736,7 +710,7 @@ export default {
                                 email: this.email,
                                 phoneNumber: this.mobileNumber,
                                 address: this.address,
-                                profilePhoto: this.profilePhoto,
+                                profilePhoto: this.photo_url,
                                 jobTitle: this.jobTitle,
                                 country: this.country,
                                 identityCardNo: this.idNo,
