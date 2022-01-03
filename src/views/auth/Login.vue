@@ -185,7 +185,7 @@ export default {
                     this.LinearLoading = false;
 
                     this.$router.replace({
-                        name: 'Staff'
+                        name: 'Staffs'
                     })
                 }
 

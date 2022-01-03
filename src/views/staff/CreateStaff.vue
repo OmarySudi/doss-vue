@@ -16,7 +16,7 @@
                             :complete = "step > 1"
                             step = "1"
                         >
-                            Basic & Bank Info
+                            Basic Info
                         </v-stepper-step>
 
                         <v-divider></v-divider>
@@ -24,6 +24,15 @@
                         <v-stepper-step
                             :complete = "step > 2"
                             step = "2"
+                        >
+                            Bank Information
+                        </v-stepper-step>
+
+                        <v-divider></v-divider>
+
+                        <v-stepper-step
+                            :complete = "step > 3"
+                            step = "3"
                         >
                             Attachments
                         </v-stepper-step>
@@ -272,7 +281,30 @@
                                                     </template>
                                                 </v-hover>
                                             </v-col>
+                                        </v-row>
+                                    </v-card>
+                                </v-col> 
 
+                                <v-col cols="12">
+                                    <v-row>
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            outlined
+                                            color="primary"
+                                            @click="step = 2"
+                                        >
+                                            NEXT
+                                        </v-btn>
+                                    </v-row> 
+                                </v-col>
+                            </v-row>
+                        </v-stepper-content>
+
+                        <v-stepper-content step="2">
+                           <v-row>
+                                <v-col cols="12">
+                                    <v-card elevation="3" class="mt-2">
+                                        <v-row class="mb-3">
                                             <v-col cols="12" sm="4">
                                                 <p class="body-1 mb-1 ml-2 mr-2 primary--text">Bank Name <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover>
@@ -301,9 +333,36 @@
                                                     </template>
                                                 </v-hover>
                                             </v-col>
-                                        </v-row>
 
-                                        <v-row class="mb-3">
+                                            <v-col cols="12" sm="4">
+                                                <p class="body-1 mb-1 ml-2 mr-2 primary--text">Bank Account Name<span class="red--text"><strong>*</strong></span></p>
+                                                <v-hover>
+                                                    <template v-slot="{hover}">
+                                                        <v-card 
+                                                        color="transparent" 
+                                                        height="39" 
+                                                        class="ml-2 mr-2"
+                                                        :elevation="hover? 6 : 0"
+                                                        >
+                                                            <v-text-field 
+                                                                height="40"
+                                                                v-model="accountName"
+                                                                outlined
+                                                                class="mt-1 inputtext" 
+                                                                color="primary" 
+                                                                type="text"
+                                                                background-color="transparent"
+                                                                dense
+                                                                :error-messages="accountNameErrors"
+                                                                @input="$v.accountName.$touch()"
+                                                                @blur="$v.accountName.$touch()"
+                                                            > 
+                                                            </v-text-field>                                         
+                                                        </v-card>
+                                                    </template>
+                                                </v-hover>
+                                            </v-col>
+
                                             <v-col cols="12" sm="4">
                                                 <p class="body-1 mb-1 ml-2 mr-2 primary--text">Account Number <span class="red--text"><strong>*</strong></span></p>
                                                 <v-hover>
@@ -396,20 +455,29 @@
 
                                 <v-col cols="12">
                                     <v-row>
-                                        <v-spacer></v-spacer>
                                         <v-btn
                                             outlined
                                             color="primary"
-                                            @click="step = 2"
+                                            @click="step = 1"
+                                        >
+                                            BACK
+                                        </v-btn>
+
+                                         <v-spacer></v-spacer>
+
+                                        <v-btn
+                                            outlined
+                                            color="primary"
+                                            @click="step = 3"
                                         >
                                             NEXT
                                         </v-btn>
-                                    </v-row> 
+                                    </v-row>
                                 </v-col>
                             </v-row>
                         </v-stepper-content>
 
-                        <v-stepper-content step="2">
+                        <v-stepper-content step="3">
                             <v-row>
                                 <v-col cols="12">
                                     <v-card elevation="3" class="mt-2">
@@ -542,7 +610,7 @@
                                         <v-btn
                                             outlined
                                             color="primary"
-                                            @click="step = 1"
+                                            @click="step = 2"
                                         >
                                             BACK
                                         </v-btn>
@@ -612,6 +680,7 @@ export default {
         passportNo:"",
         bankName:"",
         accountNumber:"",
+        accountName: "",
         swiftCode:"",
         IBAN:"",
 
@@ -648,6 +717,7 @@ export default {
                 this.accountNumber !="" &&
                 this.swiftCode !="" &&
                 this.IBAN != "" &&
+                this.accountName != "" &&
                 this.$refs.identification.getFiles().length > 0
             )
             {
@@ -661,6 +731,7 @@ export default {
                     this.bankNameErrors.length > 0 ||
                     this.accountNumberErrors.length > 0 ||
                     this.swiftCodeErrors.length > 0 ||
+                    this.accountNameErrors.length > 0 ||
                     this.IBANErrors.length > 0 
                 )
                 {
@@ -721,11 +792,12 @@ export default {
                                 bankAccountNumber: this.accountNumber,
                                 bankName: this.bankName,
                                 swiftCode: this.swiftCode,
-                                IBAN: this.IBAN
+                                IBAN: this.IBAN,
+                                accountName: this.accountName
                         }
 
                         ApiService.post("staffs/",staff).then((response)=>{
-
+                            
                             this.LinearLoading = false
                             this.displayAlertAndRedirect("success",response.data.message,4000,'/staffs');
 
@@ -754,6 +826,7 @@ export default {
         idNo: { required},
         bankName: { required},
         accountNumber: { required,numeric},
+        accountName: {required},
         swiftCode: { required},
         IBAN: { required},
     },
@@ -822,6 +895,13 @@ export default {
             const errors = []
             if (!this.$v.bankName.$dirty) return errors
             !this.$v.bankName.required && errors.push('Bank Name is required')
+            return errors
+        },
+
+        accountNameErrors(){
+            const errors = []
+            if (!this.$v.accountName.$dirty) return errors
+            !this.$v.accountName.required && errors.push('Account Name is required')
             return errors
         },
 

@@ -143,13 +143,13 @@ export default {
     },
 
     redirectToStaff(staffId){
-      this.$router.push('/staffs/'+staffId)
+
+        this.$router.push({name: 'Staff', params: {id: staffId}})
     }
 
   },
 
   created(){
-    console.log("created")
     this.fetchStaffs();
   },
 
