@@ -1,7 +1,7 @@
 <template>
   <v-container>
       <v-row>
-        <v-col cols="12">
+        <v-col cols="6">
             <v-btn 
               color="secondary" 
               @click.prevent="goBack()"
@@ -9,7 +9,17 @@
               <v-icon>mdi-arrow-left-thick</v-icon>
             </v-btn>
         </v-col>
+
+        <v-col cols="6" align-self="center">
+          <v-row justify="end" class="mr-2">
+            <v-btn color="secondary" to="/staffs/create">
+              EDIT
+            </v-btn>
+          </v-row>
+        </v-col>
+
       </v-row>
+
       <v-row>
         <v-col cols="12" sm="6" md="3">
           <v-card
@@ -30,28 +40,27 @@
                 position="top left"
               />
 
-              
-              <v-card class="mb-2 pl-1 mt-5" height="25px" elevation="3">
+              <v-card class="mb-2 pl-1 mt-5" height="25px" :elevation="cardElevation">
                 <p class="body-2 font-weight-medium"><v-icon size="medium">mdi-account</v-icon> {{staff.fullName}}</p>
               </v-card>
 
-              <v-card class="mb-2 pl-1" height="25px" elevation="3">
+              <v-card class="mb-2 pl-1" height="25px" :elevation="cardElevation">
                   <p class="body-2 font-weight-medium"><v-icon size="medium">mdi-email</v-icon> {{staff.email}}</p>
               </v-card>
 
-              <v-card class="mb-2 pl-1" height="25px" elevation="3">
+              <v-card class="mb-2 pl-1" height="25px" :elevation="cardElevation">
                   <p class="body-2 font-weight-medium"><v-icon size="medium">mdi-account-details</v-icon> {{staff.jobTitle}}</p>
               </v-card>
 
-              <v-card class="mb-2 pl-1" height="25px" elevation="3">
+              <v-card class="mb-2 pl-1" height="25px" :elevation="cardElevation">
                   <p class="body-2 font-weight-medium"><v-icon size="medium">mdi-cellphone</v-icon> {{staff.phoneNumber}}</p>
               </v-card>
 
-               <v-card class="mb-2 pl-1" height="25px" elevation="3">
+               <v-card class="mb-2 pl-1" height="25px" :elevation="cardElevation">
                   <p class="body-2 font-weight-medium"><v-icon size="medium">mdi-longitude</v-icon> {{staff.address}}</p>
               </v-card>
 
-               <v-card class="mb-2 pl-1" height="25px" elevation="3">
+               <v-card class="mb-2 pl-1" height="25px" :elevation="cardElevation">
                   <p class="body-2 font-weight-medium"><v-icon size="medium">mdi-longitude</v-icon> {{staff.country}}</p>
               </v-card>
             </v-card>
@@ -62,35 +71,35 @@
              <p class="body-1 text-center font-weight-regular mb-2 secondary white--text">BANKING INFORMATION</p>
              <v-row>
                 <v-col cols="12" sm="6" md="4">
-                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                  <v-card class="ml-2 mt-2 mr-2 py-1" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">BANK NAME</p>
                     <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.bankName}}</p>
                   </v-card>
                 </v-col>
 
                 <v-col cols="12" sm="6" md="4">
-                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                  <v-card class="ml-2 mt-2 mr-2 py-1" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">ACCOUNT NAME</p>
                     <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.accountName}}</p>
                   </v-card>
                 </v-col>
 
                 <v-col cols="12" sm="6" md="4">
-                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                  <v-card class="ml-2 mt-2 mr-2 py-1" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">ACCOUNT NUMBER</p>
                     <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.bankAccountNumber}}</p>
                   </v-card>
                 </v-col>
                   
                 <v-col cols="12" sm="6" md="4">
-                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                  <v-card class="ml-2 mt-2 mr-2 py-1" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">SWIFT CODE</p>
                     <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.swiftCode}}</p>
                   </v-card>
                 </v-col>
 
                 <v-col cols="12" sm="6" md="4">
-                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                  <v-card class="ml-2 mt-2 mr-2 py-1" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">IBAN</p>
                     <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.IBAN}}</p>
                   </v-card>
@@ -103,14 +112,14 @@
              <p class="body-1 text-center font-weight-regular mb-2 secondary white--text">IDENTIFICATION</p>
              <v-row>
                 <v-col cols="12" sm="6">
-                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                  <v-card class="ml-2 mt-2 mr-2 py-1" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">IDENTIFICATION NUMBER</p>
                     <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.identityCardNo}}</p>
                   </v-card>
                 </v-col>
 
                 <v-col cols="12" sm="6">
-                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                  <v-card class="ml-2 mt-2 mr-2 py-1" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">PASSPORT NUMBER</p>
                     <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.passportNo}}</p>
                   </v-card>
@@ -122,11 +131,11 @@
              <p class="body-1 text-center font-weight-regular mb-2 secondary white--text">ATTACHMENTS</p>
              <v-row>
                 <v-col cols="12" sm="6" md="4">
-                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center">
+                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">IDENTIFICATION COPY</p>
 
                     <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
-                        <v-btn icon>
+                        <v-btn icon @click="downloadfile(staff.identityCardCopy)">
                           <v-icon large>
                             mdi-cloud-download
                           </v-icon>
@@ -136,10 +145,10 @@
                 </v-col>
 
                 <v-col cols="12" sm="6" md="4">
-                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center">
+                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">PASSPORT</p>
                     <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
-                        <v-btn icon v-if="staff.passport">
+                        <v-btn icon v-if="staff.passport" @click="downloadfile(staff.passport)">
                           <v-icon large>
                             mdi-cloud-download
                           </v-icon>
@@ -149,10 +158,10 @@
                 </v-col>
 
                  <v-col cols="12" sm="6" md="4">
-                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center">
+                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">CV</p>
                     <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
-                        <v-btn icon v-if="staff.cv">
+                        <v-btn icon v-if="staff.cv" @click="downloadfile(staff.cv)">
                           <v-icon large>
                             mdi-cloud-download
                           </v-icon>
@@ -181,6 +190,7 @@ export default {
     staffs: [],
     staff: null,
     defaultUrl:'../../assets/no-profile.png',
+    cardElevation: 4
   }),
 
   methods: {
@@ -196,6 +206,15 @@ export default {
       }).catch((error)=>{
           console.log(error)
       })
+    },
+
+    downloadfile(url){
+      const a = document.createElement('a')
+      a.href = url
+      a.download = url.split('/').pop()
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
     }
   },
 
