@@ -58,7 +58,7 @@
         </v-col>
 
         <v-col cols="12" sm="6" md="9">
-          <v-card>
+          <v-card class="mb-5">
              <p class="body-1 text-center font-weight-regular mb-2 secondary white--text">BANKING INFORMATION</p>
              <v-row>
                 <v-col cols="12" sm="6" md="4">
@@ -97,6 +97,72 @@
                 </v-col>
              </v-row>
           </v-card>
+
+
+           <v-card class="mb-5">
+             <p class="body-1 text-center font-weight-regular mb-2 secondary white--text">IDENTIFICATION</p>
+             <v-row>
+                <v-col cols="12" sm="6">
+                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                    <p class="body-1 mb-1 ml-1 primary--text">IDENTIFICATION NUMBER</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.identityCardNo}}</p>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" sm="6">
+                  <v-card class="ml-2 mt-2 mr-2 py-1">
+                    <p class="body-1 mb-1 ml-1 primary--text">PASSPORT NUMBER</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ staff.passportNo}}</p>
+                  </v-card>
+                </v-col>
+             </v-row>
+          </v-card>
+
+          <v-card class="mb-5">
+             <p class="body-1 text-center font-weight-regular mb-2 secondary white--text">ATTACHMENTS</p>
+             <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center">
+                    <p class="body-1 mb-1 ml-1 primary--text">IDENTIFICATION COPY</p>
+
+                    <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
+                        <v-btn icon>
+                          <v-icon large>
+                            mdi-cloud-download
+                          </v-icon>
+                        </v-btn>
+                    </v-card>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="4">
+                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center">
+                    <p class="body-1 mb-1 ml-1 primary--text">PASSPORT</p>
+                    <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
+                        <v-btn icon v-if="staff.passport">
+                          <v-icon large>
+                            mdi-cloud-download
+                          </v-icon>
+                        </v-btn>
+                    </v-card>
+                  </v-card>
+                </v-col>
+
+                 <v-col cols="12" sm="6" md="4">
+                  <v-card class="ml-2 mt-2 mr-2 py-1 text-center">
+                    <p class="body-1 mb-1 ml-1 primary--text">CV</p>
+                    <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
+                        <v-btn icon v-if="staff.cv">
+                          <v-icon large>
+                            mdi-cloud-download
+                          </v-icon>
+                        </v-btn>
+                    </v-card>
+                  </v-card>
+                </v-col>
+             </v-row>
+          </v-card>
+
         </v-col>
 
       </v-row>
