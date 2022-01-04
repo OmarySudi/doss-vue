@@ -58,6 +58,17 @@ export const projectMixin = {
             },timeout);
         },
 
+        displayAlertAndRedirectWithReload(type,text,timeout,path){
+            
+            this.clearAlerts();
+            this.setAlert(type,true,text,-1); 
+
+            setTimeout(()=>{
+                this.snackbar = false;
+                router.push(path)
+            },timeout);
+        },
+
         async getUrl(file){
 
             let fileUrl = '';

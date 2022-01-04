@@ -941,6 +941,11 @@ export default {
                         this.cv_url = await this.getUrl(cv);
                     }
 
+                    console.log("cv_url"+this.cv_url)
+                    console.log("photo_url"+this.photo_url);
+                    console.log("passport_url"+this.passport_url);
+                    console.log("identification_url"+this.identification_url)
+
                     console.log("sending other data");
 
                     const staff = {
@@ -967,7 +972,7 @@ export default {
                     ApiService.put("staffs/"+this.staff_id,staff).then((response)=>{
                             
                         this.LinearLoading = false
-                        this.displayAlertAndRedirect("success",response.data.message,2000,'/staffs/'+this.staff_id);
+                        this.displayAlertAndRedirectWithReload("success",response.data.message,2000,'/staffs/'+this.staff_id);
 
                     }).catch((err)=>{
                             
