@@ -696,11 +696,6 @@ export default {
 
         //files
         testFile: [],
-
-        country_items:[
-            "TANZANIA",
-            "GHANA"
-        ]
     }),
 
     methods: {

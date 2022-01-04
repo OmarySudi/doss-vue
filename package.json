@@ -16,6 +16,7 @@
     "filepond-plugin-image-preview": "^4.6.10",
     "vue": "^2.6.11",
     "vue-filepond": "^6.0.3",
+    "vue-pdf": "^4.3.0",
     "vue-router": "^3.2.0",
     "vue-sidebar-menu": "^4.8.1",
     "vuelidate": "^0.7.7",

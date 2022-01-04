@@ -13,10 +13,16 @@ export const projectMixin = {
          //linearLoader data
          LinearLoading: false,
 
+         country_items:[
+            "TANZANIA",
+            "GHANA"
+        ]
+
     }),
 
     methods: {
 
+        
         setAlert(type, snackbar, text, timeout){
             this.snackbarType = type;
             this.snackbar = snackbar;

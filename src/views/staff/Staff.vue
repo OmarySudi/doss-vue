@@ -12,7 +12,7 @@
 
         <v-col cols="6" align-self="center">
           <v-row justify="end" class="mr-2">
-            <v-btn color="secondary" to="/staffs/create">
+            <v-btn color="secondary" @click="directTOEditPage(staff._id)">
               EDIT
             </v-btn>
           </v-row>
@@ -21,6 +21,62 @@
       </v-row>
 
       <v-row>
+          <v-dialog v-model="pdf_dialog"  >                 
+            <v-col cols="12" xs="12" sm="12" md="12" lg="12" class="mb-0 " >
+                <v-card class=" ml-6 "  elevation="0" transition="scroll-y-transition">
+                
+                <v-progress-linear
+                v-if="download_loading == true"
+                    indeterminate
+                    class="mb-2"
+                    color="primary">
+                </v-progress-linear>
+
+                <v-row class="">
+                    <v-col class="text-center ">
+                    <v-btn class=" " small color="error" outlined @click.prevent="pdf_dialog = false">
+                        cancel
+                    </v-btn>
+                    </v-col>
+                    <v-col class="text-center">
+                        <v-btn class="primary white--text " small color="" outlined @click.prevent="downloadfile(download_url)">
+                            download
+                        </v-btn>    
+                    </v-col>
+                </v-row> 
+                <center  width="100%">
+                    <pdf
+                        v-for="i in numPages"
+                        :key="i"
+                        :src="src"
+                        :page="i"
+                        style="display: inline-block; width: 70%">
+                    </pdf>
+                </center>
+
+                    <v-row class=" pb-3 ">
+                    <v-col class="text-center ">
+                        <v-btn class=" " small color="error" outlined @click.prevent="pdf_dialog = false">
+                        cancel
+                        </v-btn>
+                    </v-col>
+                    <v-col class="text-center">
+                    <v-btn class="primary white--text " small color="" outlined @click.prevent="downloadfile(download_url)">
+                            download
+                    </v-btn>    
+                    </v-col>
+                </v-row> 
+
+                <v-progress-linear
+                v-if="download_loading == true"
+                    indeterminate
+                    class="mb-2"
+                    color="primary">
+                </v-progress-linear>
+                </v-card>
+            </v-col>
+        </v-dialog>
+
         <v-col cols="12" sm="6" md="3">
           <v-card
               width="250px"
@@ -134,11 +190,14 @@
                   <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">IDENTIFICATION COPY</p>
 
-                    <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
-                        <v-btn icon @click="downloadfile(staff.identityCardCopy)">
+                    <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 15px">
+                        <!-- <v-btn icon @click="downloadfile(staff.identityCardCopy)">
                           <v-icon large>
                             mdi-cloud-download
                           </v-icon>
+                        </v-btn> -->
+                        <v-btn @click="previewPdf(staff.identityCardCopy)">
+                            Preview 
                         </v-btn>
                     </v-card>
                   </v-card>
@@ -148,11 +207,15 @@
                   <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">PASSPORT</p>
                     <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
-                        <v-btn icon v-if="staff.passport" @click="downloadfile(staff.passport)">
-                          <v-icon large>
-                            mdi-cloud-download
-                          </v-icon>
+
+                        <v-btn @click="previewPdf(staff.passport)" v-if="staff.passport">
+                            Preview 
                         </v-btn>
+
+                        <v-btn v-else>
+                            NO FILE 
+                        </v-btn>
+
                     </v-card>
                   </v-card>
                 </v-col>
@@ -161,10 +224,12 @@
                   <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">CV</p>
                     <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
-                        <v-btn icon v-if="staff.cv" @click="downloadfile(staff.cv)">
-                          <v-icon large>
-                            mdi-cloud-download
-                          </v-icon>
+                        <v-btn @click="previewPdf(staff.cv)" v-if="staff.cv">
+                            Preview 
+                        </v-btn>
+
+                        <v-btn v-else>
+                            NO FILE 
                         </v-btn>
                     </v-card>
                   </v-card>
@@ -175,22 +240,33 @@
         </v-col>
 
       </v-row>
+        <LinearLoader :loading="LinearLoading"/>
   </v-container>
 </template>
 
 <script>
-import {mapGetters,mapActions} from 'vuex'
+import {mapGetters} from 'vuex'
 import ApiService from '../../services/api'
-
-import router from '../../router';
+import pdf from 'vue-pdf'
+import LinearLoader from '../../components/LinearLoader.vue'
 
 export default {
+
+  components: {pdf,LinearLoader},
 
   data: ()=>({
     staffs: [],
     staff: null,
     defaultUrl:'../../assets/no-profile.png',
-    cardElevation: 4
+    cardElevation: 4,
+
+    LinearLoading: false,
+    //pdfDownload
+    src: '',
+    numPages: undefined,
+    pdf_dialog:false,
+    download_url:'',
+    download_loading:false,
   }),
 
   methods: {
@@ -208,6 +284,10 @@ export default {
       })
     },
 
+    directTOEditPage(id){
+      this.$router.push({ name: 'EditStaff', params: id})
+    },
+
     downloadfile(url){
       const a = document.createElement('a')
       a.href = url
@@ -215,6 +295,22 @@ export default {
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
+    },
+
+    previewPdf(url){
+
+      this.LinearLoading = true
+      var loadingTask = pdf.createLoadingTask(url);
+      this.src = loadingTask
+      this.src.promise.then(pdf => {
+      this.numPages = ''
+      this.numPages = pdf.numPages;
+      this.LinearLoading = false
+      this.download_url = url
+      console.log(this.numPages);
+      this.pdf_dialog = true  
+
+      });
     }
   },
 
