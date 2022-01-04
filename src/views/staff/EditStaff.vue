@@ -572,7 +572,7 @@
                                                                     name="profile"
                                                                     ref="photo"
                                                                     color="primary"
-                                                                    label-idle="Drop/Choose a file"
+                                                                    label-idle="Change a file"
                                                                     accepted-file-types="image/jpeg, image/png"
                                                                     v-bind:allowMultiple="false"
                                                                     v-bind:allowReplace="true"
@@ -595,8 +595,8 @@
                                         <v-col cols="12" sm="3">
                                             <p class="body-1 mb-1 ml-2 mr-2 primary--text">ID <span class="red--text"><strong>*</strong></span></p>
                                             <v-card>
-                                                <v-card height="200px" class="py-15 px-15">
-                                                    <v-btn @click="previewPdf(identification_url)">
+                                                <v-card height="200px" class="py-xs-15 px-xs-2 py-sm-15 px-sm-2 py-md-15 px-md-15">
+                                                    <v-btn small @click="previewPdf(identification_url)">
                                                         Preview 
                                                     </v-btn>
                                                 </v-card>
@@ -612,7 +612,7 @@
                                                                     name="identification"
                                                                     ref="identification"
                                                                     color="primary"
-                                                                    label-idle="Drop/Choose a file"
+                                                                    label-idle="Change a file"
                                                                     accepted-file-types="application/pdf"
                                                                     v-bind:allowMultiple="false"
                                                                     v-bind:allowReplace="true"
@@ -635,11 +635,11 @@
                                             <p class="body-1 mb-1 ml-2 mr-2 primary--text">Passport</p>
                                             <v-card>
 
-                                                <v-card height="200px" class="py-15 px-15">
-                                                    <v-btn @click="previewPdf(passport_url)" v-if="passport_url">
+                                                <v-card height="200px" class="py-xs-15 px-xs-2 py-sm-15 px-sm-2 py-md-15 px-md-15">
+                                                    <v-btn @click="previewPdf(passport_url)" small v-if="passport_url">
                                                         Preview 
                                                     </v-btn>
-                                                    <v-btn v-else>
+                                                    <v-btn small v-else>
                                                         NO FILE
                                                     </v-btn>
                                                 </v-card>
@@ -655,7 +655,7 @@
                                                                     name="passport"
                                                                     ref="passport"
                                                                     color="primary"
-                                                                    label-idle="Drop/Choose a file"
+                                                                    label-idle="Change a file"
                                                                     accepted-file-types="application/pdf"
                                                                     v-bind:allowMultiple="false"
                                                                     v-bind:allowReplace="true"
@@ -677,11 +677,12 @@
                                         <v-col cols="12" sm="3">
                                             <p class="body-1 mb-1 ml-2 mr-2 primary--text">CV</p>
                                             <v-card>
-                                                <v-card height="200px" class="py-15 px-15">
-                                                    <v-btn @click="previewPdf(passport_url)" v-if="passport_url">
+                                                <v-card height="200px" class="py-xs-15 px-xs-2 py-sm-15 px-sm-2 py-md-15 px-md-15">
+
+                                                    <v-btn small @click="previewPdf(cv_url)" v-if="cv_url">
                                                         Preview 
                                                     </v-btn>
-                                                    <v-btn v-else>
+                                                    <v-btn small v-else>
                                                         NO FILE
                                                     </v-btn>
                                                 </v-card>
@@ -698,7 +699,7 @@
                                                                     name="profile"
                                                                     ref="cv"
                                                                     color="primary"
-                                                                    label-idle="Drop/Choose a file"
+                                                                    label-idle="Change a file"
                                                                     accepted-file-types="application/pdf"
                                                                     v-bind:allowMultiple="false"
                                                                     v-bind:allowReplace="true"
@@ -881,7 +882,7 @@ export default {
             })
         },
 
-        editStaff(){
+        async editStaff(){
             if(this.fullName !="" &&
                 this.mobileNumber !="" &&
                 this.country !="" &&
@@ -912,7 +913,67 @@ export default {
                     this.displayAlert("warning","There are validation errors, fix before you proceed",4000);
 
                 }  else {
-                    this.displayAlert("success","editing a user",1000);
+                    
+
+                    this.LinearLoading = true;
+
+                    if(this.$refs.identification.getFiles().length > 0){
+
+                        const identification = this.$refs.identification.getFiles()[0];
+                        this.identification_url = await this.getUrl(identification);
+                    }
+
+                    if(this.$refs.photo.getFiles().length > 0){
+
+                        const photo = this.$refs.photo.getFiles()[0];
+                        this.photo_url = await this.getUrl(photo);
+                    }
+
+                    if(this.$refs.passport.getFiles().length > 0){
+
+                        const passport = this.$refs.passport.getFiles()[0];
+                        this.passport_url = await this.getUrl(passport);
+                    }
+
+                    if(this.$refs.cv.getFiles().length > 0){
+
+                        const cv = this.$refs.cv.getFiles()[0];
+                        this.cv_url = await this.getUrl(cv);
+                    }
+
+                    console.log("sending other data");
+
+                    const staff = {
+
+                            fullName: this.fullName,
+                            email: this.email,
+                            phoneNumber: this.mobileNumber,
+                            address: this.address,
+                            profilePhoto: this.photo_url,
+                            jobTitle: this.jobTitle,
+                            country: this.country,
+                            identityCardNo: this.idNo,
+                            identityCardCopy: this.identification_url,
+                            cv: this.cv_url,
+                            passport: this.passport_url,
+                            passportNo: this.passportNo,
+                            bankAccountNumber: this.accountNumber,
+                            bankName: this.bankName,
+                            swiftCode: this.swiftCode,
+                            IBAN: this.IBAN,
+                            accountName: this.accountName
+                    }
+
+                    ApiService.put("staffs/"+this.staff_id,staff).then((response)=>{
+                            
+                        this.LinearLoading = false
+                        this.displayAlertAndRedirect("success",response.data.message,2000,'/staffs/'+this.staff_id);
+
+                    }).catch((err)=>{
+                            
+                        this.LinearLoading = false
+                        this.displayAlert("error","Server error: "+err,4000)
+                    })
                 }   
 
             } else {
@@ -1063,11 +1124,11 @@ export default {
             vm.jobTitle = vm.staff.jobTitle;
             vm.idNo = vm.staff.identityCardNo;
             vm.passportNo = vm.staff.fullName;
-            vm.bankName = vm.staff.fullName;
-            vm.accountNumber = vm.staff.fullName;
-            vm.accountName = vm.staff.fullName;
-            vm.swiftCode = vm.staff.fullName;
-            vm.IBAN = vm.staff.fullName;
+            vm.bankName = vm.staff.bankName;
+            vm.accountNumber = vm.staff.bankAccountNumber;
+            vm.accountName = vm.staff.accountName;
+            vm.swiftCode = vm.staff.swiftCode;
+            vm.IBAN = vm.staff.IBAN;
 
 
             vm.photo_url = vm.staff.profilePhoto;

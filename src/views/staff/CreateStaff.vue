@@ -757,11 +757,6 @@ export default {
                         this.cv_url = await this.getUrl(cv);
                     }
                 
-                    console.log("id:" +this.identification_url);
-                    console.log("photo: "+this.photo_url);
-                    console.log("passport: "+this.passport_url);
-                    console.log("cv: "+this.cv_url);
-
                     if(this.identification_url == ""){
 
                         this.LinearLoading = false;

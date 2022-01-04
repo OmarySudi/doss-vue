@@ -190,13 +190,8 @@
                   <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">IDENTIFICATION COPY</p>
 
-                    <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 15px">
-                        <!-- <v-btn icon @click="downloadfile(staff.identityCardCopy)">
-                          <v-icon large>
-                            mdi-cloud-download
-                          </v-icon>
-                        </v-btn> -->
-                        <v-btn @click="previewPdf(staff.identityCardCopy)">
+                    <v-card flat outlined height="55" class="py-xs-15 px-xy-2 py-sm-5 px-sm-2 py-md-5 px-md-15">
+                        <v-btn small @click="previewPdf(staff.identityCardCopy)">
                             Preview 
                         </v-btn>
                     </v-card>
@@ -206,13 +201,13 @@
                 <v-col cols="12" sm="6" md="4">
                   <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">PASSPORT</p>
-                    <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
+                    <v-card flat outlined height="55" class="py-xs-15 py-xs-2 py-sm-5 px-sm-2 py-md-5 px-md-15">
 
-                        <v-btn @click="previewPdf(staff.passport)" v-if="staff.passport">
+                        <v-btn small @click="previewPdf(staff.passport)" v-if="staff.passport">
                             Preview 
                         </v-btn>
 
-                        <v-btn v-else>
+                        <v-btn small v-else>
                             NO FILE 
                         </v-btn>
 
@@ -223,12 +218,12 @@
                  <v-col cols="12" sm="6" md="4">
                   <v-card class="ml-2 mt-2 mr-2 py-1 text-center" :elevation="cardElevation">
                     <p class="body-1 mb-1 ml-1 primary--text">CV</p>
-                    <v-card flat outlined height="55" style="padding-left: 20px; padding-top: 20px">
-                        <v-btn @click="previewPdf(staff.cv)" v-if="staff.cv">
+                    <v-card flat outlined height="55" class="py-xs-15 py-xs-2 py-sm-5 px-sm-2 py-md-5 px-md-15">
+                        <v-btn small @click="previewPdf(staff.cv)" v-if="staff.cv">
                             Preview 
                         </v-btn>
 
-                        <v-btn v-else>
+                        <v-btn small v-else>
                             NO FILE 
                         </v-btn>
                     </v-card>
