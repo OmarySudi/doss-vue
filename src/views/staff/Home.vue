@@ -34,7 +34,7 @@
 
         <v-col cols="6" md="4">
           <v-row justify="end">
-            <v-btn color="secondary" to="/staffs/create">
+            <v-btn v-if="user.role == 'operator'" color="secondary" to="/staffs/create">
               ADD
             </v-btn>
           </v-row>
@@ -185,7 +185,7 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(['LOAD_STAFFS']),
+    ...mapGetters(['LOAD_STAFFS','user']),
 
      numberOfPages () {
           return Math.ceil(this.LOAD_STAFFS.length / this.itemsPerPage)

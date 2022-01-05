@@ -54,10 +54,10 @@
 
         <v-col cols="6" align-self="center">
           <v-row justify="end" class="mr-2">
-            <v-btn class="mr-1" color="primary" @click="directTOEditPage(staff._id)">
+            <v-btn v-if="user.role == 'operator'" class="mr-1" color="primary" @click="directTOEditPage(staff._id)">
               EDIT
             </v-btn>
-            <v-btn color="primary" @click="delete_dialog = true">
+            <v-btn v-if="user.role == 'operator'" color="primary" @click="delete_dialog = true">
               DELETE
             </v-btn>
           </v-row>
@@ -374,7 +374,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['LOAD_STAFFS'])
+    ...mapGetters(['LOAD_STAFFS','user'])
   },
 
   beforeRouteEnter(to,from,next){
