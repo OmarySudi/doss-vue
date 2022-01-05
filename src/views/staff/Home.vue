@@ -50,7 +50,7 @@
         item-key="_id"
         :page="page"
         :search="search"
-        :sort-by="sortBy.toLowerCase()"
+        :sort-by="sortBy"
         :sort-desc="sortDesc"
         hide-default-footer
       >
@@ -174,10 +174,10 @@ export default {
     itemsPerPageArray: [2,4, 8, 12],
     search: '',
     filter: {},
-    sortDesc: false,
+    sortDesc: true,
     page: 1,
     itemsPerPage: 8,
-    sortBy: 'fullName',
+    sortBy: 'createdAt',
 
     STAFFS: [],
     ready: false,
