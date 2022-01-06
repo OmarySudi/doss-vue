@@ -7,7 +7,7 @@
         :text="snackbarText" 
         :timeout="snackbarTimeout"
     />
-
+    
     <div class="text-center">
       <v-dialog
         v-model="delete_dialog"
@@ -280,7 +280,7 @@
         </v-col>
 
       </v-row>
-        <LinearLoader :loading="LinearLoading"/>
+      <LinearLoader :loading="LinearLoading"/>
   </v-container>
 </template>
 
@@ -378,7 +378,7 @@ export default {
   },
 
   beforeRouteEnter(to,from,next){
-
+    
     next(vm=>{  
 
       if(vm.LOAD_STAFFS == null){
