@@ -18,6 +18,12 @@ export default {
             return state.staffs;
         },
 
+        LOAD_STAFFS_NAMES: (state)=>{
+            
+            let result = state.staffs.map((staff)=>staff.fullName)
+            return result;
+        },
+
         LOAD_STAFF: (state,staffId)=>{
             return state.staffs.find((staff)=>staff.id === staffId)
         },
@@ -25,7 +31,7 @@ export default {
         LOAD_STAFF_DETAILS: (state)=>{
             console.log(state.staff_details)
             return state.staff_details;
-        }
+        },
     },
 
     mutations: {

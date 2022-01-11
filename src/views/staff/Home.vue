@@ -34,7 +34,7 @@
 
         <v-col cols="6" md="4">
           <v-row justify="end">
-            <v-btn v-if="user.role == 'operator'" color="secondary" to="/staffs/create">
+            <v-btn v-if="user.role == 'operator'" class="mr-2" color="primary" to="/staffs/create">
               ADD
             </v-btn>
           </v-row>
@@ -185,7 +185,7 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(['LOAD_STAFFS','user']),
+    ...mapGetters(['LOAD_STAFFS','user','GET_TOTAL_CASH_IN']),
 
      numberOfPages () {
           return Math.ceil(this.LOAD_STAFFS.length / this.itemsPerPage)
@@ -209,7 +209,7 @@ export default {
   // },
 
   methods: {
-    ...mapActions(['GET_STAFFS']),
+    ...mapActions(['GET_STAFFS','FETCH_EXPENDITURES']),
 
     nextPage () {
       if (this.page + 1 <= this.numberOfPages) this.page += 1
@@ -237,12 +237,17 @@ export default {
     redirectToStaff(staffId){
 
         this.$router.push({name: 'Staff', params: {id: staffId}})
+    },
+
+    initializeSystemState(staffs){
+        this.$store.commit('SET_STAFFS',staffs);
     }
 
   },
 
   created(){
     this.fetchStaffs();
+    this.FETCH_EXPENDITURES()
   },
 
 }

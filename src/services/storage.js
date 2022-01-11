@@ -31,5 +31,20 @@ const TokenService = {
     }
 };
 
+export const userService = {
+
+    getUserEmail(){
+        return localStorage.getItem("email");
+    },
+
+    getUserName(){
+        return localStorage.getItem("userName");
+    },
+
+    getUserRole(){
+        return localStorage.getItem("role");
+    }
+}
+
 export default TokenService;
 
