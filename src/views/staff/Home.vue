@@ -210,7 +210,7 @@ export default {
   // },
 
   methods: {
-    ...mapActions(['GET_STAFFS','']),
+    ...mapActions(['GET_STAFFS','FETCH_EXPENDITURES']),
 
     nextPage () {
       if (this.page + 1 <= this.numberOfPages) this.page += 1
@@ -246,10 +246,14 @@ export default {
 
   },
 
-  created(){
-    this.fetchStaffs();
-    this.FETCH_EXPENDITURES(userService.getUserCountry())
-  },
+  beforeRouteEnter(to,from,next){
+
+    next((vm)=>{
+      console.log("it passes")
+      vm.fetchStaffs();
+      vm.FETCH_EXPENDITURES(userService.getUserCountry())
+    });
+  }
 
 }
 </script>
