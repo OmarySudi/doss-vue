@@ -51,6 +51,10 @@ export const userService = {
 
     getUserCurrency(){
         return localStorage.getItem("currency");
+    },
+
+    isVerified(){
+        return localStorage.getItem("verified")
     }
 
 }
