@@ -86,15 +86,29 @@ export default {
             }); 
         },
 
-        FETCH_EXPENDITURES: async ({commit})=>{
+        FETCH_EXPENDITURES: async ({commit},country)=>{
 
-            await ApiService.get('expenditures').then((response)=>{
-                commit('SET_EXPENDITURES',response.data.body)
-                commit('SET_TOTAL_CASH_IN',response.data.body)
-                commit('SET_TOTAL_CASH_OUT',response.data.body)
-              }).catch((error)=>{
-                  console.log(error);
-              });
+            if(country == null){
+
+                await ApiService.get('expenditures').then((response)=>{
+                    commit('SET_EXPENDITURES',response.data.body)
+                    commit('SET_TOTAL_CASH_IN',response.data.body)
+                    commit('SET_TOTAL_CASH_OUT',response.data.body)
+                  }).catch((error)=>{
+                      console.log(error);
+                  });
+
+            } else {
+
+                await ApiService.get('expenditures?country='+country).then((response)=>{
+                    commit('SET_EXPENDITURES',response.data.body)
+                    commit('SET_TOTAL_CASH_IN',response.data.body)
+                    commit('SET_TOTAL_CASH_OUT',response.data.body)
+                  }).catch((error)=>{
+                      console.log(error);
+                  });
+            }
+           
         },
 
         // SET_TOTAL_CASH_IN: async({commit},expenditures)=>{

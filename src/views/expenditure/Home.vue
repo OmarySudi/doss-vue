@@ -658,7 +658,14 @@
       <v-row dense class="pt-4">
         <v-col cols="12" md="4" lg="3">
           <v-card>
-            <p class="body-1 text-center font-weight-regular mb-2 primary white--text">SUMMARY</p>
+            <!-- <p class="body-1 text-center font-weight-regular mb-2 primary white--text">SUMMARY</p>
+            <p class="body-1 text-center font-weight-regular mb-2 primary white--text">SUMMARY</p> -->
+            <v-card class="primary pl-1" height="130">
+              <p class="body-1 text-center font-weight-regular mb-10 white--text">SUMMARY</p> 
+              <p class="font-weight-regular mb-2 white--text" style="font-size:0.85em">COUNTRY: {{displayedCountry}}</p> 
+              <p class="font-weight-regular mb-4 white--text" style="font-size:0.85em">CURRENCY: {{ displayedCurrency}}</p> 
+            </v-card>
+          
             <v-simple-table>
             <template v-slot:default>
               <thead>
@@ -716,6 +723,7 @@
                     v-bind="attrs"
                     v-on="on"
                     @click="showCreateDialog()"
+                    v-if="getUserRole == 'operator'"
                   >
                     ADD
                   </v-btn>
@@ -731,12 +739,14 @@
                   small
                   class="mr-2"
                   @click="showEditDialog(item)"
+                  v-if="getUserRole == 'operator'"
                 >
                   mdi-pencil
                 </v-icon>
                 <v-icon
                   small
                   @click="showDeleteDialog(item)"
+                  v-if="getUserRole == 'operator'"
                 >
                   mdi-delete
                 </v-icon>
@@ -800,6 +810,8 @@ export default {
     viewItemStaffName: '',
     deletedItem: {},
     editedStaffName: '',
+    displayedCountry:'',
+    displayedCurrency: '',
 
     headers:[
 
@@ -822,7 +834,7 @@ export default {
       
     ],
 
-    selectedCountry:null,
+    selectedCountry:'',
     selectedCategory:null,
     selectedType:null,
 
@@ -860,6 +872,10 @@ export default {
 
       getTotal(){
         return this.GET_TOTAL_CASH_IN - this.GET_TOTAL_CASH_OUT
+      },
+
+      getUserRole(){
+        return userService.getUserRole();
       },
 
       expenditureTypeErrors(){
@@ -905,7 +921,12 @@ export default {
   },
 
   created(){
+
     this.countries = Object.keys(this.GET_COUNTRIES)
+    this.displayedCountry = userService.getUserCountry();
+    this.country = userService.getUserCountry();
+    this.displayedCurrency = userService.getUserCurrency();
+
   },
   
   methods:{
@@ -1039,75 +1060,131 @@ export default {
       this.editedItem.staffId = staff._id;
     },
 
-    filterExpenditures(country,category,type){
-      
-      if((country != null) && (category != null) && (type != null)) {
+    async filterExpenditures(country,category,type){
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-          (expenditure.country == country && expenditure.category == category) && expenditure.expenditureType == type);
+      console.log("country selected is "+country)
+      if(country == null){
 
-        this.expenditures = expenditures;
-        this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
-        this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+        console.log("country is null")
+        this.displayedCountry = userService.getUserCountry();
+        this.displayedCurrency = userService.getUserCurrency();
 
-      } else if((country == null) && (category == null) && (type == null)){
 
-        this.expenditures = this.LOAD_EXPENDITURES;
-        this.$store.commit('SET_TOTAL_CASH_IN',this.expenditures)
-        this.$store.commit('SET_TOTAL_CASH_OUT',this.expenditures)
+        await this.FETCH_EXPENDITURES(userService.getUserCountry());
 
-      } else if((country != null) && (category != null) && (type == null)){
+        if((category != null) && (type != null)) {
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-          (expenditure.country == country && expenditure.category == category));
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.category == category) && expenditure.expenditureType == type);
 
-        this.expenditures = expenditures;
-        this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
-        this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
 
-      }else if((country != null) && (type != null) && (category == null)){
+        } else if((category == null) && (type == null)){
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-          (expenditure.country == country && expenditure.expenditureType == type));
+          this.expenditures = this.LOAD_EXPENDITURES;
+          this.$store.commit('SET_TOTAL_CASH_IN',this.expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',this.expenditures)
 
-        this.expenditures = expenditures;
-        this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
-        this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+        } else if((category != null) && (type == null)){
 
-      } else if((category != null) && (type != null) && (country == null)){
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.category == category));
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-        (expenditure.category == category && expenditure.expenditureType == type));
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
 
-        this.expenditures = expenditures;
-        this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
-        this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+        }else if((type != null) && (category == null)){
 
-      } else if((category != null) && (type == null) && (country == null)){
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.expenditureType == type));
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => (expenditure.category == category));
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+        } 
 
-        this.expenditures = expenditures;
-        this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
-        this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+      } else if( country == ''){
 
-      } else if((type != null) && (category == null) && (country == null)){
+          console.log("country is empty")
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => (expenditure.expenditureType == type));
+          if((category != null) && (type != null)) {
 
-        this.expenditures = expenditures;
-        this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
-        this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.category == category) && expenditure.expenditureType == type);
 
-      }  else if((country != null) && (category == null) && (type == null)){
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => (expenditure.country == country));
+        } else if((category == null) && (type == null)){
 
-        this.expenditures = expenditures;
-        this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
-        this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+          this.expenditures = this.LOAD_EXPENDITURES;
+          this.$store.commit('SET_TOTAL_CASH_IN',this.expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',this.expenditures)
+
+        } else if((category != null) && (type == null)){
+
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.category == category));
+
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+
+        }else if((type != null) && (category == null)){
+
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.expenditureType == type));
+
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+        } 
+
+      } else {
+        
+        await this.FETCH_EXPENDITURES(country);
+
+        this.displayedCountry = country;
+        this.displayedCurrency = this.GET_COUNTRIES[country];
+        
+        if((category != null) && (type != null)) {
+
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.category == category) && expenditure.expenditureType == type);
+
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+
+        } else if((category == null) && (type == null)){
+
+          this.expenditures = this.LOAD_EXPENDITURES;
+          this.$store.commit('SET_TOTAL_CASH_IN',this.expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',this.expenditures)
+
+        } else if((category != null) && (type == null)){
+
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.category == category));
+
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+
+        }else if((type != null) && (category == null)){
+
+          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (expenditure.expenditureType == type));
+
+          this.expenditures = expenditures;
+          this.$store.commit('SET_TOTAL_CASH_IN',expenditures)
+          this.$store.commit('SET_TOTAL_CASH_OUT',expenditures)
+        } 
       }
-
     
     },
 
@@ -1126,7 +1203,7 @@ export default {
                 
           await ApiService.put("expenditures/"+this.editedItem._id,this.editedItem).then((response)=>{
             
-            this.FETCH_EXPENDITURES();
+            this.FETCH_EXPENDITURES(userService.getUserCountry());
 
             this.editExpenditureDialog = false;
 
@@ -1236,7 +1313,7 @@ export default {
         // fetching a user from the server when page is reloaded
         vm.fetchStaffs()
 
-        await vm.FETCH_EXPENDITURES();
+        await vm.FETCH_EXPENDITURES(userService.getUserCountry());
         vm.expenditures = vm.LOAD_EXPENDITURES;
 
       } else {
@@ -1247,7 +1324,6 @@ export default {
 
     });
 
-     
   }
 
 }

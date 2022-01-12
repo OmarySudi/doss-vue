@@ -163,6 +163,7 @@
 <script>
 import {mapActions,mapGetters} from 'vuex'
 import ApiService from '../../services/api'
+import {userService} from '../../services/storage'
 
 export default {
 
@@ -209,7 +210,7 @@ export default {
   // },
 
   methods: {
-    ...mapActions(['GET_STAFFS','FETCH_EXPENDITURES']),
+    ...mapActions(['GET_STAFFS','']),
 
     nextPage () {
       if (this.page + 1 <= this.numberOfPages) this.page += 1
@@ -247,7 +248,7 @@ export default {
 
   created(){
     this.fetchStaffs();
-    this.FETCH_EXPENDITURES()
+    this.FETCH_EXPENDITURES(userService.getUserCountry())
   },
 
 }

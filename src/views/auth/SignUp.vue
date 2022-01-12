@@ -96,6 +96,35 @@
                                             </v-card>
                                         </template>
                                     </v-hover>
+
+                                    <v-hover class="mb-5">
+                                        <template v-slot="{ hover }">
+                                            <v-card  color="transparent"
+                                                        height="45" 
+                                                        class="mx-4 mb-5"
+                                                        :elevation="hover ? 3: 0"
+                                            >
+                                                <v-select
+                                                    v-model="country"
+                                                    :items="countries"
+                                                    chips
+                                                    label="Country"
+                                                    class="inputtext"
+                                                    color="primary"
+                                                    menu-props="auto"
+                                                    dense
+                                                    prepend-inner-icon="mdi-earth"
+                                                    outlined
+                                                    small-chips
+                                                    :error-messages="countryErrors"
+                                                    @input="$v.country.$touch()"
+                                                    @blur="$v.country.$touch()"
+                                                    @change="setCurrency(country)"
+                                                    >
+                                                </v-select> 
+                                            </v-card>
+                                        </template>
+                                    </v-hover>
                                     
                                     <v-hover class="mb-5">
                                         <template v-slot="{hover}">
@@ -195,6 +224,7 @@
 
 <script>
 import { required, email, minLength, numeric, sameAs } from 'vuelidate/lib/validators'
+import {mapGetters} from 'vuex'
 import Snackbar from '../../components/Snackbar.vue'
 import {projectMixin} from '../../mixins/mixins'
 import LinearLoader from '../../components/LinearLoader.vue'
@@ -213,6 +243,18 @@ export default {
         showPassword:false,
         password:"",
         repeatPassword:"",
+        country: "",
+        contries: [],
+
+        countriesObject:{
+
+            "TANZANIA": "TZS",
+            "MAURITIUS": "USD",
+            "GHANA": "USD",
+            "GUINEE": "USD",
+            "ETHIOPIA": "USD",
+            "SENEGAL": "USD",
+        },
 
         //disable signup false
         disableSignUp: false
@@ -221,6 +263,11 @@ export default {
 
     methods: {
 
+        setCurrency(country){
+
+            localStorage.setItem('currency',this.countriesObject[country])
+        },
+
         signup(){
             
             if
@@ -228,7 +275,8 @@ export default {
                 this.email != '' &&
                 this.password != '' &&
                 this.userName != '' &&
-                this.repeatPassword != ''
+                this.repeatPassword != '' &&
+                this.country != ''
             )
             
             {
@@ -247,7 +295,8 @@ export default {
                     const data = {
                         userName: this.userName,
                         email: this.email,
-                        password: this.password
+                        password: this.password,
+                        country: this.country
                     }
 
                     this.LinearLoading = true;
@@ -304,6 +353,7 @@ export default {
             this.password = "";
             this.userName = "";
             this.repeatPassword = "";
+            this.country = "";
         }
     },
 
@@ -312,15 +362,25 @@ export default {
         userName:{ required, minLength: minLength(5) },
         password: { required,minLength: minLength(8) },
         repeatPassword:{required, sameAsPassword: sameAs('password')},
+        country: { required}
     },
 
     computed: {
+
+        ...mapGetters['GET_COUNTRIES'],
 
           emailErrors() {
             const errors = []
             if (!this.$v.email.$dirty) return errors
             !this.$v.email.required && errors.push('E-mail is required')
             !this.$v.email.email && errors.push('Must be valid e-mail')
+            return errors
+        },
+
+        countryErrors() {
+            const errors = []
+            if (!this.$v.country.$dirty) return errors
+            !this.$v.country.required && errors.push('Country is required')
             return errors
         },
 
@@ -347,8 +407,14 @@ export default {
             !this.$v.repeatPassword.sameAsPassword && errors.push('password does not match')
             return errors
         },
-    }
+    },
+
+    created(){
+        if(this.countriesObject)
+            this.countries = Object.keys(this.countriesObject)
+    },
 }
+
 </script>
 
 <style>
