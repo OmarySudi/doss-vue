@@ -11,6 +11,7 @@
         />
 
         <v-row 
+            v-if="!checkIfUserLoggedIn"
             justify="center" 
             dense
             no-gutters
@@ -228,12 +229,26 @@ export default {
             !this.$v.password.minLength && errors.push(' password must be a minimun of 8 characters')
             return errors
         },
+
+        checkIfUserLoggedIn(){
+            if(localStorage.getItem('email') == null)
+                return false;
+            else
+                return true;
+        }
     },
 
     validations: {
         email: { required, email },
         password: { required,minLength: minLength(8) },
     },
+
+    beforeRouteEnter(to,from,next){
+        next((vm)=>{
+            if(vm.checkIfUserLoggedIn)
+                vm.$router.push('/staffs');
+        });
+    }
 }
 </script>
 

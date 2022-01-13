@@ -103,8 +103,10 @@ import { SidebarMenu } from 'vue-sidebar-menu'
 import { create } from 'filepond';
 
 export default {
+
   name: 'App',
-    components: {
+
+  components: {
     SidebarMenu
   },
 
@@ -121,15 +123,24 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(['authenticated','user'])
+    ...mapGetters(['authenticated','user']),
+    
+    checkIfLoggedIn(){
+
+      if(localStorage.getItem('email') == null)
+        return false
+      else
+        return true;
+    }
   },
 
   methods: {
     ...mapActions(['logout'])
   },
 
-  create(){
-    console.log("authenticated is "+this.authenticated)
+  created(){
+     console.log("authenticated is "+this.authenticated)
+     console.log(this.checkIfLoggedIn)
   }
 
 };
