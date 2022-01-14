@@ -8,7 +8,6 @@
             :timeout="snackbarTimeout"
       />
 
-         
       <div class="text-center">
         <v-dialog
           v-model="delete_dialog"
@@ -979,7 +978,7 @@ export default {
     this.country = userService.getUserCountry();
     this.currency = userService.getUserCurrency();
     this.displayedCurrency = userService.getUserCurrency();
-    
+
   },
   
   methods:{
@@ -1043,13 +1042,20 @@ export default {
 
         this.LinearLoading = false;
 
-        if(this.deletedItem.expenditureType == "Cash In"){
-          this.$store.commit('SUBTRACT_TOTAL_CASH_IN',this.deletedItem.amount)
-        } else {
-          this.$store.commit('SUBTRACT_TOTAL_CASH_OUT',this.deletedItem.amount)
+        if(this.deletedItem.country == userService.getUserCountry() && 
+          this.deletedItem.currency == userService.getUserCurrency()) {
+
+          if(this.deletedItem.expenditureType == "Cash In"){
+
+            this.$store.commit('SUBTRACT_TOTAL_CASH_IN',this.deletedItem.amount)
+
+          } else {
+            
+            this.$store.commit('SUBTRACT_TOTAL_CASH_OUT',this.deletedItem.amount)
+          }
         }
 
-        this.fetchExpenditures();
+        this.fetchExpenditures(userService.getUserCountry());
         this.delete_dialog = false;
         this.displayAlert("success",response.data.message,4000);
 
@@ -1092,8 +1098,8 @@ export default {
       });
     },
 
-    async fetchExpenditures(){
-      await ApiService.get('expenditures').then((response)=>{
+    async fetchExpenditures(country){
+      await ApiService.get('expenditures?country='+country).then((response)=>{
         this.$store.commit('SET_EXPENDITURES',response.data.body)
         this.expenditures = this.LOAD_EXPENDITURES;
       }).catch((error)=>{
@@ -1325,14 +1331,20 @@ export default {
 
                   const expenditure = response.data.body
 
-                  if(expenditure.country == localStorage.getItem('country')){
+                  if(expenditure.country == userService.getUserCountry()){
                     
                     this.$store.commit('ADD_EXPENDITURE',expenditure);
 
-                    if(expenditure.expenditureType == "Cash In")
-                      this.$store.commit('ADD_TOTAL_CASH_IN',expenditure.amount)
-                    else
-                      this.$store.commit('ADD_TOTAL_CASH_OUT',expenditure.amount)
+                    if(expenditure.currency == userService.getUserCurrency()){
+
+                      if(expenditure.expenditureType == "Cash In")
+
+                        this.$store.commit('ADD_TOTAL_CASH_IN',expenditure.amount)
+
+                      else
+                      
+                        this.$store.commit('ADD_TOTAL_CASH_OUT',expenditure.amount)
+                      }
                   }
                    
                   this.createExpenditureDialog = false;
