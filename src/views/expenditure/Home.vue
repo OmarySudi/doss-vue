@@ -639,7 +639,7 @@
               <v-btn
                 color="primary"
                 text
-                @click="editExpenditure"
+                @click="editExpenditure()"
               >
                 SAVE
               </v-btn>
@@ -1257,6 +1257,7 @@ export default {
               this.editedItem.amount !="" &&
               this.editedItem.country !="" &&
               this.editedItem.date !="" &&
+              this.editedItem.currency !="" &&
               this.editedItem.category !=""
         ) 
         {
@@ -1265,7 +1266,12 @@ export default {
                 
           await ApiService.put("expenditures/"+this.editedItem._id,this.editedItem).then((response)=>{
             
-            this.FETCH_EXPENDITURES(userService.getUserCountry());
+            let fetchData = {
+              country: userService.getUserCountry(),
+              currency: userService.getUserCurrency()
+            }
+            
+            this.FETCH_EXPENDITURES(fetchData);
 
             this.editExpenditureDialog = false;
 

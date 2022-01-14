@@ -72,7 +72,6 @@
                       @click.prevent="redirectToStaff(item._id)"
                     >
                       <v-img v-if="item.profilePhoto"
-
                         class="white--text align-end"
                         height="160px"
                         :src="item.profilePhoto"
