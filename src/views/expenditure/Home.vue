@@ -1270,15 +1270,19 @@ export default {
                 this.LinearLoading = true;
                 
                 await ApiService.post("expenditures",expenditure).then((response)=>{
+
                   const expenditure = response.data.body
 
-                  this.$store.commit('ADD_EXPENDITURE',expenditure);
+                  if(expenditure.country == localStorage.getItem('country')){
+                    
+                    this.$store.commit('ADD_EXPENDITURE',expenditure);
 
-                  if(expenditure.expenditureType == "Cash In")
-                    this.$store.commit('ADD_TOTAL_CASH_IN',expenditure.amount)
-                  else
-                    this.$store.commit('ADD_TOTAL_CASH_OUT',expenditure.amount)
-
+                    if(expenditure.expenditureType == "Cash In")
+                      this.$store.commit('ADD_TOTAL_CASH_IN',expenditure.amount)
+                    else
+                      this.$store.commit('ADD_TOTAL_CASH_OUT',expenditure.amount)
+                  }
+                   
                   this.createExpenditureDialog = false;
                   this.LinearLoading = false;
 
