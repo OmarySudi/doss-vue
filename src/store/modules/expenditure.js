@@ -1,4 +1,6 @@
+import store from "..";
 import ApiService from "../../services/api";
+import { userService } from "../../services/storage";
 
 export default {
     state: {
@@ -36,17 +38,17 @@ export default {
             state.expenditures = expenditures;
         },
 
-        SET_TOTAL_CASH_IN: (state,expenditures)=>{
+        SET_TOTAL_CASH_IN: (state,expenditureData)=>{
 
-            let cashINExpenditures = expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash In");
+            let cashINExpenditures = expenditureData.expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash In" && expenditure.currency == expenditureData.currency);
             let totalCashInAmount = cashINExpenditures.reduce((accumulator,current)=>accumulator + current.amount,0)
 
             state.totalCashIn = totalCashInAmount
         },
 
-        SET_TOTAL_CASH_OUT: (state,expenditures)=>{
+        SET_TOTAL_CASH_OUT: (state,expenditureData)=>{
             
-            let cashOUTExpenditures = expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash Out");
+            let cashOUTExpenditures = expenditureData.expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash Out" && expenditure.currency == expenditureData.currency);
             let totalCashOutAmount = cashOUTExpenditures.reduce((accumulator,current)=>accumulator + current.amount,0)
 
             state.totalCashOut = totalCashOutAmount
@@ -86,24 +88,38 @@ export default {
             }); 
         },
 
-        FETCH_EXPENDITURES: async ({commit},country)=>{
+        FETCH_EXPENDITURES: async ({commit},fetchData)=>{
 
-            if(country == null){
+            if(fetchData.country == null){
 
                 await ApiService.get('expenditures').then((response)=>{
                     commit('SET_EXPENDITURES',response.data.body)
-                    commit('SET_TOTAL_CASH_IN',response.data.body)
-                    commit('SET_TOTAL_CASH_OUT',response.data.body)
+
+                    let expenditureData = {
+
+                        currency: fetchData.currency,
+                        expenditures: response.data.body
+                    }
+
+                    commit('SET_TOTAL_CASH_IN',expenditureData)
+                    commit('SET_TOTAL_CASH_OUT',expenditureData)
+
                   }).catch((error)=>{
                       console.log(error);
                   });
 
-            } else {
-
-                await ApiService.get('expenditures?country='+country).then((response)=>{
+            } else if(fetchData.country != null){
+                await ApiService.get('expenditures?country='+fetchData.country).then((response)=>{
                     commit('SET_EXPENDITURES',response.data.body)
-                    commit('SET_TOTAL_CASH_IN',response.data.body)
-                    commit('SET_TOTAL_CASH_OUT',response.data.body)
+
+                    let expenditureData = {
+
+                        currency: fetchData.currency,
+                        expenditures: response.data.body
+                    }
+
+                    commit('SET_TOTAL_CASH_IN',expenditureData)
+                    commit('SET_TOTAL_CASH_OUT',expenditureData)
                   }).catch((error)=>{
                       console.log(error);
                   });

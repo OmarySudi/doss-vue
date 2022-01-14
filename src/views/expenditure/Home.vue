@@ -776,6 +776,10 @@
                 {{ item.date.substr(0,10) }}
             </template>
 
+            <template v-slot:[`item.amount`]="{ item }">
+                {{item.currency}} {{ item.amount}}
+            </template>
+
             <template v-slot:[`item.actions`] ="{ item }">
                 <v-icon
                   small
@@ -1342,7 +1346,7 @@ export default {
                         this.$store.commit('ADD_TOTAL_CASH_IN',expenditure.amount)
 
                       else
-                      
+
                         this.$store.commit('ADD_TOTAL_CASH_OUT',expenditure.amount)
                       }
                   }
@@ -1381,7 +1385,14 @@ export default {
         // fetching a user from the server when page is reloaded
         vm.fetchStaffs()
 
-        await vm.FETCH_EXPENDITURES(userService.getUserCountry());
+        
+        let fetchData = {
+          country: userService.getUserCountry(),
+          currency: userService.getUserCurrency()
+        }
+
+        await vm.FETCH_EXPENDITURES(fetchData);
+        
         vm.expenditures = vm.LOAD_EXPENDITURES;
 
       } else {
