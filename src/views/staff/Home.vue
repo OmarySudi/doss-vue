@@ -251,7 +251,13 @@ export default {
     next((vm)=>{
       console.log("it passes")
       vm.fetchStaffs();
-      vm.FETCH_EXPENDITURES(userService.getUserCountry())
+
+      let fetchData = {
+          country: userService.getUserCountry(),
+          currency: userService.getUserCurrency()
+      }
+
+      vm.FETCH_EXPENDITURES(fetchData)
     });
   }
 
