@@ -11,14 +11,20 @@ export default {
             "ETHIOPIA": "USD",
             "SENEGAL": "USD",
         },
-
         categories: [
 
             "Salary",
             "Allowance",
             "Rent",
             "Transport",
-        ]
+        ],
+
+        currencies: [
+            "USD",
+            "TZS",
+            "EUR",
+            "GBP"
+        ],
     },
 
     getters: {
@@ -30,6 +36,11 @@ export default {
         GET_CATEGORIES: (state)=>{
             return state.categories;
         },
+
+        GET_CURRENCIES: (state)=>{
+            
+            return state.currencies;
+        }
     },
 
 }

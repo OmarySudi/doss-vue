@@ -213,7 +213,6 @@
                           :error-messages="countryErrors"
                           @input="$v.country.$touch()"
                           @blur="$v.country.$touch()"
-                          @change="setCurrency(country)"
                          >
                         </v-select> 
                       </v-card>
@@ -224,26 +223,47 @@
                     <template v-slot="{hover}">
                       <v-card 
                         color="transparent" 
-                        height="40" 
-                        class="ml-2 mr-2 mb-5"
+                        height="50" 
+                        class="ml-2 mr-2 mb-5 pd-0"
                         :elevation="hover? 6 : 0"
                       >
-                        <v-text-field 
-                            height="40"
-                            v-model="amount"
-                            outlined
-                            class="mt-1 inputtext" 
-                            color="primary" 
-                            type="text"
-                            label="Amount"
-                            :prefix="currency"
-                            background-color="transparent"
-                            dense
-                            :error-messages="amountErrors"
-                            @input="$v.amount.$touch()"
-                            @blur="$v.amount.$touch()"
-                        > 
-                        </v-text-field>
+                        <v-row>
+                          <v-col cols="5">
+                            <v-select
+                              v-model="currency"
+                              :items="GET_CURRENCIES"
+                              chips
+                              label="Currency"
+                              class="inputtext"
+                              color="primary"
+                              menu-props="auto"
+                              dense
+                              outlined
+                              small-chips
+                              :error-messages="currencyErrors"
+                              @input="$v.currency.$touch()"
+                              @blur="$v.currency.$touch()"
+                            >
+                            </v-select> 
+                          </v-col>
+
+                          <v-col cols="7">
+                             <v-text-field 
+                                v-model="amount"
+                                outlined
+                                class="inputtext" 
+                                color="primary" 
+                                type="text"
+                                label="Amount"
+                                background-color="transparent"
+                                dense
+                                :error-messages="amountErrors"
+                                @input="$v.amount.$touch()"
+                                @blur="$v.amount.$touch()"
+                            > 
+                            </v-text-field>
+                          </v-col>
+                        </v-row>
                       </v-card>
                     </template>
                   </v-hover>
@@ -454,7 +474,6 @@
                           dense
                           outlined
                           small-chips
-                          @change="setEditedCurrency(editedItem.country)"
                          >
                         </v-select> 
                       </v-card>
@@ -465,23 +484,47 @@
                     <template v-slot="{hover}">
                       <v-card 
                         color="transparent" 
-                        height="40" 
-                        class="ml-2 mr-2 mb-5"
+                        height="50" 
+                        class="ml-2 mr-2 mb-5 pd-0"
                         :elevation="hover? 6 : 0"
                       >
-                        <v-text-field 
-                            height="40"
-                            v-model="editedItem.amount"
-                            outlined
-                            class="mt-1 inputtext" 
-                            color="primary" 
-                            type="text"
-                            label="Amount"
-                            :prefix="editedItem.currency"
-                            background-color="transparent"
-                            dense
-                        > 
-                        </v-text-field>
+                        <v-row>
+                          <v-col cols="5">
+                            <v-select
+                              v-model="editedItem.currency"
+                              :items="GET_CURRENCIES"
+                              chips
+                              label="Currency"
+                              class="inputtext"
+                              color="primary"
+                              menu-props="auto"
+                              dense
+                              outlined
+                              small-chips
+                              :error-messages="currencyErrors"
+                              @input="$v.currency.$touch()"
+                              @blur="$v.currency.$touch()"
+                            >
+                            </v-select> 
+                          </v-col>
+
+                          <v-col cols="7">
+                             <v-text-field 
+                                v-model="editedItem.amount"
+                                outlined
+                                class="inputtext" 
+                                color="primary" 
+                                type="text"
+                                label="Amount"
+                                background-color="transparent"
+                                dense
+                                :error-messages="amountErrors"
+                                @input="$v.amount.$touch()"
+                                @blur="$v.amount.$touch()"
+                            > 
+                            </v-text-field>
+                          </v-col>
+                        </v-row>
                       </v-card>
                     </template>
                   </v-hover>
@@ -853,6 +896,7 @@ export default {
     expenditureType: { required},
     category: {required},
     amount: { required,numeric},
+    currency: {required},
     country: {required},
     date: {required}
   },
@@ -862,6 +906,7 @@ export default {
     ...mapGetters([
         'GET_COUNTRIES',
         'GET_CATEGORIES',
+        'GET_CURRENCIES',
         'LOAD_STAFFS',
         'LOAD_STAFFS_NAMES',
         'LOAD_EXPENDITURES',
@@ -884,6 +929,13 @@ export default {
           if (!this.$v.expenditureType.$dirty) return errors
           !this.$v.expenditureType.required && errors.push('Type is required')
           return errors
+      },
+
+      currencyErrors(){
+        const errors = []
+        if (!this.$v.currency.$dirty) return errors
+        !this.$v.currency.required && errors.push('Currency required')
+        return errors
       },
 
       categoryErrors(){
@@ -925,8 +977,9 @@ export default {
     this.countries = Object.keys(this.GET_COUNTRIES)
     this.displayedCountry = userService.getUserCountry();
     this.country = userService.getUserCountry();
+    this.currency = userService.getUserCurrency();
     this.displayedCurrency = userService.getUserCurrency();
-
+    
   },
   
   methods:{
@@ -939,18 +992,17 @@ export default {
       'SET_TOTAL_CASH_OUT'
       ]),
 
-    setCurrency(country){
-      console.log(country)
-      this.currency = this.GET_COUNTRIES[country]
-    },
+    // setCurrency(country){
+    //   console.log(country)
+    //   this.currency = this.GET_COUNTRIES[country]
+    // },
 
-    setEditedCurrency(country){
-      this.editedItem.currency = this.GET_COUNTRIES[country];
-    },
+    // setEditedCurrency(country){
+    //   this.editedItem.currency = this.GET_COUNTRIES[country];
+    // },
 
     viewItem(item){
 
-     
       if(item.staffId){
           this.viewItemStaffName = this.LOAD_STAFFS.find((staff)=>staff._id == item.staffId).fullName
       } 
