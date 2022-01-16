@@ -724,26 +724,36 @@
             <v-simple-table>
             <template v-slot:default>
               <thead>
-                <tr>
+                <!-- <tr>
                   <th class="text-left font-weight-800">
                     Type
                   </th>
                   <th class="text-left font-weight-800">
                     Amount
                   </th>
-                </tr>
+                </tr> -->
               </thead>
               <tbody>
                 <tr
                 >
-                  <td>Cash In</td>
-                  <td>{{ GET_TOTAL_CASH_IN }}</td>
+                  <td style="background:#dcdfe3;font-weight:bold">Cash In</td>
+                  <td style="background:#dcdfe3;font-weight:bold">{{ GET_TOTAL_CASH_IN }}</td>
                 </tr>
+                
+                <tr v-for="(item,index) in getCashInKeys" :key="index">
+                  <td>{{item}}</td><td>{{GET_CASHIN_EXPENDITURE_MAP.get(item)}}</td>
+                </tr>
+
                 <tr
                 >
-                  <td>Cash Out</td>
-                  <td>{{ GET_TOTAL_CASH_OUT }}</td>
+                  <td style="background:#dcdfe3;font-weight:bold">Cash Out</td>
+                  <td style="background:#dcdfe3;font-weight:bold">{{ GET_TOTAL_CASH_OUT }}</td>
                 </tr>
+
+                <tr v-for="(item,index) in getCashOutKeys" :key="index">
+                  <td>{{item}}</td><td>{{GET_CASHOUT_EXPENDITURE_MAP.get(item)}}</td>
+                </tr>
+              
                  <tr
                 >
                   <th class="text-left body-2 font-weight-bold">PROFIT</th>
@@ -872,6 +882,9 @@ export default {
     displayedCountry:'',
     displayedCurrency: '',
 
+    cashOutExpenditures: {},
+    cashOutExpenditureKeys: [],
+
     headers:[
 
       {
@@ -928,11 +941,21 @@ export default {
         'LOAD_EXPENDITURES',
         'GET_TOTAL_CASH_IN',
         'GET_TOTAL_CASH_OUT',
+        'GET_CASHOUT_EXPENDITURE_MAP',
+        'GET_CASHIN_EXPENDITURE_MAP'
         ]),
 
 
       getTotal(){
         return this.GET_TOTAL_CASH_IN - this.GET_TOTAL_CASH_OUT
+      },
+
+      getCashOutKeys(){
+        return Array.from(this.GET_CASHOUT_EXPENDITURE_MAP.keys())
+      },
+
+      getCashInKeys(){
+        return Array.from(this.GET_CASHIN_EXPENDITURE_MAP.keys())
       },
 
       getUserRole(){

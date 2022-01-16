@@ -5,8 +5,14 @@ import { userService } from "../../services/storage";
 export default {
     state: {
         expenditures: null,
-        totalCashIn: null,
-        totalCashOut: null,
+        totalCashIn: 0,
+        totalCashOut: 0,
+        cashInExpenditureMap: new Map(),
+        cashInKeys: [],
+
+        cashOutExpenditureMap: new Map(),
+        cashOutKeys: [],
+        
     },
 
     getters: {
@@ -17,6 +23,10 @@ export default {
 
         GET_TOTAL_CASH_OUT: (state) => state.totalCashOut,
 
+        GET_CASHIN_EXPENDITURE_MAP: (state) => state.cashInExpenditureMap,
+
+        GET_CASHOUT_EXPENDITURE_MAP: (state) => state.cashOutExpenditureMap,
+    
         GET_CASH_OUT_EXPENDITURES: (state)=>{
             
             return state.expenditures.find((expenditure)=>expenditure.Type == "Cash Out");
@@ -40,18 +50,58 @@ export default {
 
         SET_TOTAL_CASH_IN: (state,expenditureData)=>{
 
-            let cashINExpenditures = expenditureData.expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash In" && expenditure.currency == expenditureData.currency);
-            let totalCashInAmount = cashINExpenditures.reduce((accumulator,current)=>accumulator + current.amount,0)
+            // let cashINExpenditures = expenditureData.expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash In" && expenditure.currency == expenditureData.currency);
+            // let totalCashInAmount = cashINExpenditures.reduce((accumulator,current)=>accumulator + current.amount,0)
 
-            state.totalCashIn = totalCashInAmount
+            // state.totalCashIn = totalCashInAmount
+            state.totalCashIn = 0;
+            state.cashInExpenditureMap = new Map()
+            
+            let cashINExpenditures = expenditureData.expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash In" && expenditure.currency == expenditureData.currency);
+
+            cashINExpenditures.map((expenditure)=>{
+                state.totalCashIn += expenditure.amount
+
+                if(state.cashInExpenditureMap.has(expenditure.category))
+                {
+                  let amount  = state.cashInExpenditureMap.get(expenditure.category)
+                  amount+=expenditure.amount;
+                  state.cashInExpenditureMap.set(expenditure.category,amount);
+
+                } else{
+                  state.cashInExpenditureMap.set(expenditure.category,expenditure.amount) 
+                }
+            })
+
         },
 
         SET_TOTAL_CASH_OUT: (state,expenditureData)=>{
             
-            let cashOUTExpenditures = expenditureData.expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash Out" && expenditure.currency == expenditureData.currency);
-            let totalCashOutAmount = cashOUTExpenditures.reduce((accumulator,current)=>accumulator + current.amount,0)
+            // let cashOUTExpenditures = expenditureData.expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash Out" && expenditure.currency == expenditureData.currency);
+            // let totalCashOutAmount = cashOUTExpenditures.reduce((accumulator,current)=>accumulator + current.amount,0)
 
-            state.totalCashOut = totalCashOutAmount
+            // state.totalCashOut = totalCashOutAmount
+
+            state.totalCashOut = 0;
+
+            state.cashOutExpenditureMap = new Map()
+
+            let cashOUTExpenditures = expenditureData.expenditures.filter((expenditure)=>expenditure.expenditureType == "Cash Out" && expenditure.currency == expenditureData.currency);
+            cashOUTExpenditures.map((expenditure)=>{
+                state.totalCashOut += expenditure.amount
+
+                if(state.cashOutExpenditureMap.has(expenditure.category))
+                {
+                  let amount  = state.cashOutExpenditureMap.get(expenditure.category)
+                  amount+=expenditure.amount;
+                  state.cashOutExpenditureMap.set(expenditure.category,amount);
+
+                } else{
+                  state.cashOutExpenditureMap.set(expenditure.category,expenditure.amount) 
+                }
+
+            })
+
         },
 
         ADD_TOTAL_CASH_IN: (state,cashIn)=>{
