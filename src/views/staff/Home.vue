@@ -156,6 +156,7 @@
           </v-row>
         </template>
       </v-data-iterator>
+      <LinearLoader :loading="LinearLoading"/>
   </v-container>
 </template>
 
@@ -163,10 +164,12 @@
 import {mapActions,mapGetters} from 'vuex'
 import ApiService from '../../services/api'
 import {userService} from '../../services/storage'
+import {LinearLoader} from '../../components/LinearLoader.vue'
 
 export default {
 
   name: 'StaffsHome',
+  components: {LinearLoader},
 
   data: ()=>({
 
@@ -248,7 +251,9 @@ export default {
   beforeRouteEnter(to,from,next){
 
     next((vm)=>{
-      console.log("it passes")
+
+      vm.LinearLoading = true;
+
       vm.fetchStaffs();
 
       let fetchData = {
@@ -257,6 +262,8 @@ export default {
       }
 
       vm.FETCH_EXPENDITURES(fetchData)
+
+      vm.LinearLoading = false;
     });
   }
 

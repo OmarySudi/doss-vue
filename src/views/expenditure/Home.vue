@@ -648,13 +648,40 @@
         </v-dialog>
       </div>
 
-      <v-row class="mt-1">
+      <v-row class="mt-1 mb-3" justify="end">
+        <v-card height="30" class="pl-5">
+          <v-row class="mt-1">
+            <v-select
+              class="mr-2 subtitle-2 font-weight-regular"
+              :items="years"
+              dense
+              label="Year"
+              v-model="selectedYear"
+              @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
+              >
+            </v-select>
+          
+            <v-select
+              class="mr-2 subtitle-2 font-weight-regular"
+              :items="getMonths"
+              dense
+              label="Month"
+              v-model="selectedMonth"
+              @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
+              >
+            </v-select>
+          </v-row>
+        </v-card>
+      </v-row>
+
+      <v-row class="mt-3">
         <v-col cols="12">
             <v-row>
-              <v-col cols="3">
+              <v-col  cols="6" sm="6" md="3">
                   <v-card height="30" class="pl-5">
                      <v-select
                       :items="countries"
+                      class="subtitle-2 font-weight-regular"
                       dense
                       label="Country"
                       v-model="selectedCountry"
@@ -664,10 +691,11 @@
                   </v-card>
               </v-col>
 
-              <v-col cols="3">
+              <v-col  cols="6" sm="6" md="3">
                   <v-card height="30" class="pl-5">
                      <v-select
                       :items="GET_CURRENCIES"
+                      class="subtitle-2 font-weight-regular"
                       dense
                       clearable
                       label="Currency"
@@ -678,10 +706,11 @@
                   </v-card>
               </v-col>
 
-              <v-col cols="3">
+              <v-col  cols="6" sm="6" md="3">
                 <v-card height="30" class="pl-5">
                      <v-select
                       :items="GET_CATEGORIES"
+                      class="subtitle-2 font-weight-regular"
                       dense
                       clearable
                       label="Category"
@@ -692,17 +721,18 @@
                      </v-select>
                   </v-card>
               </v-col>
-              <v-col cols="3">
+
+              <v-col cols="6" sm="6" md="3">
                 <v-card height="30" class="pl-5">
                      <v-select
                       :items="expenditureTypes"
+                      class="subtitle-2 font-weight-regular"
                       dense
                       clearable
                       label="Type"
                       v-model="selectedType"
                       @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
                      >
-
                      </v-select>
                   </v-card>
               </v-col>
@@ -796,7 +826,7 @@
             </template>
 
             <template v-slot:[`item.date`]="{ item }">
-                {{ item.date.substr(0,10) }}
+                {{ item.date.substr(0,7) }}
             </template>
 
             <template v-slot:[`item.amount`]="{ item }">
@@ -911,12 +941,33 @@ export default {
     selectedType:null,
     selectedCurrency: null,
 
+    selectedMonth: 'All',
+    selectedYear: 'All',
+
     selection: {
 
       'COUNTRY': false,
       'TYPE': false,
       'CATEGORY': false,
-    }
+    },
+
+    months: {
+
+        "JANUARY": "01",
+        "FEBRUARY": "02",
+        "MARCH": "03",
+        "APRIL": "04",
+        "MAY": "05",
+        "JUNE": "06",
+        "JULY": "07",
+        "AUGUST": "08",
+        "SEPTEMBER": "09",
+        "OCTOBER": "10",
+        "NOVEMBER": "11",
+        "DECEMBER": "12"
+    },
+
+    years:[],
 
   }), 
 
@@ -952,6 +1003,12 @@ export default {
 
       getCashOutKeys(){
         return Array.from(this.GET_CASHOUT_EXPENDITURE_MAP.keys())
+      },
+
+      getMonths(){
+        let months = Object.keys(this.months);
+        months.unshift('All')
+        return months;
       },
 
       getCashInKeys(){
@@ -1133,6 +1190,18 @@ export default {
       this.createExpenditureDialog = true;
     },
 
+    generateYears(){
+
+      let min = 2020
+      let max = new Date().getFullYear();
+     
+      for (let i = min; i<=max; i++){
+        this.years.push(i)
+      }
+
+      this.years.unshift('All')
+    },
+
     resettingForm(){
       this.expenditureType = 'Cash Out'
       this.category = ''
@@ -1189,11 +1258,37 @@ export default {
       
       if((this.selectedCategory != null) && (this.selectedType != null) && (this.selectedCurrency !=null)) {
 
-          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            (expenditure.category == this.selectedCategory) && 
-            expenditure.expenditureType == this.selectedType &&
-            expenditure.currency == this.selectedCurrency
-            );
+          
+          let expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.category == this.selectedCategory) && 
+                expenditure.expenditureType == this.selectedType &&
+                expenditure.currency == this.selectedCurrency
+              );
+
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+              var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.category == this.selectedCategory) && 
+                expenditure.expenditureType == this.selectedType &&
+                expenditure.currency == this.selectedCurrency &&
+                (expenditure.date.substr(0,7) == yearAndMonth)
+              );
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+              
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.category == this.selectedCategory) && 
+                expenditure.expenditureType == this.selectedType &&
+                expenditure.currency == this.selectedCurrency &&
+                expenditure.date.substr(0,4) == this.selectedYear
+              );
+            } 
 
           this.expenditures = expenditures;
 
@@ -1203,7 +1298,6 @@ export default {
             currency: this.selectedCurrency
           }
 
-          
           this.displayedCurrency = this.selectedCurrency
 
           this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
@@ -1211,23 +1305,69 @@ export default {
 
         } else if((this.selectedCategory == null) && ( this.selectedType == null) && (this.selectedCurrency == null)){
 
-          this.expenditures = this.LOAD_EXPENDITURES;
+            let expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
 
-          let expenditureData = 
-          {
-            expenditures: expenditures,
-            currency: userService.getUserCurrency()
-          }
+              this.expenditures = this.LOAD_EXPENDITURES;
 
-          this.displayedCurrency = userService.getUserCurrency()
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+              var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
 
-          this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
-          this.$store.commit('SET_TOTAL_CASH_OUT',expenditureData)
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.date.substr(0,7) == yearAndMonth)
+              );
+
+              console.log(expenditures)
+              
+              this.expenditures = expenditures;
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+              
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure)=>
+                expenditure.date.substr(0,4) == this.selectedYear
+              );
+
+              this.expenditures = expenditures;
+            } 
+            
+            let expenditureData = 
+            {
+              expenditures: expenditures,
+              currency: userService.getUserCurrency()
+            }
+
+            this.displayedCurrency = userService.getUserCurrency()
+
+            this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
+            this.$store.commit('SET_TOTAL_CASH_OUT',expenditureData)
 
         } else if((this.selectedCategory != null) && (this.selectedType == null) && (this.selectedCurrency == null)){
 
-          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            (expenditure.category == this.selectedCategory));
+            let expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              (expenditure.category == this.selectedCategory));
+
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+              var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.category == this.selectedCategory) &&
+                (expenditure.date.substr(0,7) == yearAndMonth)
+              );
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+              
+               expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.category == this.selectedCategory) &&
+                (expenditure.date.substr(0,4) == this.selectedYear)
+              );
+            } 
 
           this.expenditures = expenditures;
 
@@ -1237,7 +1377,6 @@ export default {
             currency: userService.getUserCurrency()
           }
 
-         
           this.displayedCurrency = userService.getUserCurrency()
 
           this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
@@ -1245,10 +1384,33 @@ export default {
 
         } else if((this.selectedCategory != null) && (this.selectedType != null) && (this.selectedCurrency == null)){
 
-          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            (expenditure.expenditureType == this.selectedType) &&
-            (expenditure.category == this.selectedCategory)
+            let expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              (expenditure.expenditureType == this.selectedType) &&
+              (expenditure.category == this.selectedCategory)
             );
+
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+              var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              (expenditure.expenditureType == this.selectedType) &&
+              (expenditure.category == this.selectedCategory) &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+              );
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+              
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.expenditureType == this.selectedType) &&
+                (expenditure.category == this.selectedCategory) &&
+                expenditure.date.substr(0,4) == this.selectedYear
+              );
+            } 
 
           this.expenditures = expenditures;
 
@@ -1265,10 +1427,33 @@ export default {
 
         } else if((this.selectedCategory != null) && (this.selectedCurrency != null) && (this.selectedType == null)){
 
-          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            (expenditure.currency == this.selectedCurrency) &&
-            (expenditure.category == this.selectedCategory)
+            let expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              (expenditure.currency == this.selectedCurrency) &&
+              (expenditure.category == this.selectedCategory)
             );
+
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+              var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              (expenditure.currency == this.selectedCurrency) &&
+              (expenditure.category == this.selectedCategory) &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+            );
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+              
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.currency == this.selectedCurrency) &&
+                (expenditure.category == this.selectedCategory) &&
+                expenditure.date.substr(0,4) == this.selectedYear
+              );
+            } 
 
           this.expenditures = expenditures;
 
@@ -1278,7 +1463,6 @@ export default {
             currency: this.selectedCurrency
           }
 
-         
           this.displayedCurrency = this.selectedCurrency
 
           this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
@@ -1286,9 +1470,30 @@ export default {
 
         } else if((this.selectedType != null) && (this.selectedCurrency == null) && (this.selectedCategory == null)){
 
-          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            (expenditure.expenditureType == this.selectedType) 
-          );
+            let expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.expenditureType == this.selectedType) 
+              );
+
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+              var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.expenditureType == this.selectedType) &&
+                (expenditure.date.substr(0,7) == yearAndMonth)
+              );
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+              
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.expenditureType == this.selectedType) &&
+                expenditure.date.substr(0,4) == this.selectedYear
+              );
+            } 
 
           this.expenditures = expenditures;
 
@@ -1306,10 +1511,34 @@ export default {
 
         }  else if((this.selectedType != null) && (this.selectedCurrency != null) && (this.selectedCategory == null)){
 
-          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            (expenditure.expenditureType == this.selectedType) &&
-            (expenditure.currency == this.selectedCurrency)
-          );
+
+            let expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.expenditureType == this.selectedType) &&
+                (expenditure.currency == this.selectedCurrency)
+              );
+
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+                var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+                
+                expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                  (expenditure.expenditureType == this.selectedType) &&
+                  (expenditure.currency == this.selectedCurrency) &&
+                  (expenditure.date.substr(0,7) == yearAndMonth)
+                );
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+            
+                expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                  (expenditure.expenditureType == this.selectedType) &&
+                  (expenditure.currency == this.selectedCurrency) &&
+                  expenditure.date.substr(0,4) == this.selectedYear
+                );
+            } 
 
           this.expenditures = expenditures;
 
@@ -1326,9 +1555,30 @@ export default {
 
         }  else if((this.selectedCurrency != null) && (this.selectedCategory == null) && (this.selectedType == null)){
 
-          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            (expenditure.currency == this.selectedCurrency)
-          );
+            let expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.currency == this.selectedCurrency)
+              );
+
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+              var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.currency == this.selectedCurrency) &&
+                (expenditure.date.substr(0,7) == yearAndMonth)
+              );
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+              
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.currency == this.selectedCurrency) &&
+                expenditure.date.substr(0,4) == this.selectedYear
+              );
+            } 
 
           this.expenditures = expenditures;
 
@@ -1352,14 +1602,41 @@ export default {
 
       if((currency !=null && category != null) && (type != null)) {
 
+          let expenditures;
           
-          let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+          if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
             (
             expenditure.category == category) && 
             expenditure.expenditureType == type &&
             expenditure.currency == currency
             );
 
+          } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+              
+            var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (
+              expenditure.category == category) && 
+              expenditure.expenditureType == type &&
+              expenditure.currency == currency &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+            );
+
+          } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+            
+             expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+            (
+              expenditure.category == category) && 
+              expenditure.expenditureType == type &&
+              expenditure.currency == currency &&
+              expenditure.date.substr(0,4) == this.selectedYear
+            );
+          } 
+
+        
           let fetchData = {
             expenditures: expenditures,
             currency: currency
@@ -1375,7 +1652,26 @@ export default {
 
       } if((currency == null && category == null) && (type == null)) {
 
-          let expenditures = this.LOAD_EXPENDITURES;
+            var expenditures;
+            
+            if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+              expenditures = this.LOAD_EXPENDITURES;
+
+            } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+               
+              var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+                (expenditure.date.substr(0,7) == yearAndMonth)
+              );
+
+            } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+
+              expenditures = this.LOAD_EXPENDITURES.filter((expenditure)=>
+                expenditure.date.substr(0,4) == this.selectedYear
+              );
+            } 
 
           let fetchData = {
             expenditures: expenditures,
@@ -1392,10 +1688,32 @@ export default {
 
       } else if(currency !=null && category == null && type == null){
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            expenditure.currency == currency
+
+          let expenditures;
+          
+          if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency
             );
 
+          } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+              
+            var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+            );
+
+          } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency &&
+              expenditure.date.substr(0,4) == this.selectedYear
+            );
+          } 
+        
           let fetchData = {
             expenditures: expenditures,
             currency: currency
@@ -1411,10 +1729,33 @@ export default {
 
       }  else if(currency !=null && category != null && type == null){
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            expenditure.currency == currency &&
-            expenditure.category == category
+          let expenditures;
+          
+          if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency &&
+              expenditure.category == category
             );
+
+          } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+              
+            var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency &&
+              expenditure.category == category &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+            );
+
+          } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency &&
+              expenditure.category == category &&
+              expenditure.date.substr(0,4) == this.selectedYear
+            );
+          } 
 
           let fetchData = {
             expenditures: expenditures,
@@ -1431,11 +1772,34 @@ export default {
 
       } else if(currency !=null && type != null && category == null){
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            expenditure.currency == currency &&
-            expenditure.expenditureType == type
+          let expenditures;
+          
+          if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency &&
+              expenditure.expenditureType == type
             );
 
+          } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+              
+            var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency &&
+              expenditure.expenditureType == type &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+            );
+
+          } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+          
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.currency == currency &&
+              expenditure.expenditureType == type &&
+              expenditure.date.substr(0,4) == this.selectedYear
+            );
+          } 
+          
           let fetchData = {
             expenditures: expenditures,
             currency: currency
@@ -1451,9 +1815,30 @@ export default {
 
       } else if(category !=null && currency == null && type == null){
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            expenditure.category == category
+          let expenditures;
+          
+          if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.category == category
             );
+
+          } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+              
+            var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+           expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.category == category &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+            );
+
+          } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+            
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.category == category &&
+               expenditure.date.substr(0,4) == this.selectedYear
+            );
+          } 
 
           let fetchData = {
             expenditures: expenditures,
@@ -1470,11 +1855,34 @@ export default {
 
       } else if(category !=null && type != null && currency == null){
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
-            expenditure.category == category &&
-            expenditure.expenditureType == type
+          let expenditures;
+          
+          if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.category == category &&
+              expenditure.expenditureType == type
             );
 
+          } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+              
+            var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.category == category &&
+              expenditure.expenditureType == type &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+            );
+
+          } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.category == category &&
+              expenditure.expenditureType == type &&
+              expenditure.date.substr(0,4) == this.selectedYear
+            );
+          } 
+          
           let fetchData = {
             expenditures: expenditures,
             currency: userService.getUserCurrency()
@@ -1490,10 +1898,30 @@ export default {
 
       }  else if(type !=null && category == null && currency == null){
 
-        let expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+          let expenditures;
           
-            expenditure.expenditureType == type
+          if (this.selectedYear == 'All' && this.selectedMonth == 'All'){
+
+            expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.expenditureType == type
             );
+
+          } else if(this.selectedYear != 'All' && this.selectedMonth != 'All'){
+              
+            var yearAndMonth = this.selectedYear+'-'+this.months[this.selectedMonth];
+
+             expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.expenditureType == type &&
+              (expenditure.date.substr(0,7) == yearAndMonth)
+            );
+
+          } else if (this.selectedYear != 'All' && this.selectedMonth == 'All'){
+            
+             expenditures = this.LOAD_EXPENDITURES.filter((expenditure) => 
+              expenditure.expenditureType == type &&
+              expenditure.date.substr(0,4) == this.selectedYear
+            );
+          } 
 
           let fetchData = {
             expenditures: expenditures,
@@ -1663,10 +2091,14 @@ export default {
      
       //vm.fetchExpenditures()
       vm.selectedCountry = userService.getUserCountry();
-
+      vm.generateYears()
+      
       if(vm.LOAD_STAFFS == null){
         
-        // fetching a user from the server when page is reloaded
+        //fetching a user from the server when page is reloaded
+
+        vm.LinearLoading = true;
+
         vm.fetchStaffs()
 
         let fetchData = {
@@ -1677,6 +2109,8 @@ export default {
         await vm.FETCH_EXPENDITURES(fetchData);
         
         vm.expenditures = vm.LOAD_EXPENDITURES;
+
+        vm.LinearLoading = false;
 
       } else {
         // getting user from the store
