@@ -44,6 +44,12 @@ export default {
             state.expenditures.unshift(expenditure);
         },
 
+        REMOVE_EXPENDITURE: (state,id)=>{
+            state.expenditures = state.expenditures.filter((expenditure)=>{
+                return expenditure._id != id;
+            })
+        },
+
         SET_EXPENDITURES: (state,expenditures)=>{
             state.expenditures = expenditures;
         },

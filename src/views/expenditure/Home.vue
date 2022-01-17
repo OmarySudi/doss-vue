@@ -1085,13 +1085,31 @@ export default {
         if(this.deletedItem.country == userService.getUserCountry() && 
           this.deletedItem.currency == userService.getUserCurrency()) {
 
+          this.$store.commit('REMOVE_EXPENDITURE',this.deletedItem._id);
+          console.log("expenditures---------")
+          console.log(this.LOAD_EXPENDITURES)
+
           if(this.deletedItem.expenditureType == "Cash In"){
 
-            this.$store.commit('SUBTRACT_TOTAL_CASH_IN',this.deletedItem.amount)
+            //this.$store.commit('SUBTRACT_TOTAL_CASH_IN',this.deletedItem.amount)
+
+            let data = {
+              expenditures: this.LOAD_EXPENDITURES,
+              currency: userService.getUserCurrency()
+            }
+
+            this.$store.commit('SET_TOTAL_CASH_IN',data)
 
           } else {
             
-            this.$store.commit('SUBTRACT_TOTAL_CASH_OUT',this.deletedItem.amount)
+            //this.$store.commit('SUBTRACT_TOTAL_CASH_OUT',this.deletedItem.amount)
+
+            let data = {
+              expenditures: this.LOAD_EXPENDITURES,
+              currency: userService.getUserCurrency()
+            }
+
+            this.$store.commit('SET_TOTAL_CASH_OUT',data)
           }
         }
 
@@ -1590,13 +1608,30 @@ export default {
                     if(expenditure.currency == userService.getUserCurrency()){
 
                       if(expenditure.expenditureType == "Cash In")
+                      {
+                        //this.$store.commit('ADD_TOTAL_CASH_IN',expenditure.amount)
 
-                        this.$store.commit('ADD_TOTAL_CASH_IN',expenditure.amount)
+                        let data = {
+                          expenditures: this.LOAD_EXPENDITURES,
+                          currency: userService.getUserCurrency()
+                        }
 
-                      else
+                        this.$store.commit('SET_TOTAL_CASH_IN',data)
 
-                        this.$store.commit('ADD_TOTAL_CASH_OUT',expenditure.amount)
                       }
+
+                      else {
+
+                        let data = {
+                          expenditures: this.LOAD_EXPENDITURES,
+                          currency: userService.getUserCurrency()
+                        }
+                        
+                        this.$store.commit('SET_TOTAL_CASH_OUT',data)
+                      }
+
+                      //this.$store.commit('ADD_TOTAL_CASH_OUT',expenditure.amount)
+                    }
                   }
                    
                   this.createExpenditureDialog = false;
