@@ -648,216 +648,238 @@
         </v-dialog>
       </div>
 
-      <v-row class="mt-1 mb-3" justify="end">
-        <v-card height="30" class="pl-5">
-          <v-row class="mt-1">
-            <v-select
-              class="mr-2 subtitle-2 font-weight-regular"
-              :items="years"
-              dense
-              label="Year"
-              v-model="selectedYear"
-              @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
-              >
-            </v-select>
-          
-            <v-select
-              class="mr-2 subtitle-2 font-weight-regular"
-              :items="getMonths"
-              dense
-              label="Month"
-              v-model="selectedMonth"
-              @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
-              >
-            </v-select>
-          </v-row>
-        </v-card>
-      </v-row>
-
-      <v-row class="mt-3">
-        <v-col cols="12">
-            <v-row>
-              <v-col  cols="6" sm="6" md="3">
-                  <v-card height="30" class="pl-5">
-                     <v-select
-                      :items="countries"
-                      class="subtitle-2 font-weight-regular"
-                      dense
-                      label="Country"
-                      v-model="selectedCountry"
-                      @change="countryFilter(selectedCountry)"
-                     >
-                     </v-select>
-                  </v-card>
-              </v-col>
-
-              <v-col  cols="6" sm="6" md="3">
-                  <v-card height="30" class="pl-5">
-                     <v-select
-                      :items="GET_CURRENCIES"
-                      class="subtitle-2 font-weight-regular"
-                      dense
-                      clearable
-                      label="Currency"
-                      v-model="selectedCurrency"
-                      @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
-                     >
-                     </v-select>
-                  </v-card>
-              </v-col>
-
-              <v-col  cols="6" sm="6" md="3">
-                <v-card height="30" class="pl-5">
-                     <v-select
-                      :items="GET_CATEGORIES"
-                      class="subtitle-2 font-weight-regular"
-                      dense
-                      clearable
-                      label="Category"
-                      v-model="selectedCategory"
-                      @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
-                     >
-                      
-                     </v-select>
-                  </v-card>
-              </v-col>
-
-              <v-col cols="6" sm="6" md="3">
-                <v-card height="30" class="pl-5">
-                     <v-select
-                      :items="expenditureTypes"
-                      class="subtitle-2 font-weight-regular"
-                      dense
-                      clearable
-                      label="Type"
-                      v-model="selectedType"
-                      @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
-                     >
-                     </v-select>
-                  </v-card>
-              </v-col>
+      <div id="summaryData">
+        <v-row class="mt-1 mb-3" justify="end">
+          <v-card height="30" class="pl-5">
+            <v-row class="mt-1">
+              <v-select
+                class="mr-2 subtitle-2 font-weight-regular"
+                :items="years"
+                dense
+                label="Year"
+                v-model="selectedYear"
+                @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
+                >
+              </v-select>
+            
+              <v-select
+                class="mr-2 subtitle-2 font-weight-regular"
+                :items="getMonths"
+                dense
+                label="Month"
+                v-model="selectedMonth"
+                @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
+                >
+              </v-select>
             </v-row>
-        </v-col>
-      </v-row>
-
-      <v-row dense class="pt-4">
-        <v-col cols="12" md="4" lg="3">
-          <v-card>
-            <!-- <p class="body-1 text-center font-weight-regular mb-2 primary white--text">SUMMARY</p>
-            <p class="body-1 text-center font-weight-regular mb-2 primary white--text">SUMMARY</p> -->
-            <v-card class="primary pl-1" height="130">
-              <p class="body-1 text-center font-weight-regular mb-10 white--text">SUMMARY</p> 
-              <p class="font-weight-regular mb-2 white--text" style="font-size:0.85em">COUNTRY: {{displayedCountry}}</p> 
-              <p class="font-weight-regular mb-4 white--text" style="font-size:0.85em">CURRENCY: {{ displayedCurrency}}</p> 
-            </v-card>
-          
-            <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <!-- <tr>
-                  <th class="text-left font-weight-800">
-                    Type
-                  </th>
-                  <th class="text-left font-weight-800">
-                    Amount
-                  </th>
-                </tr> -->
-              </thead>
-              <tbody>
-                <tr
-                >
-                  <td style="background:#dcdfe3;font-weight:bold">Cash In</td>
-                  <td style="background:#dcdfe3;font-weight:bold">{{ GET_TOTAL_CASH_IN }}</td>
-                </tr>
-                
-                <tr v-for="(item,index) in getCashInKeys" :key="index">
-                  <td>{{item}}</td><td>{{GET_CASHIN_EXPENDITURE_MAP.get(item)}}</td>
-                </tr>
-
-                <tr
-                >
-                  <td style="background:#dcdfe3;font-weight:bold">Cash Out</td>
-                  <td style="background:#dcdfe3;font-weight:bold">{{ GET_TOTAL_CASH_OUT }}</td>
-                </tr>
-
-                <tr v-for="(item,index) in getCashOutKeys" :key="index">
-                  <td>{{item}}</td><td>{{GET_CASHOUT_EXPENDITURE_MAP.get(item)}}</td>
-                </tr>
-              
-                 <tr
-                >
-                  <th class="text-left body-2 font-weight-bold">PROFIT</th>
-                  <th class="text-left body-2 font-weight-bold">{{ getTotal}}</th>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
           </v-card>
-        </v-col>
+        </v-row>
 
-        <v-col cols="12" md="8" lg="9">
-          <v-data-table
-            :headers="headers"
-            :items="expenditures"
-            sort-by="date"
-            dense
-            class="elevation-1"
-          >
-            <template v-slot:top>
-              <v-toolbar
-                color="primary"
-                flat
-              >
+        <v-row class="mt-3">
+          <v-col cols="12">
+              <v-row>
+                <v-col  cols="6" sm="6" md="3">
+                    <v-card height="30" class="pl-5">
+                      <v-select
+                        :items="countries"
+                        class="subtitle-2 font-weight-regular"
+                        dense
+                        label="Country"
+                        v-model="selectedCountry"
+                        @change="countryFilter(selectedCountry)"
+                      >
+                      </v-select>
+                    </v-card>
+                </v-col>
 
-                  <v-spacer></v-spacer>
-                  <v-btn
+                <v-col  cols="6" sm="6" md="3">
+                    <v-card height="30" class="pl-5">
+                      <v-select
+                        :items="GET_CURRENCIES"
+                        class="subtitle-2 font-weight-regular"
+                        dense
+                        clearable
+                        label="Currency"
+                        v-model="selectedCurrency"
+                        @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
+                      >
+                      </v-select>
+                    </v-card>
+                </v-col>
+
+                <v-col  cols="6" sm="6" md="3">
+                  <v-card height="30" class="pl-5">
+                      <v-select
+                        :items="GET_CATEGORIES"
+                        class="subtitle-2 font-weight-regular"
+                        dense
+                        clearable
+                        label="Category"
+                        v-model="selectedCategory"
+                        @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
+                      >
+                        
+                      </v-select>
+                    </v-card>
+                </v-col>
+
+                <v-col cols="6" sm="6" md="3">
+                  <v-card height="30" class="pl-5">
+                      <v-select
+                        :items="expenditureTypes"
+                        class="subtitle-2 font-weight-regular"
+                        dense
+                        clearable
+                        label="Type"
+                        v-model="selectedType"
+                        @change="filterExpenditures(selectedCurrency,selectedCategory,selectedType)"
+                      >
+                      </v-select>
+                    </v-card>
+                </v-col>
+              </v-row>
+          </v-col>
+        </v-row>
+
+        <v-row dense class="pt-4">
+          <v-col cols="12" md="4" lg="3">
+            <v-card>
+              <!-- <p class="body-1 text-center font-weight-regular mb-2 primary white--text">SUMMARY</p>
+              <p class="body-1 text-center font-weight-regular mb-2 primary white--text">SUMMARY</p> -->
+              <v-card class="primary pl-1" height="130">
+                <p class="body-1 text-center font-weight-regular mb-10 white--text">SUMMARY</p> 
+                <p class="font-weight-regular mb-2 white--text" style="font-size:0.85em">COUNTRY: {{displayedCountry}}</p> 
+                <p class="font-weight-regular mb-4 white--text" style="font-size:0.85em">CURRENCY: {{ displayedCurrency}}</p> 
+              </v-card>
+            
+              <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <!-- <tr>
+                    <th class="text-left font-weight-800">
+                      Type
+                    </th>
+                    <th class="text-left font-weight-800">
+                      Amount
+                    </th>
+                  </tr> -->
+                </thead>
+                <tbody>
+                  <tr
+                  >
+                    <td style="background:#dcdfe3;font-weight:bold">Cash In</td>
+                    <td style="background:#dcdfe3;font-weight:bold">{{ GET_TOTAL_CASH_IN }}</td>
+                  </tr>
+                  
+                  <tr v-for="(item,index) in getCashInKeys" :key="index">
+                    <td>{{item}}</td><td>{{GET_CASHIN_EXPENDITURE_MAP.get(item)}}</td>
+                  </tr>
+
+                  <tr
+                  >
+                    <td style="background:#dcdfe3;font-weight:bold">Cash Out</td>
+                    <td style="background:#dcdfe3;font-weight:bold">{{ GET_TOTAL_CASH_OUT }}</td>
+                  </tr>
+
+                  <tr v-for="(item,index) in getCashOutKeys" :key="index">
+                    <td>{{item}}</td><td>{{GET_CASHOUT_EXPENDITURE_MAP.get(item)}}</td>
+                  </tr>
+                
+                  <tr
+                  >
+                    <th class="text-left body-2 font-weight-bold">PROFIT</th>
+                    <th class="text-left body-2 font-weight-bold">{{ getTotal}}</th>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="8" lg="9">
+            <v-data-table
+              :headers="headers"
+              :items="expenditures"
+              sort-by="date"
+              dense
+              class="elevation-1"
+            >
+              <template v-slot:top>
+                <v-toolbar
+                  color="primary"
+                  flat
+                >
+
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      small
+                      color="primary"
+                      dark
+                      class="mb-2"
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="showCreateDialog()"
+                      v-if="getUserRole == 'operator'"
+                    >
+                      ADD
+                    </v-btn>
+                </v-toolbar>
+              </template>
+
+              <template v-slot:[`item.date`]="{ item }">
+                  {{ item.date.substr(0,7) }}
+              </template>
+
+              <template v-slot:[`item.amount`]="{ item }">
+                  {{item.currency}} {{ item.amount}}
+              </template>
+
+              <template v-slot:[`item.actions`] ="{ item }">
+                  <v-icon
                     small
-                    color="primary"
-                    dark
-                    class="mb-2"
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="showCreateDialog()"
+                    class="mr-2"
+                    @click="showEditDialog(item)"
                     v-if="getUserRole == 'operator'"
                   >
-                    ADD
+                    mdi-pencil
+                  </v-icon>
+                  <v-icon
+                    small
+                    @click="showDeleteDialog(item)"
+                    v-if="getUserRole == 'operator'"
+                  >
+                    mdi-delete
+                  </v-icon>
+
+                  <v-btn x-small color="primary" class="ml-2" @click="viewItem(item)">
+                    view
                   </v-btn>
-              </v-toolbar>
-            </template>
-
-            <template v-slot:[`item.date`]="{ item }">
-                {{ item.date.substr(0,7) }}
-            </template>
-
-            <template v-slot:[`item.amount`]="{ item }">
-                {{item.currency}} {{ item.amount}}
-            </template>
-
-            <template v-slot:[`item.actions`] ="{ item }">
-                <v-icon
-                  small
-                  class="mr-2"
-                  @click="showEditDialog(item)"
-                  v-if="getUserRole == 'operator'"
-                >
-                  mdi-pencil
-                </v-icon>
-                <v-icon
-                  small
-                  @click="showDeleteDialog(item)"
-                  v-if="getUserRole == 'operator'"
-                >
-                  mdi-delete
-                </v-icon>
-
-                <v-btn x-small color="primary" class="ml-2" @click="viewItem(item)">
-                  view
-                </v-btn>
-            </template>
-          </v-data-table>
-        </v-col>
-
-          
+              </template>
+            </v-data-table>
+          </v-col>
+        </v-row>
+      </div>
+      <v-row justify="end">
+        <v-spacer></v-spacer>
+        <vue-json-to-csv 
+          :json-data="expenditures"
+          :labels="{
+            expenditureType: {title: 'expenditureType'},
+            category: {title: 'category'},
+            currency: {title: 'currency'},
+            amount: {title: 'amount'},
+            description: {title: 'description'},
+            registeredBy: {title: 'registeredBy'},
+            staffId: {title: 'staffId'},
+            date: {title: 'date'},
+          }"
+        >
+          <v-btn
+            color="primary"
+          >
+            Generate CSV <i class="mdi mdi-export-variant" aria-hidden="true"></i>
+          </v-btn>
+        </vue-json-to-csv>
       </v-row>
     <LinearLoader :loading="LinearLoading"/>
   </v-container>
@@ -872,13 +894,12 @@ import Snackbar from '../../components/Snackbar.vue'
 import {projectMixin} from '../../mixins/mixins'
 import LinearLoader from '../../components/LinearLoader.vue'
 import {userService} from '../../services/storage'
-
-
+import VueJsonToCsv from 'vue-json-to-csv'
 
 export default {
 
   mixins: [projectMixin],
-  components: {Snackbar,LinearLoader},
+  components: {Snackbar,LinearLoader,VueJsonToCsv},
   data:()=>({
     
     countries:[],
@@ -1096,6 +1117,33 @@ export default {
     // setEditedCurrency(country){
     //   this.editedItem.currency = this.GET_COUNTRIES[country];
     // },
+
+    downloadExcel(){
+      try {
+        json2excel({
+            data: this.expenditures,
+            name: 'expenditure-info-data',
+            formateDate: 'yyyy/mm/dd'
+        });
+      } catch (e) {
+          console.error('export error');
+      }
+    },
+
+    generatePdf(){
+
+      html2canvas(document.getElementById('summaryData'),{
+        width: 1060,
+        windowWidth: 1060
+      }).then(function (canvas) {
+          var img = canvas.toDataURL("image/png");
+          var doc = new jsPDF();
+          doc.addImage(img, 'JPEG',5,5);
+          doc.save('test.pdf');        
+      });
+
+    },
+
 
     viewItem(item){
 
