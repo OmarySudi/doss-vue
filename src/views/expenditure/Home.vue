@@ -873,6 +873,7 @@
             staffId: {title: 'staffId'},
             date: {title: 'date'},
           }"
+          :csv-title="csvTitle"
         >
           <v-btn
             color="primary"
@@ -1017,6 +1018,9 @@ export default {
         'GET_CASHIN_EXPENDITURE_MAP'
         ]),
 
+      csvTitle(){
+        return this.selectedCountry+'-'+new Date().toLocaleString();
+      },
 
       getTotal(){
         return this.GET_TOTAL_CASH_IN - this.GET_TOTAL_CASH_OUT
