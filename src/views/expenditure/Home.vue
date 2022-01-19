@@ -859,7 +859,7 @@
           </v-col>
         </v-row>
       </div>
-      <v-row justify="end">
+      <v-row v-if="expenditures.length > 0" justify="end">
         <v-spacer></v-spacer>
         <vue-json-to-csv 
           :json-data="expenditures"
@@ -878,7 +878,7 @@
           <v-btn
             color="primary"
           >
-            Generate CSV <i class="mdi mdi-export-variant" aria-hidden="true"></i>
+            DOWNLOAD CSV <i class="mdi mdi-export-variant" aria-hidden="true"></i>
           </v-btn>
         </vue-json-to-csv>
       </v-row>
