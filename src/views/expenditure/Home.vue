@@ -1306,6 +1306,8 @@ export default {
         currency: userService.getUserCurrency()
       }
 
+      this.LinearLoading = true;
+
       await this.FETCH_EXPENDITURES(fetchData);
       
       if((this.selectedCategory != null) && (this.selectedType != null) && (this.selectedCurrency !=null)) {
@@ -1344,6 +1346,8 @@ export default {
 
           this.expenditures = expenditures;
 
+          this.LinearLoading = false;
+
           let expenditureData = 
           {
             expenditures: expenditures,
@@ -1354,6 +1358,8 @@ export default {
 
           this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
           this.$store.commit('SET_TOTAL_CASH_OUT',expenditureData)
+
+          
 
         } else if((this.selectedCategory == null) && ( this.selectedType == null) && (this.selectedCurrency == null)){
 
@@ -1384,6 +1390,8 @@ export default {
               this.expenditures = expenditures;
             } 
             
+            this.LinearLoading = false;
+
             let expenditureData = 
             {
               expenditures: expenditures,
@@ -1394,6 +1402,8 @@ export default {
 
             this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
             this.$store.commit('SET_TOTAL_CASH_OUT',expenditureData)
+
+           
 
         } else if((this.selectedCategory != null) && (this.selectedType == null) && (this.selectedCurrency == null)){
 
@@ -1422,6 +1432,8 @@ export default {
             } 
 
           this.expenditures = expenditures;
+
+          this.LinearLoading = false;
 
           let expenditureData = 
           {
@@ -1466,6 +1478,8 @@ export default {
 
           this.expenditures = expenditures;
 
+          this.LinearLoading = false;
+
           let expenditureData = 
           {
             expenditures: expenditures,
@@ -1476,6 +1490,8 @@ export default {
 
           this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
           this.$store.commit('SET_TOTAL_CASH_OUT',expenditureData)
+
+          this.LinearLoading = false;
 
         } else if((this.selectedCategory != null) && (this.selectedCurrency != null) && (this.selectedType == null)){
 
@@ -1508,6 +1524,8 @@ export default {
             } 
 
           this.expenditures = expenditures;
+
+          this.LinearLoading = false;
 
           let expenditureData = 
           {
@@ -1549,13 +1567,14 @@ export default {
 
           this.expenditures = expenditures;
 
+          this.LinearLoading = false;
+
           let expenditureData = 
           {
             expenditures: expenditures,
             currency: userService.getUserCurrency()
           }
 
-         
           this.displayedCurrency = userService.getUserCurrency()
 
           this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
@@ -1593,6 +1612,8 @@ export default {
             } 
 
           this.expenditures = expenditures;
+
+          this.LinearLoading = false;
 
           let expenditureData = 
           {
@@ -1634,6 +1655,8 @@ export default {
 
           this.expenditures = expenditures;
 
+          this.LinearLoading = false;
+
           let expenditureData = 
           {
             expenditures: expenditures,
@@ -1644,6 +1667,7 @@ export default {
 
           this.$store.commit('SET_TOTAL_CASH_IN',expenditureData)
           this.$store.commit('SET_TOTAL_CASH_OUT',expenditureData)
+          
         }  
 
     },
