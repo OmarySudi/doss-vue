@@ -2,7 +2,6 @@
 /* jshint esversion: 8 */
 /* jshint -W033 */
 
-
 import axios from 'axios';
 import store from '../store';
 import TokenService from '../services/storage';

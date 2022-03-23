@@ -29,50 +29,6 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
   },
-
-  {
-    path: '/staffs',
-    name: 'Staffs',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/staff/Home.vue')
-  },
-
-  {
-    path: '/staffs/create',
-    name: 'CreateStaff',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/staff/CreateStaff.vue')
-  },
-  {
-    path: '/staffs/:id',
-    name: 'Staff',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/staff/Staff.vue')
-  },
-
-  {
-    path: '/staffs/edit/:id',
-    name: 'EditStaff',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/staff/EditStaff.vue')
-  },
-
-  {
-    path: '/expenditures',
-    name: 'Expenditure',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/expenditure/Home.vue')
-  }
 ]
 
 const router = new VueRouter({

@@ -8,6 +8,7 @@ import ApiService from './services/api'
 import TokenService from './services/storage'
 
 Vue.config.productionTip = false
+
 Vue.use(Vuelidate);
 
 ApiService.init("http://localhost:5000/api/v1/")

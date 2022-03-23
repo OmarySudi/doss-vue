@@ -6,8 +6,8 @@ import store from '../../store'
 export default {
 
     state: {
-        accessToken: null,
-        user: null,
+        accessToken: "sudiomary",
+        user: {},
         message: null,
     },
 
@@ -79,14 +79,9 @@ export default {
                     
                     commit('SET_USER',response.data.body)
 
-                    console.log(store.getters['GET_COUNTRIES']['MAURITIUS'])
-
                     localStorage.setItem("email",response.data.body.email)
                     localStorage.setItem("userName",response.data.body.userName)
                     localStorage.setItem("role",response.data.body.role)
-                    localStorage.setItem("verified",response.data.body.isEmailVerified);
-                    localStorage.setItem("country",response.data.body.country);
-                    localStorage.setItem("currency",store.getters['GET_COUNTRIES'][response.data.body.country])
                 }
             }).catch((error)=>{
                 commit('SET_MESSAGE',"Server: There is internal server error")
@@ -105,11 +100,8 @@ export default {
 
             ApiService.unmount401Interceptor();
             localStorage.removeItem('role')
-            localStorage.removeItem('verified')
             localStorage.removeItem('userName')
             localStorage.removeItem('email')
-            localStorage.removeItem('country')
-            localStorage.removeItem('currency')
             localStorage.clear()
 
             console.log("finishing logout");

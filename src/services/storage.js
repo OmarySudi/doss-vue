@@ -44,19 +44,6 @@ export const userService = {
     getUserRole(){
         return localStorage.getItem("role");
     },
-
-    getUserCountry(){
-        return localStorage.getItem("country");
-    },
-
-    getUserCurrency(){
-        return localStorage.getItem("currency");
-    },
-
-    isVerified(){
-        return localStorage.getItem("verified")
-    }
-
 }
 
 export default TokenService;
