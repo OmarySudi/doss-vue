@@ -6,7 +6,7 @@ import store from '../../store'
 export default {
 
     state: {
-        accessToken: "sudiomary",
+        accessToken: null,
         user: {},
         message: null,
     },

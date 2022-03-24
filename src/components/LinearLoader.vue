@@ -9,7 +9,6 @@
        </v-dialog>
    </v-row>
 </template>
-
 <script>
 export default {
     name: "LinearLoader",
@@ -17,6 +16,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

@@ -13,10 +13,10 @@ export default new Vuetify({
     theme: {
         themes: {
            
-          light: {
-            primary: '#136772',
-            secondary: '#B97016',
-          }
+          // light: {
+          //   primary: '#136772',
+          //   secondary: '#B97016',
+          // }
         },
       }
 });
