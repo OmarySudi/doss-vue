@@ -13,10 +13,9 @@ export default new Vuetify({
     theme: {
         themes: {
            
-          // light: {
-          //   primary: '#136772',
-          //   secondary: '#B97016',
-          // }
+          light: {
+            secondary: '#6abbc1',
+          }
         },
       }
 });

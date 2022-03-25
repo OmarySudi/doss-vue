@@ -2,6 +2,7 @@
   <v-app id="inspire">
     <v-navigation-drawer
       v-model="drawer"
+      color="primary"
       app
     >
       <!--  -->
@@ -37,7 +38,11 @@
         </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="primary">
+    <v-app-bar 
+      app 
+      color="primary"
+      height="90px"
+    >
       <v-app-bar-nav-icon 
           @click="drawer = !drawer"
           color="white">
@@ -103,8 +108,8 @@ import {mapGetters} from 'vuex'
 
       selectedItem: 0,
       items: [
-        { text: 'Staffs', icon: 'mdi-account-multiple', link:'/staffs'},
-        { text: 'Expenditures', icon: 'mdi-finance', link:'/expenditures'},
+        { text: 'Users', icon: 'mdi-account-multiple', link:'/users'},
+        { text: 'Schools', icon: 'mdi-finance', link:'/schools'},
       ],
     
     }),
@@ -124,4 +129,9 @@ import {mapGetters} from 'vuex'
 .v-toolbar__title{
   color: white;
 }
+
+.item-content{
+  color:white
+}
+
 </style>
