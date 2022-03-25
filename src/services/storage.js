@@ -38,11 +38,7 @@ export const userService = {
     },
 
     getUserName(){
-        return localStorage.getItem("userName");
-    },
-
-    getUserRole(){
-        return localStorage.getItem("role");
+        return localStorage.getItem("name");
     },
 }
 

@@ -89,5 +89,4 @@ export default {
     top: 120px
 }
 
-
 </style>
