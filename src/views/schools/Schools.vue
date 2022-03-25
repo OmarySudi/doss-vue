@@ -1,6 +1,6 @@
 <template>
   <v-container>
-      Users page
+      Schools Page
   </v-container>
 </template>
 
@@ -10,6 +10,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
 </style>
