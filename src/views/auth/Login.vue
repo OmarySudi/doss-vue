@@ -20,13 +20,13 @@
                         <v-toolbar-title>Login form</v-toolbar-title>
                      </v-toolbar>
                      <v-card-text>
-                        <form ref="form" @submit.prevent="login()">
+                        <form ref="form" @submit.prevent="signIn()">
                             <v-text-field
-                              v-model="username"
-                              name="username"
-                              label="Username"
+                              v-model="email"
+                              name="email"
+                              label="E-mail"
                               type="text"
-                              placeholder="username"
+                              placeholder="youremail@login.com"
                               required
                            ></v-text-field>
                            
@@ -50,19 +50,33 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
 
  data() {
     return {
-      username: "",
+      email: "",
       password: "",
     };
   },
 
   methods: {
-    login() {
-      const { username } = this;
-      console.log(username + "logged in")
+
+     ...mapActions(['Login']),
+    async signIn() {
+
+      const { email, password } = this;
+      
+      if(email != '' && password != ''){
+
+         let loginData = {
+            email: email,
+            password: password
+         }
+
+         await this.Login(loginData);
+      }
+
     },
   },
 }

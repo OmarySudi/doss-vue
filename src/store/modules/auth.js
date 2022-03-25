@@ -55,7 +55,8 @@ export default {
                 if(response.data.error){
                     commit('SET_MESSAGE',response.data.message)
                 } else {
-                    return store.dispatch('attempt',response.data.accessToken)
+                    alert(response.data.message)
+                    //return store.dispatch('attempt',response.data.accessToken)
                 }
             }).catch(()=>{
                 commit('SET_MESSAGE',"Server: There is internal server error")
