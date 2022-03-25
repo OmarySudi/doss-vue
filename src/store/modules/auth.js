@@ -55,7 +55,7 @@ export default {
                 if(response.data.error){
 
                     commit('SET_MESSAGE',response.data.message)
-                    
+
                 } else {
 
                     localStorage.setItem('name',response.data.objects.name);
@@ -94,24 +94,24 @@ export default {
 
         logout({commit}){
 
-            console.log("commit logout");
-
             commit('LOGOUT_SUCCESS')
 
             TokenService.removeToken();
             ApiService.removeHeader()
 
             ApiService.unmount401Interceptor();
-            localStorage.removeItem('role')
-            localStorage.removeItem('userName')
+            localStorage.removeItem('user_type')
+            localStorage.removeItem('name')
+            localStorage.removeItem('user_gid')
             localStorage.removeItem('email')
+            localStorage.removeItem('code')
             localStorage.clear()
-
-            console.log("finishing logout");
             
-            router.replace({
-                name:'Login'
-            });
+            // router.replace({
+            //     name:'Home'
+            // });
+
+            router.push('/')
         },
 
         setMessage({commit},message){

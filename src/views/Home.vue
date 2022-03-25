@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 
   export default {
     name: 'Home',
@@ -109,7 +109,7 @@ import {mapGetters} from 'vuex'
       selectedItem: 0,
       items: [
         { text: 'Users', icon: 'mdi-account-multiple', link:'/users', roles:['ADMIN']},
-        { text: 'Schools', icon: 'mdi-finance', link:'/schools', roles:["TEACHER"]}
+        { text: 'Schools', icon: 'mdi-finance', link:'/schools', roles:["TEACHER","ADMIN"]}
       ],
     
     }),
@@ -120,6 +120,10 @@ import {mapGetters} from 'vuex'
       roleItems(){
         return this.items.filter((item)=>item.roles.includes(this.user.user_type));
       }
+    },
+
+    methods: {
+      ...mapActions(['logout'])
     },
 
     components: {
