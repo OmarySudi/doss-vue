@@ -76,7 +76,7 @@ export default {
 
          await this.Login(loginData);
       }
-
+      
     },
   },
 }

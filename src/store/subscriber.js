@@ -12,7 +12,7 @@ store.subscribe((mutation)=>{
         case 'SET_TOKEN':
 
             if(mutation.payload){
-
+                
                 TokenService.saveToken(mutation.payload);
 
                 if(TokenService.getToken()){

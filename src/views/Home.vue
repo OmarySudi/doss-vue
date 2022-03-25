@@ -1,5 +1,94 @@
 <template>
-  <h3>Home page welcome {{user.user_type}}</h3>
+  <v-app id="inspire">
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+    >
+      <!--  -->
+      <v-list>
+        <v-list-item>
+          <v-list-item-avatar>
+            <!-- <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img> -->
+          </v-list-item-avatar>
+        </v-list-item>
+        <v-divider></v-divider>
+        </v-list>
+
+        <v-list nav>
+          <v-list-item-group
+            v-model="selectedItem"
+            color="white"
+          >
+            <v-list-item
+              v-for="(item, i) in items"
+              :key="i"
+              :to="item.link"
+              exact
+            >
+              <v-list-item-icon>
+                <v-icon color="white" v-text="item.icon"></v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content class="item-content">
+                <v-list-item-title v-text="item.text"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app color="primary">
+      <v-app-bar-nav-icon 
+          @click="drawer = !drawer"
+          color="white">
+      </v-app-bar-nav-icon>
+
+      <v-toolbar-title>Digitalize Our Schools</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+      <v-menu 
+        class="mt-1 "
+        transition="slide-y-transition"
+        offset-y
+      >
+
+        <template v-slot:activator=" { on, dropdown } "  >
+          <v-btn icon class="mr-1 " v-bind="dropdown" v-on="on">
+            <v-icon size="30" color="white">mdi-menu-down</v-icon>
+          </v-btn>                         
+        </template>
+
+        <v-card>
+          <v-list >
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title class="subheading-1" >{{user.email}}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+
+          <v-divider></v-divider>
+            
+          <div >
+            <v-btn 
+              color="white" 
+              elevation="flat" 
+              class=""
+              large
+              block 
+              @click.prevent="logout()">
+                <p  class="my-auto body-1 font-weight-regular text--text text-capitalize">
+                Logout
+                </p>
+            </v-btn>
+          </div> 
+        </v-card>
+      </v-menu>
+    </v-app-bar>
+    <v-main>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -7,6 +96,18 @@ import {mapGetters} from 'vuex'
 
   export default {
     name: 'Home',
+
+    data: () => ({
+    
+      drawer: null,
+
+      selectedItem: 0,
+      items: [
+        { text: 'Staffs', icon: 'mdi-account-multiple', link:'/staffs'},
+        { text: 'Expenditures', icon: 'mdi-finance', link:'/expenditures'},
+      ],
+    
+    }),
 
     computed: {
       ...mapGetters(['user']),
@@ -17,3 +118,10 @@ import {mapGetters} from 'vuex'
     },
   }
 </script>
+
+<style scoped>
+
+.v-toolbar__title{
+  color: white;
+}
+</style>
