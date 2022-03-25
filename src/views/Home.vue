@@ -21,7 +21,7 @@
             color="white"
           >
             <v-list-item
-              v-for="(item, i) in items"
+              v-for="(item, i) in roleItems"
               :key="i"
               :to="item.link"
               exact
@@ -108,14 +108,18 @@ import {mapGetters} from 'vuex'
 
       selectedItem: 0,
       items: [
-        { text: 'Users', icon: 'mdi-account-multiple', link:'/users'},
-        { text: 'Schools', icon: 'mdi-finance', link:'/schools'},
+        { text: 'Users', icon: 'mdi-account-multiple', link:'/users', roles:['ADMIN']},
+        { text: 'Schools', icon: 'mdi-finance', link:'/schools', roles:["TEACHER"]}
       ],
     
     }),
 
     computed: {
       ...mapGetters(['user']),
+
+      roleItems(){
+        return this.items.filter((item)=>item.roles.includes(this.user.user_type));
+      }
     },
 
     components: {
