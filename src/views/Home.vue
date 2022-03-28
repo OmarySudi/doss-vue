@@ -109,7 +109,9 @@ import {mapActions, mapGetters} from 'vuex'
       selectedItem: 0,
       items: [
         { text: 'Users', icon: 'mdi-account-multiple', link:'/users', roles:['ADMIN']},
-        { text: 'Schools', icon: 'mdi-finance', link:'/schools', roles:["TEACHER","ADMIN"]}
+        { text: 'Schools', icon: 'mdi-finance', link:'/schools', roles:["ADMIN"]},
+        { text: 'Offences', icon: 'mdi-finance', link:'/offences', roles:["ADMIN"]},
+        { text: 'Students', icon: 'mdi-finance', link:'/students', roles:["TEACHER","ADMIN"]},
       ],
     
     }),
