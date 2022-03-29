@@ -469,7 +469,8 @@ export default {
       },
 
       offenseTypeActions: [
-        "SEND SMS"
+        "SEND_SMS",
+        "DO_NOT_SEND_SMS"
       ],
 
       //offence types data
