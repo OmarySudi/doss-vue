@@ -212,6 +212,7 @@ export default {
         ApiService.get("/users").then((response)=>{
 
           if(response.status == 200){
+            this.loadData = false;
             this.users = response.data.objects;
           } else {
 
@@ -248,7 +249,6 @@ export default {
       // ...
       next(vm=>{  
         vm.fetchUsers();
-        vm.loadData = false;
       });
 
     }

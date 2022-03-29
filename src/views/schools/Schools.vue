@@ -174,7 +174,7 @@
         >
           mdi-delete
         </v-icon>
-        <v-btn color="green" small class="ml-3">
+        <v-btn color="green" small class="ml-3" @click="redirectToSchool(item.code)">
           <span style="color:white">VIEW</span>
         </v-btn>
       </template>
@@ -271,6 +271,11 @@ export default {
 
       save(){
         console.log("save")
+      },
+
+      redirectToSchool(code){
+
+        this.$router.push({name: 'School', params: {code: code}})
       }
     },
 
@@ -279,7 +284,6 @@ export default {
       // ...
       next(vm=>{  
         vm.fetchSchools();
-        vm.loadData = false;
       });
 
     }
