@@ -24,6 +24,7 @@
           ></v-text-field>
           <v-spacer></v-spacer>
           <v-dialog
+            v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
             v-model="dialog"
             max-width="500px"
           >
@@ -56,7 +57,7 @@
                       md="4"
                     >
                       <v-text-field
-                        v-model="user.name"
+                        v-model="school.name"
                         label="School Name"
                       ></v-text-field>
                     </v-col>
@@ -66,7 +67,7 @@
                       md="4"
                     >
                       <v-text-field
-                        v-model="user.email"
+                        v-model="school.email"
                         label="Code"
                       ></v-text-field>
                     </v-col>
@@ -78,7 +79,7 @@
                        <v-select
                         :items="regions"
                         label="Region"
-                        v-model="user.phone_number"
+                        v-model="school.phone_number"
                         solo
                       ></v-select>
                     </v-col>
@@ -94,7 +95,7 @@
                       <v-select
                         :items="districts"
                         label="District"
-                        v-model="user.phone_number"
+                        v-model="school.phone_number"
                         solo
                       ></v-select>
 
@@ -111,7 +112,7 @@
                       <v-select
                         :items="wards"
                         label="Ward"
-                        v-model="user.phone_number"
+                        v-model="school.phone_number"
                         solo
                       ></v-select>
 
@@ -157,6 +158,7 @@
 
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon
+          v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
           small
           size="large"
           class="mr-5"
@@ -166,6 +168,7 @@
           mdi-pencil
         </v-icon>
         <v-icon
+          v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
           small
           class="ml-2 mr-5"
           size="large"
@@ -189,6 +192,7 @@
 <script>
 
 import ApiService from '../../services/api'
+import {mapGetters} from 'vuex'
 
 export default {
    name: 'Users',
@@ -212,7 +216,7 @@ export default {
       dialog: false,
       dialogDelete: false,
 
-      user: {
+      school: {
         name: '',
         email: '',
         user_type: '',
@@ -279,11 +283,17 @@ export default {
       }
     },
 
+    computed: {
+      ...mapGetters(['user']),
+    },
+
     beforeRouteEnter (to, from, next) {
 
       // ...
       next(vm=>{  
+        
         vm.fetchSchools();
+        
       });
 
     }

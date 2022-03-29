@@ -73,6 +73,7 @@
                         ></v-text-field>
                         <v-spacer></v-spacer>
                         <v-dialog
+                            v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
                             v-model="dialog"
                             max-width="500px"
                         >
@@ -252,6 +253,7 @@
 
                     <template v-slot:[`item.actions`]="{ item }">
                         <v-icon
+                         v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
                         small
                         size="large"
                         class="mr-5"
@@ -260,7 +262,9 @@
                         >
                         mdi-pencil
                         </v-icon>
+
                         <v-icon
+                        v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
                         small
                         class="ml-2 mr-5"
                         size="large"
@@ -282,6 +286,7 @@
 
 <script>
 import ApiService from '../../services/api'
+import {mapGetters} from 'vuex'
 
 export default {
 
@@ -380,6 +385,10 @@ export default {
         deleteItem(){
             console.log("deleting an item")
         }
+    },
+
+    computed: {
+      ...mapGetters(['user']),
     },
 
     beforeRouteEnter(to,from,next){
