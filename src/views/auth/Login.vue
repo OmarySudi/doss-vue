@@ -7,7 +7,7 @@
             height="100px"
         >
             <v-spacer></v-spacer>
-            <v-toolbar-title>DIGITALIZE OUR SCHOOLS</v-toolbar-title>
+            <v-toolbar-title>DIGITIZE OUR SCHOOLS</v-toolbar-title>
             <v-spacer></v-spacer>
 
         </v-app-bar>
