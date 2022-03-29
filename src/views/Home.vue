@@ -48,7 +48,7 @@
           color="white">
       </v-app-bar-nav-icon>
 
-      <v-toolbar-title>Digitalize Our Schools</v-toolbar-title>
+      <v-toolbar-title>Digitize Our Schools</v-toolbar-title>
 
       <v-spacer></v-spacer>
       <v-menu 
