@@ -11,7 +11,9 @@ Vue.config.productionTip = false
 
 Vue.use(Vuelidate);
 
-ApiService.init("http://localhost:8000/api")
+//ApiService.init("http://localhost:8000/api")
+ApiService.init("http://7949-197-186-0-109.ngrok.io/api")
+
 
 require('@/store/subscriber');
 
