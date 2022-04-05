@@ -13,6 +13,13 @@
         </v-app-bar>
         
          <v-container fluid fill-height class="container">
+            <Snackbar 
+               :type="snackbarType" 
+               :snackbar="snackbar" 
+               :text="snackbarText" 
+               :timeout="snackbarTimeout"
+            />
+            
             <v-layout justify-center>
                <v-flex xs12 sm8 md4>
                   <v-card class="elevation-12">
@@ -44,37 +51,76 @@
                   </v-card>
                </v-flex>
             </v-layout>
+          <CircularLoader :loading="circularLoader"/>
          </v-container>
       </v-main>
    </v-app> 
 </template>
 
 <script>
-import {mapActions} from 'vuex'
-export default {
+import {mapActions,mapGetters} from 'vuex'
+import Snackbar from '../../components/Snackbar.vue'
+import CircularLoader from '../../components/CircularLoader.vue'
+import {projectMixin} from '../../mixins/mixins'
 
- data() {
-    return {
-      email: "",
-      password: "",
-    };
-  },
+export default {
+   components: {Snackbar,CircularLoader},
+   mixins: [projectMixin],
+
+   data() {
+      return {
+         email: "",
+         password: "",
+         loading: false,
+      };
+   },
+
+   computed: {
+
+        ...mapGetters(['load_message']),
+   },
 
   methods: {
 
-     ...mapActions(['Login']),
+     ...mapActions(['Login','setMessage']),
     async signIn() {
 
       const { email, password } = this;
       
       if(email != '' && password != ''){
 
+         this.clearAlerts();
+
          let loginData = {
             email: email,
             password: password
          }
 
+         this.circularLoader = true;
+
          await this.Login(loginData);
+
+          if(this.load_message != null){
+
+            this.circularLoader = false;
+
+            const message = this.load_message.split(" ");
+
+            if(message[0] == "Client:" || message[0] == "Server:"){
+               this.setAlert("error",true,this.load_message,-1);
+            } else {
+                  this.setAlert("warning",true,this.load_message,-1);
+            }
+
+            setTimeout(()=>{
+               this.snackbar = false;
+               this.setMessage(null);
+            },4000);
+
+         } else {
+            this.circularLoader = false;
+         }
+        
       }
       
     },

@@ -13,6 +13,9 @@ export const projectMixin = {
          //linearLoader data
          LinearLoading: false,
 
+         //circularLoader data
+         circularLoader: false,
+
     }),
 
     methods: {
