@@ -35,15 +35,27 @@
                               type="text"
                               placeholder="youremail@login.com"
                               required
+                              prepend-inner-icon="mdi-account"
+                              :error-messages="emailErrors"
+                              @input="$v.email.$touch()"
+                              @blur="$v.email.$touch()"
+                              v-on:keyup.enter="signIn()"
                            ></v-text-field>
                            
                             <v-text-field
                               v-model="password"
                               name="password"
                               label="Password"
-                              type="password"
                               placeholder="password"
                               required
+                              prepend-inner-icon="mdi-lock"
+                              :type="showPassword ? 'text' : 'password'"
+                              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                              @click:append ="toggleShowPassword()"
+                              :error-messages="passwordErrors"
+                              @input="$v.password.$touch()"
+                              @blur="$v.password.$touch()"
+                              v-on:keyup.enter="signIn()"
                            ></v-text-field>
                            <v-btn type="submit" class="mt-4" color="primary" value="log in">Login</v-btn>
                         </form>
@@ -59,9 +71,12 @@
 
 <script>
 import {mapActions,mapGetters} from 'vuex'
+import { required, email, minLength} from 'vuelidate/lib/validators'
+
 import Snackbar from '../../components/Snackbar.vue'
 import CircularLoader from '../../components/CircularLoader.vue'
 import {projectMixin} from '../../mixins/mixins'
+
 
 export default {
    components: {Snackbar,CircularLoader},
@@ -72,13 +87,40 @@ export default {
          email: "",
          password: "",
          loading: false,
+         showPassword:false,
+         passwordMinimumLength:6 
       };
    },
 
    computed: {
 
         ...mapGetters(['load_message']),
+
+      emailErrors() {
+         const errors = []
+         if (!this.$v.email.$dirty) {
+            return errors
+         }
+         !this.$v.email.required && errors.push('E-mail is required')
+         !this.$v.email.email && errors.push('Must be valid e-mail')
+         return errors
+      },
+
+      passwordErrors() {
+         const errors = []
+         if (!this.$v.password.$dirty) {
+            return errors
+         }
+         !this.$v.password.required && errors.push('password is required')
+         !this.$v.password.minLength && errors.push(' password must be a minimum of 6 characters')
+         return errors
+      },
    },
+
+   validations: {
+      email: { required, email },
+      password: { required,minLength: minLength(6) },
+    },
 
   methods: {
 
@@ -124,6 +166,11 @@ export default {
       }
       
     },
+
+   toggleShowPassword(){
+      this.showPassword = !this.showPassword     
+   },
+
   },
 }
 </script>
