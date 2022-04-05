@@ -67,8 +67,10 @@ export default {
                     return store.dispatch('attempt',response.data.objects.accessToken)
 
                 }
-            }).catch(()=>{
-                commit('SET_MESSAGE',"Server: There is internal server error")
+            }).catch((error)=>{
+                // console.log("inside a function")
+                // console.log(error.response.data)
+                //commit('SET_MESSAGE',"Server: There is internal server error")
             });
         },
 

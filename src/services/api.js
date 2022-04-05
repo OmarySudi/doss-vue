@@ -57,6 +57,7 @@ const ApiService = {
 
     mount401Interceptor() {
         this._401interceptor = axios.interceptors.response.use(
+            
             (response) => {
 
                 return response
@@ -79,9 +80,15 @@ const ApiService = {
 
                         case '4':
 
-                            console.log('Client: There is Client error');
+                            if(error.response.data.generalErrorCode){
 
-                            store.dispatch('setMessage',"Client: There is Client error")
+                                store.dispatch('setMessage',error.response.data.message);
+
+                            } else {
+
+                                store.dispatch('setMessage',"Client: There is internal error");
+                            }
+                           
                             break;
 
                         case '5':
@@ -92,6 +99,7 @@ const ApiService = {
 
                             break;
                     }
+
                 }
 
                 // If error was not 401 just reject as is
