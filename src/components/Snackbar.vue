@@ -3,10 +3,11 @@
     <v-snackbar
       :value="snackbar"
       :timeout="timeout"
-      height="3"
+      height="4"
       top
       right
       outlined
+      multi-line
       transition="slide-x-transition"
       :color="type"
     >

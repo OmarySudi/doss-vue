@@ -119,12 +119,13 @@ export default {
 
    validations: {
       email: { required, email },
-      password: { required,minLength: minLength(6) },
+      password: {required,minLength: minLength(6) },
     },
 
   methods: {
 
      ...mapActions(['Login','setMessage']),
+     
     async signIn() {
 
       const { email, password } = this;

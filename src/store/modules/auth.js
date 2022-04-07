@@ -9,6 +9,7 @@ export default {
         accessToken: null,
         user: {},
         message: null,
+        circularLoader: false,
     },
 
     getters: {
@@ -19,6 +20,10 @@ export default {
 
         authenticated: (state)=>{
             return state.accessToken? true: false
+        },
+
+        get_circular_loader: (state)=>{
+            return state.circularLoader;
         },
 
         load_message: (state)=>{
@@ -45,6 +50,10 @@ export default {
         SET_MESSAGE: (state, payload)=>{
             state.message = payload
         },
+
+        SET_CIRCULAR_LOADER: (state, payload)=>{
+            state.circularLoader = payload
+        }
     },
 
     actions: {
@@ -119,6 +128,11 @@ export default {
         setMessage({commit},message){
 
             commit('SET_MESSAGE',message)
+        },
+
+        setCircularLoader({commit},value){
+            
+            commit('SET_CIRCULAR_LOADER',value);
         }
     },
 }

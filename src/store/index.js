@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import auth from './modules/auth'
+import school from './modules/school'
 
 Vue.use(Vuex)
 
@@ -13,5 +14,7 @@ export default new Vuex.Store({
   },
   modules: {
     auth,
+    school
   }
+
 })

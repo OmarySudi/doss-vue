@@ -1,5 +1,13 @@
 <template>
   <v-container>
+
+    <Snackbar 
+        :type="snackbarType" 
+        :snackbar="snackbar" 
+        :text="snackbarText" 
+        :timeout="snackbarTimeout"
+    />
+
     <v-data-table
       :headers="headers"
       :items="users"
@@ -25,7 +33,7 @@
           <v-spacer></v-spacer>
           <v-dialog
             v-model="dialog"
-            max-width="500px"
+            width="700"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -39,89 +47,140 @@
               </v-btn>
             </template>
 
-            <v-card>
-              <!-- <v-spacer></v-spacer>
-              <v-card-title class="text-center">
-                <span class="">ADD USER</span>
-              </v-card-title> -->
+            <v-card width="700">
               <v-toolbar>
                 <v-spacer></v-spacer>
                 <span class="font-weight-bold">ADD USER</span>
                 <v-spacer></v-spacer>
               </v-toolbar>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="user.name"
-                        label="Full Name"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="user.email"
-                        label="Email"
-                      ></v-text-field>
-                    </v-col>
-                         <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="user.phone_number"
-                        label="Phone Number"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <!-- <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
-                      ></v-text-field> -->
-                      <v-select
-                        :items="userTypes"
-                        label="Role"
-                        v-model="user.user_type"
-                        solo
-                      ></v-select>
 
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+              <form ref="AddUserForm" @submit.prevent="saveUser()">
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-text-field
+                          v-model="name"
+                          label="Full Name"
+                          required
+                          :error-messages="nameErrors"
+                          @input="$v.name.$touch()"
+                          @blur="$v.name.$touch()"
+                          v-on:keyup.enter="saveUser()"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-text-field
+                          v-model="email"
+                          label="Email"
+                          required
+                          :error-messages="emailErrors"
+                          @input="$v.email.$touch()"
+                          @blur="$v.email.$touch()"
+                          v-on:keyup.enter="saveUser()"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-text-field
+                          v-model="phone_number"
+                          label="Phone Number"
+                          required
+                          :error-messages="phoneNumberErrors"
+                          @input="$v.phone_number.$touch()"
+                          @blur="$v.phone_number.$touch()"
+                          v-on:keyup.enter="saveUser()"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-select
+                          :items="userTypes"
+                          label="Role"
+                          v-model="user_type"
+                          solo
+                          :error-messages="userTypeErrors"
+                          @input="$v.user_type.$touch()"
+                          @blur="$v.user_type.$touch()"
+                          v-on:keyup.enter="saveUser()"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="close"
-                >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  color="blue darken-1"
-                  class="ml-2 mr-5"
-                  text
-                  @click="save"
-                >
-                  Save
-                </v-btn>
-              
-              </v-card-actions>
+                    <v-row v-if="user_type == 'TEACHER' || user_type == 'OFFICER'">
+
+                      <v-col cols="12" sm="6" v-if="user_type == 'TEACHER'">
+                        <v-select
+                          :items="teacherCategories"
+                          label="Teacher Category"
+                          v-model="teacher_category"
+                          solo
+                        ></v-select>
+                      </v-col>
+
+                      <v-col cols="12" sm="6">
+                        <v-select
+                          :items="SCHOOL_NAMES"
+                          label="School"
+                          v-model="school"
+                          @change="changeSchool()"
+                          solo
+                        ></v-select>
+                      </v-col>
+                    </v-row>
+
+                    <v-row v-if="user_type == 'TEACHER' && teacher_category == 'CLASS_TEACHER'">
+
+                      <v-col cols="12" sm="6">
+                        <v-select
+                          :items="CLASS_LEVELS_NAMES"
+                          label="Level"
+                          v-model="class_level"
+                          @change="changeClassLevel()"
+                          solo
+                        ></v-select>
+                      </v-col>
+
+                      <v-col cols="12" sm="6">
+
+                      </v-col>
+                    </v-row>
+
+                  </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="closeAddUserDialog"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    color="blue darken-1"
+                    class="ml-2 mr-5"
+                    text
+                    type="submit"
+                  >
+                    Save
+                  </v-btn>
+                
+                </v-card-actions>
+              </form>
             </v-card>
           </v-dialog>
 
@@ -162,96 +221,358 @@
         </v-btn>
       </template>
     </v-data-table>
+    <CircularLoader :loading="circularLoader"/>
   </v-container>
 </template>
 
 <script>
 
 import ApiService from '../../services/api'
+import {mapGetters,mapActions} from 'vuex'
+import { required, email, numeric,minLength,maxLength} from 'vuelidate/lib/validators'
+import {projectMixin} from '../../mixins/mixins'
+import Snackbar from '../../components/Snackbar.vue'
+import CircularLoader from '../../components/CircularLoader.vue'
 
 export default {
-   name: 'Users',
-
-    data: () => ({
+  name: 'Users',
+  components: {Snackbar,CircularLoader},
   
-      users: [],
-      loadData: true,
-      search: '',
-      headers: [
-        {
-          text: 'Name',
-          align: 'start',
-          sortable: false,
-          value: 'name',
-        },
-        { text: 'Email', value: 'email' },
-        { text: 'Role (g)', value: 'user_type' },
-        { text: 'Actions', value: 'actions', sortable: false },
-      ],
+  mixins: [projectMixin],
 
-      dialog: false,
-      dialogDelete: false,
+  validations: {
+    email: {required, email },
+    phone_number: {required,numeric, minLength:minLength(12), maxLength:maxLength(12)},
+    name: {required},
+    user_type: {required},
+  },
 
-      user: {
-        name: '',
-        email: '',
-        user_type: '',
-        phone_number: '',
+  data: () => ({
+
+    users: [],
+    loadData: true,
+    search: '',
+    headers: [
+      {
+        text: 'Name',
+        align: 'start',
+        sortable: false,
+        value: 'name',
       },
+      { text: 'Email', value: 'email' },
+      { text: 'Role (g)', value: 'user_type' },
+      { text: 'Actions', value: 'actions', sortable: false },
+    ],
 
-      userTypes: [
-        'ADMIN',
-        'TEACHER',
-        'RESEARCHER'
-      ]
+    dialog: false,
+    dialogDelete: false,
 
-    }),
-
-    methods: {
-      async fetchUsers(){
-        ApiService.get("/users").then((response)=>{
-
-          if(response.status == 200){
-            this.loadData = false;
-            this.users = response.data.objects;
-          } else {
-
-          }
-        }).catch(()=>{
-
-        })
-      },
-
-      deleteItem(){
-        console.log("deleting a user")
-      },
-
-      deleteItemConfirm(){
-        console.log("confirm delete")
-      },
-
-      closeDelete(){
-        console.log("close delete")
-      },
-
-      close(){
-        console.log("close")
-        this.dialog = false;
-      },
-
-      save(){
-        console.log("save")
-      }
+    user: {
+      name: '',
+      email: '',
+      user_type: '',
+      phone_number: '',
     },
 
-    beforeRouteEnter (to, from, next) {
+    //use Fields
+    name:'',
+    email: '',
+    user_type: '',
+    phone_number: '',
+    school_id:'',
+    class_level_id:'',
+    teacher_category:'',
+    school:'',
+    class_level:'',
+    //
 
-      // ...
-      next(vm=>{  
-        vm.fetchUsers();
+    userTypes: [
+      'ADMIN',
+      'TEACHER',
+      'OFFICER'
+    ],
+
+    teacherCategories: [
+      'CLASS_TEACHER',
+      'HEAD_TEACHER',
+    ],
+
+    changeSchool(){
+      let selectedSchool = this.SCHOOLS.find((school)=>school.name == this.school);
+      this.school_id = selectedSchool.id
+    },
+
+    changeClassLevel(){
+      let selectedClassLevel = this.CLASS_LEVELS.find((classLevel)=>classLevel.name == this.class_level);
+      this.class_level_id = selectedClassLevel.id;
+    },
+
+  }),
+
+  computed:{
+    ...mapGetters(['SCHOOLS','CLASS_LEVELS','SCHOOL_NAMES','CLASS_LEVELS_NAMES','get_circular_loader']),
+
+    //validation
+    emailErrors(){
+      const errors = []
+      if (!this.$v.email.$dirty) {
+        return errors
+      }
+      !this.$v.email.required && errors.push('Email is required')
+      !this.$v.email.email && errors.push('Must be a valid e-mail')
+      return errors
+    },
+
+    phoneNumberErrors(){
+      const errors = []
+      if (!this.$v.phone_number.$dirty) {
+        return errors
+      }
+      !this.$v.phone_number.required && errors.push('Phone number  is required')
+      !this.$v.phone_number.numeric && errors.push('Should contain only numbers')
+      !this.$v.phone_number.minLength && errors.push('Should contain 12 numbers starts with 255')
+      !this.$v.phone_number.maxLength && errors.push('Should contain 12 numbers starts with 255')
+      return errors
+    },
+
+    nameErrors(){
+      const errors = []
+      if (!this.$v.name.$dirty) {
+        return errors
+      }
+      !this.$v.name.required && errors.push('Name is required')
+      return errors
+    },
+
+    userTypeErrors(){
+      const errors = []
+      if (!this.$v.user_type.$dirty) {
+        return errors
+      }
+      !this.$v.user_type.required && errors.push('Role is required')
+      return errors
+    },
+    //
+  },
+
+  methods: {
+
+    ...mapActions(['FETCH_SCHOOLS','FETCH_CLASS_LEVELS','setCircularLoader']),
+
+    async fetchUsers(){
+      ApiService.get("/users").then((response)=>{
+
+        if(response.status == 200){
+          this.loadData = false;
+          this.users = response.data.objects;
+        } else {
+
+        }
+      });
+    },
+
+    deleteItem(){
+      console.log("deleting a user")
+    },
+
+    deleteItemConfirm(){
+      console.log("confirm delete")
+    },
+
+    closeDelete(){
+      console.log("close delete")
+    },
+
+    closeAddUserDialog(){
+
+      this.dialog = false;
+      this.name = '';
+      this.email = '';
+      this.user_type = '';
+      this.phone_number = '';
+      this.school_id = '';
+      this.class_level_id = '';
+      this.teacher_category = '';
+      this.school = '';
+      this.class_level = '';
+    },
+
+    async registerUser(user){
+
+      this.dialog = false;
+      this.circularLoader = true;
+      this.clearAlerts();
+
+      await ApiService.post('auth/create',user).then((response)=>{
+
+        if(response.status == 200){
+
+          this.circularLoader = false;
+          this.setAlert("success",true,response.data.message,30000);
+
+        } else {
+
+          if(response.data.objects){
+
+            this.circularLoader = false;
+            this.setAlert("error",true,response.data.message,10000);
+
+          } else {
+
+            this.circularLoader = false;
+            this.setAlert("error",true,"There is internal server error",10000);
+          }
+        }
+      }).catch((error)=>{
+
+          this.circularLoader = false;
+          if(error.response.data.generalErrorCode){
+            this.setAlert("error",true,error.response.data.message,10000);
+          } else {
+            this.setAlert("error",true,"Client: There is internal error",10000);
+          }
+  
       });
 
+    },  
+
+    saveUser(){
+
+      if(this.user_type != ''){
+
+        if(this.user_type == 'TEACHER'){
+
+            if(this.teacher_category != ''){
+
+              if(this.teacher_category == 'CLASS_TEACHER'){
+
+                if(this.shool != '' && this.class_level != ''){
+
+                    //sends class teacher details
+                  this.clearAlerts();
+                  let user = {
+                    name: this.name,
+                    email: this.email,
+                    user_type: this.user_type,
+                    phone_number: this.phone_number,
+                    school_id: this.school_id,
+                    teacher_category: this.teacher_category,
+                    class_levels_id: this.class_level_id
+                  }
+
+                  this.registerUser(user);
+                   
+                } else {
+
+                  this.clearAlerts();
+
+                  this.setAlert("warning",true,"School and level should be filled before submit",10000);
+                }
+
+                this.clearAlerts();
+
+              } else {
+
+                if(this.school != ''){
+
+                  this.clearAlerts();
+                  //sends head teacher details
+                  let user = {
+                    name: this.name,
+                    email: this.email,
+                    user_type: this.user_type,
+                    phone_number: this.phone_number,
+                    school_id: this.school_id,
+                    teacher_category: this.teacher_category
+                  }
+
+                  this.registerUser(user);
+
+                } else {
+
+                  this.clearAlerts();
+
+                  this.setAlert("warning",true,"School should be filled before submit",10000);
+                }
+
+              }
+
+            } else {
+
+              this.clearAlerts();
+
+              this.setAlert("warning",true,"Teacher category should be filled before submit",10000);
+            }
+
+        } else {
+
+           //sends officer,admin details
+          if(this.user_type == 'OFFICER'){
+
+            if(this.school != ''){
+
+              //sends officer 
+              this.clearAlerts();
+
+              let user = {
+                name: this.name,
+                email: this.email,
+                user_type: this.user_type,
+                phone_number: this.phone_number,
+                school_id: this.school_id
+              }
+
+              this.registerUser(user);
+
+            } else {
+
+              this.clearAlerts();
+
+              this.setAlert("warning",true,"School should be filled before submit",10000);
+            }
+
+          } else {
+
+            //sends admin, researcher
+            this.clearAlerts();
+
+            let user = {
+              name: this.name,
+              email: this.email,
+              user_type: this.user_type,
+              phone_number: this.phone_number
+            }
+
+            this.registerUser(user);
+          }
+
+        }
+
+      } else {
+
+        this.clearAlerts();
+
+        this.setAlert("warning",true,"Role should be filled before submit",10000);
+      }
+
     }
+  },
+
+  beforeRouteEnter (to, from, next) {
+
+    // ...
+    next(vm=>{  
+      vm.fetchUsers();
+      
+      if(vm.SCHOOLS == null){
+        vm.FETCH_SCHOOLS;
+      }
+
+      if(vm.CLASS_LEVELS == null)
+        vm.FETCH_CLASS_LEVELS
+    });
+
+  }
 
 }
 

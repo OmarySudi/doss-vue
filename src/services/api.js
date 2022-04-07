@@ -93,8 +93,6 @@ const ApiService = {
 
                         case '5':
 
-                            console.log('Server: There is internal server error');
-
                             store.dispatch('setMessage',"Server: There is internal server error");
 
                             break;
