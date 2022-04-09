@@ -465,7 +465,7 @@ export default {
       ApiService.delete('/users/'+user_id).then((response)=>{
         if(response.status == 200){
           this.circularLoader = false;
-          this.setAlert("success",true,response.data.message,30000);
+          this.setAlert("success",true,response.data.message,5000);
           this.$store.commit('REMOVE_USER',response.data.objects)
         } else {
 
@@ -565,7 +565,7 @@ export default {
         if(response.status == 200){
 
           this.circularLoader = false;
-          this.setAlert("success",true,response.data.message,30000);
+          this.setAlert("success",true,response.data.message,5000);
           this.$store.commit('ADD_USER',response.data.objects)
           
         } else {
