@@ -10,7 +10,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="users"
+      :items="USERS"
       :loading="loadData"
       :search="search"
       sort-by="created_at"
@@ -216,11 +216,77 @@
         >
           mdi-delete
         </v-icon>
-        <v-btn color="green" small class="ml-3">
+        <v-btn color="green" small class="ml-3" @click="showUser(item)">
           <span style="color:white">VIEW</span>
         </v-btn>
       </template>
     </v-data-table>
+
+    <v-dialog v-model="viewDialog" width="800">
+      <v-toolbar>
+        <v-spacer></v-spacer>
+        <span class="font-weight-bold">{{selectedUser.name}}</span>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+
+      <v-card width="800">
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" sm="6" md="4">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Email</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.email}}</p>
+              </v-card>
+            </v-col>
+
+             <v-col  cols="12" sm="6" md="4">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Role</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.user_type}}</p>
+              </v-card>
+            </v-col>
+
+             <v-col  cols="12" sm="6" md="4">
+              <v-card v-if="selectedUser.user_type == 'TEACHER'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Mobile Number</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.teacher.phone_number}}</p>
+              </v-card>
+
+              <v-card v-if="selectedUser.user_type == 'ADMIN'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Mobile Number</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.admin.phone_number }}</p>
+              </v-card>
+
+              <v-card v-if="selectedUser.user_type == 'RESEARCHER'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Mobile Number</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.researcher.phone_number }}</p>
+              </v-card>
+
+              <v-card v-if="selectedUser.user_type == 'OFFICER'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Mobile Number</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.officer.phone_number }}</p>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <!-- <v-row v-if="selectedUser.user_type == 'TEACHER' || selectedUser.user_type == 'OFFICER'">
+            <v-col cols="12" sm="6" md="4">
+              <v-card v-if="selectedUser.user_type == 'TEACHER'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">SCHOOL</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.teacher.school_id }}</p>
+              </v-card>
+
+              <v-card v-if="selectedUser.user_type == 'OFFICER'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">SCHOOL</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.officer.school_id }}</p>
+              </v-card>
+            </v-col>
+          </v-row> -->
+
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <CircularLoader :loading="circularLoader"/>
   </v-container>
 </template>
@@ -259,13 +325,15 @@ export default {
         sortable: false,
         value: 'name',
       },
-      { text: 'Email', value: 'email' },
+      { text: 'Email',  value: 'email'},
       { text: 'Role (g)', value: 'user_type' },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
 
     dialog: false,
     dialogDelete: false,
+    selectedUser:{},
+    viewDialog: false,
 
     user: {
       name: '',
@@ -310,7 +378,7 @@ export default {
   }),
 
   computed:{
-    ...mapGetters(['SCHOOLS','CLASS_LEVELS','SCHOOL_NAMES','CLASS_LEVELS_NAMES','get_circular_loader']),
+    ...mapGetters(['SCHOOLS','CLASS_LEVELS','SCHOOL_NAMES','CLASS_LEVELS_NAMES','get_circular_loader','USERS']),
 
     //validation
     emailErrors(){
@@ -357,14 +425,20 @@ export default {
 
   methods: {
 
-    ...mapActions(['FETCH_SCHOOLS','FETCH_CLASS_LEVELS','setCircularLoader']),
+    ...mapActions(['FETCH_SCHOOLS','FETCH_CLASS_LEVELS','setCircularLoader','ADD_USER']),
+
+    showUser(user){
+      this.selectedUser = user;
+      this.viewDialog = true;
+    },
 
     async fetchUsers(){
       ApiService.get("/users").then((response)=>{
 
         if(response.status == 200){
           this.loadData = false;
-          this.users = response.data.objects;
+          //this.users = response.data.objects;
+          this.$store.commit('SET_USERS',response.data.objects)
         } else {
 
         }
@@ -409,7 +483,8 @@ export default {
 
           this.circularLoader = false;
           this.setAlert("success",true,response.data.message,30000);
-
+          this.$store.commit('ADD_USER',response.data.objects)
+          
         } else {
 
           if(response.data.objects){
