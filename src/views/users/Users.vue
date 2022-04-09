@@ -133,8 +133,9 @@
                       <v-col cols="12" sm="6">
                         <v-select
                           :items="SCHOOL_NAMES"
+                          multiple
                           label="School"
-                          v-model="school"
+                          v-model="schools"
                           @change="changeSchool()"
                           solo
                         ></v-select>
@@ -369,7 +370,8 @@ export default {
     school_id:'',
     class_level_id:'',
     teacher_category:'',
-    school:'',
+    schools:[],
+    school_ids:[],
     class_level:'',
     //
 
@@ -385,8 +387,12 @@ export default {
     ],
 
     changeSchool(){
-      let selectedSchool = this.SCHOOLS.find((school)=>school.name == this.school);
-      this.school_id = selectedSchool.id
+      this.school_ids = [];
+
+      this.schools.forEach(element => {
+          let school = this.SCHOOLS.find((school)=>school.name == element);
+          this.school_ids.push(school.id)
+      });
     },
 
     changeClassLevel(){
@@ -598,7 +604,7 @@ export default {
 
               if(this.teacher_category == 'CLASS_TEACHER'){
 
-                if(this.shool != '' && this.class_level != ''){
+                if(this.school_ids.length != 0 && this.class_level != ''){
 
                     //sends class teacher details
                   this.clearAlerts();
@@ -607,7 +613,7 @@ export default {
                     email: this.email,
                     user_type: this.user_type,
                     phone_number: this.phone_number,
-                    school_id: this.school_id,
+                    school_ids: this.school_ids,
                     teacher_category: this.teacher_category,
                     class_levels_id: this.class_level_id
                   }
@@ -625,7 +631,7 @@ export default {
 
               } else {
 
-                if(this.school != ''){
+                if(this.school_ids.length != 0){
 
                   this.clearAlerts();
                   //sends head teacher details
@@ -634,7 +640,7 @@ export default {
                     email: this.email,
                     user_type: this.user_type,
                     phone_number: this.phone_number,
-                    school_id: this.school_id,
+                    school_ids: this.school_ids,
                     teacher_category: this.teacher_category
                   }
 
@@ -661,7 +667,7 @@ export default {
            //sends officer,admin details
           if(this.user_type == 'OFFICER'){
 
-            if(this.school != ''){
+            if(this.school_ids.length != 0){
 
               //sends officer 
               this.clearAlerts();
@@ -671,7 +677,7 @@ export default {
                 email: this.email,
                 user_type: this.user_type,
                 phone_number: this.phone_number,
-                school_id: this.school_id
+                school_ids: this.school_ids
               }
 
               this.registerUser(user);
