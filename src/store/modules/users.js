@@ -21,6 +21,10 @@ export default {
 
         ADD_USER(state, user){
             state.users.push(user);
+        },
+
+        REMOVE_USER(state, deletedUser){
+           state.users =  state.users.filter((user)=>user.user_gid != deletedUser.user_gid)
         }
     },
 

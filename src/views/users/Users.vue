@@ -184,18 +184,37 @@
             </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+            <v-dialog
+              v-model="dialogDelete"
+              persistent
+              width="400"
+            >
+              <v-card>
+                <v-card-title class="text-h6 primary white--text">
+                  Are you sure you want to delete?
+                </v-card-title>
 
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="primary"
+                    text
+                    @click="dialogDelete = false"
+                  >
+                    NO
+                  </v-btn>
+                  <v-btn
+                    color="primary"
+                    text
+                    @click="deleteUser(selectedUser.user_gid)"
+                  >
+                    YES
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
         </v-toolbar>
       </template>
 
@@ -212,7 +231,7 @@
           size="medium"
           class="ml-2 mr-5"
           color="red"
-          @click="deleteItem(item)"
+          @click="showDeleteDialog(item)"
         >
           mdi-delete
         </v-icon>
@@ -432,6 +451,45 @@ export default {
       this.viewDialog = true;
     },
 
+    deleteUser(user_id){
+      this.clearAlerts();
+      this.dialogDelete = false;
+      this.circularLoader = true;
+
+      ApiService.delete('/users/'+user_id).then((response)=>{
+        if(response.status == 200){
+          this.circularLoader = false;
+          this.setAlert("success",true,response.data.message,30000);
+          this.$store.commit('REMOVE_USER',response.data.objects)
+        } else {
+
+          if(response.data.objects){
+
+            this.circularLoader = false;
+            this.setAlert("error",true,response.data.message,10000);
+
+          } else {
+
+            this.circularLoader = false;
+            this.setAlert("error",true,"There is internal server error",10000);
+          }
+        }
+      }).catch((error)=>{
+
+          this.circularLoader = false;
+          if(error.response.data.generalErrorCode){
+            this.setAlert("error",true,error.response.data.message,10000);
+          } else {
+            this.setAlert("error",true,"Client: There is internal error",10000);
+          }
+      });
+    },
+
+    showDeleteDialog(user){
+      this.selectedUser = user;
+      this.dialogDelete = true;
+    },
+
     async fetchUsers(){
       ApiService.get("/users").then((response)=>{
 
@@ -441,7 +499,26 @@ export default {
           this.$store.commit('SET_USERS',response.data.objects)
         } else {
 
+          if(response.data.objects){
+
+            this.circularLoader = false;
+            this.setAlert("error",true,response.data.message,10000);
+
+          } else {
+
+            this.circularLoader = false;
+            this.setAlert("error",true,"There is internal server error",10000);
+          }
         }
+      }).catch((error)=>{
+
+          this.circularLoader = false;
+          if(error.response.data.generalErrorCode){
+            this.setAlert("error",true,error.response.data.message,10000);
+          } else {
+            this.setAlert("error",true,"Client: There is internal error",10000);
+          }
+
       });
     },
 
