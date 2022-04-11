@@ -67,13 +67,34 @@ export default {
 
                 } else {
 
-                    localStorage.setItem('name',response.data.objects.name);
-                    localStorage.setItem('user_gid',response.data.objects.user_gid);
-                    localStorage.setItem('email',response.data.objects.email);
-                    localStorage.setItem('user_type',response.data.objects.user_type);
-                    localStorage.setItem('code',response.data.objects.code);
+                    let user = response.data.objects;
+
+                    localStorage.setItem('name',user.name);
+                    localStorage.setItem('user_gid',user.user_gid);
+                    localStorage.setItem('email',user.email);
+                    localStorage.setItem('user_type',user.user_type);
+                    localStorage.setItem('code',user.code);
+                    
+                    switch(user.user_type){
+                        
+                        case 'TEACHER':
+                                localStorage.setItem('phone_number',user.teacher.phone_number);
+                            break;
+
+                        case 'OFFICER':
+                                localStorage.setItem('phone_number',user.officer.phone_number);
+                            break;
+
+                        case 'ADMIN':
+                                localStorage.setItem('phone_number',user.admin.phone_number);
+                            break;
+
+                        case 'RESEARCHER':
+                                localStorage.setItem('phone_number',user.researcher.phone_number);
+                            break;
+                    }
                    
-                    return store.dispatch('attempt',response.data.objects.accessToken)
+                    return store.dispatch('attempt',user.accessToken)
 
                 }
             }).catch((error)=>{
@@ -98,6 +119,7 @@ export default {
                     email: localStorage.getItem('email'),
                     user_type: localStorage.getItem('user_type'),
                     code: localStorage.getItem('code'),
+                    phone_number: localStorage.getItem('phone_number'),
                 }
 
                 commit('SET_USER',user)
