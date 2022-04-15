@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    
       <Home v-if="authenticated"/>
 
       <Login v-else/>

@@ -13,6 +13,7 @@
         </v-app-bar>
         
          <v-container fluid fill-height class="container">
+            
             <Snackbar 
                :type="snackbarType" 
                :snackbar="snackbar" 

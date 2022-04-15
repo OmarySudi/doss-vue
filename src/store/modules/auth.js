@@ -10,6 +10,7 @@ export default {
         user: {},
         message: null,
         circularLoader: false,
+        teacherSchool: null
     },
 
     getters: {
@@ -28,6 +29,10 @@ export default {
 
         load_message: (state)=>{
             return state.message
+        },
+
+        get_teacher_school: (state)=>{
+            return state.teacherSchool;
         }
     },
 
@@ -53,10 +58,26 @@ export default {
 
         SET_CIRCULAR_LOADER: (state, payload)=>{
             state.circularLoader = payload
+        },
+
+        SET_TEACHER_SCHOOL: (state, payload)=>{
+            state.teacherSchool = payload;
         }
+
+
     },
 
     actions: {
+
+        // async fetchTeacherSchool({commit},schoolId){
+
+        //     await ApiService.get('schools/'+schoolId).then((response)=>{
+        //         if(response.status == 200){
+        //             commit('SET_TEACHER_SCHOOL',response.data.objects)
+        //         }
+        //     })
+        // },
+
         async Login({commit},data){
             
             await ApiService.post("auth/login",data).then((response)=>{
@@ -78,7 +99,9 @@ export default {
                     switch(user.user_type){
                         
                         case 'TEACHER':
+
                                 localStorage.setItem('phone_number',user.teacher.phone_number);
+                                localStorage.setItem('school',user.teacher.school.name);
                             break;
 
                         case 'OFFICER':
@@ -120,6 +143,7 @@ export default {
                     user_type: localStorage.getItem('user_type'),
                     code: localStorage.getItem('code'),
                     phone_number: localStorage.getItem('phone_number'),
+                    school: localStorage.getItem('school'),
                 }
 
                 commit('SET_USER',user)
