@@ -493,7 +493,7 @@ export default {
 
             this.circularLoader = false;
             this.passwordDialog = false;
-            this.setAlert("success",true,response.data.message,3000);
+            this.setAlert("success",true,response.data.message,-1);
         
             setTimeout(()=>{
                 this.logout();

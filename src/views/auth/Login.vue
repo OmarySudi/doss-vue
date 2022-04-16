@@ -11,7 +11,8 @@
             <v-spacer></v-spacer>
 
         </v-app-bar>
-        
+
+      
          <v-container fluid fill-height class="container">
             
             <Snackbar 
@@ -23,7 +24,7 @@
             
             <v-layout justify-center>
                <v-flex xs12 sm8 md4>
-                  <v-card class="elevation-12">
+                  <v-card class="elevation-12" v-show="showLogin">
                      <v-toolbar dark color="primary">
                         <v-toolbar-title>Login form</v-toolbar-title>
                      </v-toolbar>
@@ -58,10 +59,45 @@
                               @blur="$v.password.$touch()"
                               v-on:keyup.enter="signIn()"
                            ></v-text-field>
-                           <v-btn type="submit" class="mt-4" color="primary" value="log in">Login</v-btn>
+                           <v-btn type="submit" class="mt-4 ml-2" color="primary" value="log in">Login</v-btn>
                         </form>
+                        <v-row>
+                           <v-spacer></v-spacer>
+                           <a style="text-decoration:none" @click="displayResetPasswordForm">forgot password?</a>
+                        </v-row>
                      </v-card-text>
                   </v-card>
+
+                  <v-card class="elevation-12" v-show="!showLogin">
+                     <v-toolbar dark color="primary">
+                        <v-spacer></v-spacer>
+                        <span class="">ENTER YOUR EMAIL TO RECEIVE RESET LINK</span>
+                        <v-spacer></v-spacer>
+                     </v-toolbar>
+
+                     <v-card-text>
+                        <form ref="form" @submit.prevent="SendResetPasswordEmail()">
+                            <v-text-field
+                              v-model="resetEmail"
+                              name="email"
+                              label="E-mail"
+                              type="text"
+                              placeholder="youremail@login.com"
+                              required
+                              prepend-inner-icon="mdi-account"
+                              :error-messages="resetEmailErrors"
+                              @input="$v.resetEmail.$touch()"
+                              @blur="$v.resetEmail.$touch()"
+                           ></v-text-field>
+                           <v-btn  :disabled="disableSendButton" type="submit" class="mt-4 ml-2" color="primary" value="log in">SEND</v-btn>
+                        </form>
+                        <v-row>
+                           <v-spacer></v-spacer>
+                           <a style="text-decoration:none" @click="displayLoginForm">Login</a>
+                        </v-row>
+                     </v-card-text>
+                  </v-card>
+
                </v-flex>
             </v-layout>
           <CircularLoader :loading="circularLoader"/>
@@ -77,6 +113,7 @@ import { required, email, minLength} from 'vuelidate/lib/validators'
 import Snackbar from '../../components/Snackbar.vue'
 import CircularLoader from '../../components/CircularLoader.vue'
 import {projectMixin} from '../../mixins/mixins'
+import ApiService from '../../services/api'
 
 
 export default {
@@ -89,7 +126,11 @@ export default {
          password: "",
          loading: false,
          showPassword:false,
-         passwordMinimumLength:6 
+         passwordMinimumLength:6 ,
+         resetPasswordDialog: false,
+         showLogin: true,
+         resetEmail: "",
+         disableSendButton: false,
       };
    },
 
@@ -107,6 +148,17 @@ export default {
          return errors
       },
 
+       resetEmailErrors(){
+
+         const errors = []
+         if (!this.$v.resetEmail.$dirty) {
+            return errors
+         }
+         !this.$v.resetEmail.required && errors.push('E-mail is required')
+         !this.$v.resetEmail.email && errors.push('Must be valid e-mail')
+         return errors
+      },
+
       passwordErrors() {
          const errors = []
          if (!this.$v.password.$dirty) {
@@ -120,8 +172,8 @@ export default {
 
    validations: {
       email: { required, email },
+      resetEmail: {required,email},
       password: {required,minLength: minLength(6) },
-      
     },
 
   methods: {
@@ -173,6 +225,70 @@ export default {
    toggleShowPassword(){
       this.showPassword = !this.showPassword     
    },
+
+   displayResetPasswordForm(){
+      this.showLogin = false;
+   },
+
+   displayLoginForm(){
+
+      this.showLogin = true;
+      this.disableSendButton = false;
+      this.resetEmail = '';
+   },
+
+   SendResetPasswordEmail(){
+
+      if(this.resetEmailErrors.length == 0){
+
+         this.clearAlerts();
+         this.circularLoader = true;
+
+         let data = {
+            email: this.resetEmail
+         }
+
+         ApiService.post('auth/forgetPassword/',data).then((response)=>{
+
+            if(response.status == 200){
+               this.circularLoader = false;
+               this.disableSendButton = true;
+               this.setAlert("success",true,response.data.message,-1);
+               setTimeout(()=>{
+                location.reload();
+               },3000);
+            } else {
+
+               if(response.data.objects){
+
+               this.circularLoader = false;
+               this.setAlert("error",true,response.data.message,10000);
+
+               } else {
+
+               this.circularLoader = false;
+               this.setAlert("error",true,"There is internal server error",5000);
+               }
+            }
+         }).catch((error)=>{
+
+            this.circularLoader = false;
+            if(error.response.data.generalErrorCode){
+
+               this.setAlert("error",true,error.response.data.message,5000);
+
+            } else {
+               this.setAlert("error",true,"There is internal error",5000);
+            }
+         })
+
+      } else {
+
+         this.clearAlerts();
+
+         this.setAlert("warning",true,"There are validation errors",5000);
+      }
+   }
 
   },
 }
