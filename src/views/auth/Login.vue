@@ -121,6 +121,7 @@ export default {
    validations: {
       email: { required, email },
       password: {required,minLength: minLength(6) },
+      
     },
 
   methods: {

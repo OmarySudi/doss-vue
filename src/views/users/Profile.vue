@@ -108,9 +108,108 @@
                       </v-card>
                     </v-dialog>
                  
-                    <v-btn color="primary">
-                      CHANGE PASSWORD
-                    </v-btn>
+                    <v-dialog
+                      v-model="passwordDialog"
+                      width="500"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          color="primary"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                         CHANGE PASSWORD
+                        </v-btn>
+                      </template>
+
+                      <v-card width="500">
+                        <v-toolbar>
+                          <v-spacer></v-spacer>
+                          <span class="font-weight-bold">PASSWORD CHANGE</span>
+                          <v-spacer></v-spacer>
+                        </v-toolbar>
+
+                        <form ref="AddUserForm" @submit.prevent="ChangePassword()">
+                          <v-card-text>
+                            <v-container>
+                              <v-row>
+                                <v-col
+                                  cols="12"
+                                >
+                                  <v-text-field
+                                    v-model="oldPassword"
+                                    label="Old Password"
+                                    required
+                                    prepend-inner-icon="mdi-lock"
+                                    :type="showOldPassword ? 'text' : 'password'"
+                                    :append-icon="showOldPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                    :error-messages="OldPasswordErrors"
+                                    @input="$v.oldPassword.$touch()"
+                                    @blur="$v.oldPassword.$touch()"
+                                    @click:append ="toggleOldPassword()"
+                                  ></v-text-field>
+                                </v-col>
+
+                                <v-col
+                                  cols="12"
+                                >
+                                  <v-text-field
+                                    v-model="newPassword"
+                                    label="New Password"
+                                    required
+                                    prepend-inner-icon="mdi-lock"
+                                    :type="showNewPassword ? 'text' : 'password'"
+                                    :append-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                    :error-messages="NewPasswordErrors"
+                                    @input="$v.newPassword.$touch()"
+                                    @blur="$v.newPassword.$touch()"
+                                    @click:append ="toggleNewPassword()"
+                                  ></v-text-field>
+                                </v-col>
+
+                                <v-col
+                                  cols="12"
+                                >
+                                  <v-text-field
+                                    v-model="confirmPassword"
+                                    label="Confirm Password"
+                                    required
+                                    prepend-inner-icon="mdi-lock"
+                                    :type="showConfirmPassword ? 'text' : 'password'"
+                                    :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                    :error-messages="ConfirmPasswordErrors"
+                                    @input="$v.confirmPassword.$touch()"
+                                    @blur="$v.confirmPassword.$touch()"
+                                    @click:append ="toggleConfirmPassword()"
+                                  ></v-text-field>
+                                </v-col>
+                              </v-row>
+                            </v-container>
+                          </v-card-text>
+
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              color="blue darken-1"
+                              text
+                              @click="closePasswordDialog"
+                            >
+                              Cancel
+                            </v-btn>
+                            <v-btn
+                              color="blue darken-1"
+                              class="ml-2 mr-5"
+                              text
+                              type="submit"
+                            >
+                              Save
+                            </v-btn>
+                          
+                          </v-card-actions>
+                        </form>
+                      </v-card>
+                    </v-dialog>
                   </v-row>
                 </v-col>
               </v-row>
@@ -156,8 +255,8 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
-import { required, email, numeric,minLength,maxLength} from 'vuelidate/lib/validators'
+import {mapGetters,mapActions} from 'vuex'
+import { required, email, numeric,minLength,maxLength, sameAs} from 'vuelidate/lib/validators'
 import {projectMixin} from '../../mixins/mixins'
 import Snackbar from '../../components/Snackbar.vue'
 import CircularLoader from '../../components/CircularLoader.vue'
@@ -170,6 +269,9 @@ export default {
   validations: {
     email: {required, email},
     phone_number: {required,numeric, minLength:minLength(12), maxLength:maxLength(12)},
+    oldPassword: {required,minLength: minLength(6) },
+    newPassword: {required,minLength: minLength(6),  sameAsPassword: sameAs('confirmPassword')},
+    confirmPassword: {required,minLength: minLength(6), sameAsPassword: sameAs('newPassword') },
   },
 
   mixins: [projectMixin],
@@ -177,6 +279,15 @@ export default {
   data: ()=>({
 
     dialog: false,
+    passwordDialog: false,
+
+    showOldPassword: false,
+    showNewPassword: false,
+    showConfirmPassword: false,
+
+    oldPassword: '',
+    newPassword:'',
+    confirmPassword:'',
 
     name: '',
     phone_number:'',
@@ -212,9 +323,45 @@ export default {
       return errors
     },
 
+    OldPasswordErrors() {
+      const errors = []
+      if (!this.$v.oldPassword.$dirty) {
+        return errors
+      }
+      !this.$v.oldPassword.required && errors.push('password is required')
+      !this.$v.oldPassword.minLength && errors.push(' password must be a minimum of 6 characters')
+      return errors
+    },
+
+    NewPasswordErrors() {
+      const errors = []
+      if (!this.$v.newPassword.$dirty) {
+        return errors
+      }
+      !this.$v.newPassword.required && errors.push('password is required')
+      !this.$v.newPassword.minLength && errors.push(' password must be a minimum of 6 characters')
+      !this.$v.newPassword.sameAsPassword && errors.push('Should match confirm password')
+      return errors
+    },
+
+    ConfirmPasswordErrors() {
+      const errors = []
+      if (!this.$v.confirmPassword.$dirty) {
+        return errors
+      }
+      !this.$v.confirmPassword.required && errors.push('password is required')
+      !this.$v.confirmPassword.minLength && errors.push(' password must be a minimum of 6 characters')
+      !this.$v.confirmPassword.sameAsPassword && errors.push('should match new password')
+
+      return errors
+    },
+
   },
 
   methods:{
+
+
+     ...mapActions(['logout']),
 
     saveUser(){
 
@@ -222,7 +369,7 @@ export default {
 
         //sending for editing;
         this.clearAlerts();
-        
+
         this.circularLoader = true;
 
         let user = {
@@ -314,6 +461,78 @@ export default {
       
       this.dialog = false;
 
+    },
+
+    closePasswordDialog(){
+
+      this.passwordDialog = false;
+    },
+
+    ChangePassword(){
+
+      if(
+        this.OldPasswordErrors.length == 0 && 
+        this.NewPasswordErrors.length == 0 && 
+        this.ConfirmPasswordErrors.length == 0
+        )
+      {
+        
+        //sending for editing;
+        this.clearAlerts();
+
+        this.circularLoader = true;
+
+        let data = {
+          old_password: this.oldPassword,
+          new_password: this.newPassword,
+        };
+
+        ApiService.put('users/changePassword/'+this.user.user_gid,data).then((response)=>{
+          
+          if(response.status == 200 && response.data.generalErrorCode == 8000){
+
+            this.circularLoader = false;
+            this.passwordDialog = false;
+            this.setAlert("success",true,response.data.message,3000);
+        
+            setTimeout(()=>{
+                this.logout();
+            },3000);
+
+          } else {
+
+            this.circularLoader = false;
+            this.setAlert("warning",true,response.data.message,5000);
+          }
+        }).catch((error)=>{
+
+          this.circularLoader = false;
+          if(error.response.data.generalErrorCode){
+            this.setAlert("error",true,error.response.data.message,5000);
+          } else {
+            this.setAlert("error",true,"There is internal error",5000);
+          }
+
+        })
+
+      } else {
+
+        this.clearAlerts();
+
+        this.setAlert("warning",true,"There are validation errors",5000);
+      }
+    },
+
+    toggleOldPassword(){
+      this.showOldPassword = !this.showOldPassword;
+    },
+
+    toggleNewPassword(){
+      this.showNewPassword = !this.showNewPassword;
+    },
+
+    toggleConfirmPassword(){
+      this.showConfirmPassword = !this.showConfirmPassword;
     }
   },
 
