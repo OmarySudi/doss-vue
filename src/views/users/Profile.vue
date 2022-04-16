@@ -340,7 +340,6 @@ export default {
       }
       !this.$v.newPassword.required && errors.push('password is required')
       !this.$v.newPassword.minLength && errors.push(' password must be a minimum of 6 characters')
-      !this.$v.newPassword.sameAsPassword && errors.push('Should match confirm password')
       return errors
     },
 
