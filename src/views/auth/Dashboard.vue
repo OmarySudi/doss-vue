@@ -1,18 +1,93 @@
 <template>
-    <v-app id="inspire">
-      <v-app-bar
-         app 
-         color="primary"
-         height="90px"
-      >
-         <v-spacer></v-spacer>
-         <v-toolbar-title>DIGITIZE OUR SCHOOLS</v-toolbar-title>
-         <v-spacer></v-spacer>
-      </v-app-bar>
-      <v-main>
-         <router-view/>
-      </v-main>
-   </v-app> 
+ <v-container fluid fill-height class="container">
+            
+      <Snackbar 
+         :type="snackbarType" 
+         :snackbar="snackbar" 
+         :text="snackbarText" 
+         :timeout="snackbarTimeout"
+      />
+      
+      <v-layout justify-center>
+         <v-flex xs12 sm8 md4>
+            <v-card class="elevation-12" v-show="showLogin">
+               <v-toolbar dark color="primary">
+                  <v-toolbar-title>Login form</v-toolbar-title>
+               </v-toolbar>
+               <v-card-text>
+                  <form ref="form" @submit.prevent="signIn()">
+                        <v-text-field
+                        v-model="email"
+                        name="email"
+                        label="E-mail"
+                        type="text"
+                        placeholder="youremail@login.com"
+                        required
+                        prepend-inner-icon="mdi-account"
+                        :error-messages="emailErrors"
+                        @input="$v.email.$touch()"
+                        @blur="$v.email.$touch()"
+                        v-on:keyup.enter="signIn()"
+                     ></v-text-field>
+                     
+                        <v-text-field
+                        v-model="password"
+                        name="password"
+                        label="Password"
+                        placeholder="password"
+                        required
+                        prepend-inner-icon="mdi-lock"
+                        :type="showPassword ? 'text' : 'password'"
+                        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                        @click:append ="toggleShowPassword()"
+                        :error-messages="passwordErrors"
+                        @input="$v.password.$touch()"
+                        @blur="$v.password.$touch()"
+                        v-on:keyup.enter="signIn()"
+                     ></v-text-field>
+                     <v-btn type="submit" class="mt-4 ml-2" color="primary" value="log in">Login</v-btn>
+                  </form>
+                  <v-row>
+                     <v-spacer></v-spacer>
+                     <a style="text-decoration:none" @click="displayResetPasswordForm">forgot password?</a>
+                  </v-row>
+               </v-card-text>
+            </v-card>
+
+            <v-card class="elevation-12" v-show="!showLogin">
+               <v-toolbar dark color="primary">
+                  <v-spacer></v-spacer>
+                  <span class="">ENTER YOUR EMAIL TO RECEIVE RESET LINK</span>
+                  <v-spacer></v-spacer>
+               </v-toolbar>
+
+               <v-card-text>
+                  <form ref="form" @submit.prevent="SendResetPasswordEmail()">
+                        <v-text-field
+                        v-model="resetEmail"
+                        name="email"
+                        label="E-mail"
+                        type="text"
+                        placeholder="youremail@login.com"
+                        required
+                        prepend-inner-icon="mdi-account"
+                        :error-messages="resetEmailErrors"
+                        @input="$v.resetEmail.$touch()"
+                        @blur="$v.resetEmail.$touch()"
+                     ></v-text-field>
+                     <v-btn  :disabled="disableSendButton" type="submit" class="mt-4 ml-2" color="primary" value="log in">SEND</v-btn>
+                  </form>
+                  <v-row>
+                     <v-spacer></v-spacer>
+                     <a style="text-decoration:none" @click="displayLoginForm">Login</a>
+                  </v-row>
+               </v-card-text>
+            </v-card>
+
+         </v-flex>
+      </v-layout>
+      <CircularLoader :loading="circularLoader"/>
+   </v-container>
 </template>
 
 <script>
@@ -211,5 +286,8 @@ export default {
 </script>
 
 <style scoped>
-
+   .container{
+      position:absolute;
+      top: 120px
+   }
 </style>

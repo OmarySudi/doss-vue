@@ -6,14 +6,6 @@
       <Login v-else/>
 
   </div>
-
-
-
-
-
-
-
-  
 </template>
 <script>
 import {mapGetters,mapActions} from 'vuex'
@@ -73,5 +65,7 @@ export default {
 </script>
 
 <style>
-
+.v-toolbar__title {
+  color: white;
+}
 </style>

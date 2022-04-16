@@ -68,16 +68,7 @@ export default {
     },
 
     actions: {
-
-        // async fetchTeacherSchool({commit},schoolId){
-
-        //     await ApiService.get('schools/'+schoolId).then((response)=>{
-        //         if(response.status == 200){
-        //             commit('SET_TEACHER_SCHOOL',response.data.objects)
-        //         }
-        //     })
-        // },
-
+        
         async Login({commit},data){
             
             await ApiService.post("auth/login",data).then((response)=>{
@@ -102,22 +93,30 @@ export default {
 
                                 localStorage.setItem('phone_number',user.teacher.phone_number);
                                 localStorage.setItem('school',user.teacher.school.name);
+                                store.dispatch('attempt',user.accessToken)
+                                router.push('/user')
                             break;
 
                         case 'OFFICER':
                                 localStorage.setItem('phone_number',user.officer.phone_number);
+                                store.dispatch('attempt',user.accessToken)
+                                router.push('/user')
                             break;
 
                         case 'ADMIN':
                                 localStorage.setItem('phone_number',user.admin.phone_number);
+                                store.dispatch('attempt',user.accessToken)
+                                router.push('/users')
                             break;
 
                         case 'RESEARCHER':
                                 localStorage.setItem('phone_number',user.researcher.phone_number);
+                                store.dispatch('attempt',user.accessToken)
+                                router.push('/user')
                             break;
                     }
                    
-                    return store.dispatch('attempt',user.accessToken)
+                    //return store.dispatch('attempt',user.accessToken)
 
                 }
             }).catch((error)=>{
