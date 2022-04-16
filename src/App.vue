@@ -6,6 +6,14 @@
       <Login v-else/>
 
   </div>
+
+
+
+
+
+
+
+  
 </template>
 <script>
 import {mapGetters,mapActions} from 'vuex'

@@ -291,6 +291,13 @@ export default {
    }
 
   },
+
+  beforeRouteEnter(to,from,next){
+      next(vm=>{ 
+         console.log("before route enter");
+        // console.log(to.params)
+       });
+  }
 }
 </script>
 
