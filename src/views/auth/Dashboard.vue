@@ -120,7 +120,7 @@ export default {
 
    computed: {
 
-        ...mapGetters(['load_message']),
+        ...mapGetters(['load_message','authenticated','user']),
 
       emailErrors() {
          const errors = []
@@ -277,10 +277,33 @@ export default {
   },
 
   beforeRouteEnter(to,from,next){
-      next(vm=>{ 
-         console.log("before route enter");
-        // console.log(to.params)
+      next(vm=>{
+
+         if(vm.authenticated){
+
+            if(vm.user.user_type != null){
+
+               switch(vm.user.user_type){
+
+                  case 'TEACHER':
+                  case 'OFFICER':
+                  case 'RESEARCHER':
+                     next({path: '/user'});
+                  break;
+
+                  case 'ADMIN':
+                     next({path: '/users'});
+                  break;
+               }
+            }
+
+         } else 
+         {
+            next();
+         }
+         
        });
+    
   }
 }
 </script>

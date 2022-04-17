@@ -134,6 +134,18 @@ import {mapActions, mapGetters} from 'vuex'
     components: {
       
     },
+
+    beforeRouteEnter (to, from, next) {
+      
+      // next(vm=>{
+
+      //   //vm.$router.push('/users')
+
+      //   to.path='/users'
+      // });
+       next({ path: '/users' }); 
+
+    }
   }
 </script>
 
