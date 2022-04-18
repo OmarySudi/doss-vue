@@ -16,7 +16,7 @@
                         <v-col>
                           <v-data-table
                             :headers="actionsHeaders"
-                            :items="actions"
+                            :items="OFFENSE_ACTIONS"
                             :loading="loadActionsData"
                             sort-by="created_at"
                             class="elevation-1 mt-3"
@@ -438,6 +438,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import ApiService from '../../services/api'
 export default {
     data: () => ({
@@ -526,17 +527,23 @@ export default {
 
     }),
 
+      computed:{
+      ...mapGetters(['OFFENSE_ACTIONS','OFFENSE_TYPES','OFFENSES'])
+    },
+
     methods: {
 
         //actions
 
         async fetchOffenceTypesActions(){
 
-          ApiService.get("/offence-type-actions").then((response)=>{
+          await ApiService.get("/offence-type-actions").then((response)=>{
 
           if(response.status == 200){
               this.loadActionsData = false;
-              this.actions = response.data.objects;
+              //this.actions = response.data.objects;
+              console.log(response.data.objects)
+              this.$store.commit('SET_OFFENSE_ACTIONS',response.data.objects)
           } else {
 
           }
@@ -657,10 +664,20 @@ export default {
     },
 
     created(){
-      this.fetchOffenceTypesActions();
+      //this.fetchOffenceTypesActions();
       this.fetchOffenceTypes();
       this.fetchOffenses();
+    },
+
+    beforeRouteEnter (to, from, next) {
+      next(vm=>{
+        if(vm.OFFENSE_ACTIONS == null){
+          console.log("before")
+          vm.fetchOffenceTypesActions();
+        }
+      })
     }
+
 }
 </script>
 
