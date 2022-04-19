@@ -16,7 +16,7 @@
                         <v-col>
                           <v-data-table
                             :headers="actionsHeaders"
-                            :items="OFFENSE_ACTIONS"
+                            :items="actions"
                             :loading="loadActionsData"
                             sort-by="created_at"
                             class="elevation-1 mt-3"
@@ -534,15 +534,13 @@ export default {
     methods: {
 
         //actions
-
         async fetchOffenceTypesActions(){
 
           await ApiService.get("/offence-type-actions").then((response)=>{
 
           if(response.status == 200){
               this.loadActionsData = false;
-              //this.actions = response.data.objects;
-              console.log(response.data.objects)
+              this.actions = response.data.objects;
               this.$store.commit('SET_OFFENSE_ACTIONS',response.data.objects)
           } else {
 
@@ -671,9 +669,11 @@ export default {
 
     beforeRouteEnter (to, from, next) {
       next(vm=>{
+        vm.fetchOffenceTypesActions();
         if(vm.OFFENSE_ACTIONS == null){
-          console.log("before")
           vm.fetchOffenceTypesActions();
+        } else {
+          vm.actions = vm.OFFENSE_ACTIONS;
         }
       })
     }

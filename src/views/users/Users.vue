@@ -352,7 +352,7 @@ export default {
 
   data: () => ({
 
-    users: [],
+    //users: [],
     loadData: true,
     search: '',
     headers: [
