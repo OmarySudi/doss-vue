@@ -1,10 +1,17 @@
 <template>
     <v-container>
+
+      <Snackbar 
+        :type="snackbarType" 
+        :snackbar="snackbar" 
+        :text="snackbarText" 
+        :timeout="snackbarTimeout"
+      />
+
         <v-card class="mt-3">
             <v-tabs
                 color="blue accent-4"
             >
-               
                
                 <v-tab>Offence Actions</v-tab>
                 <v-tab>Offence Types</v-tab>
@@ -100,14 +107,34 @@
                                   </v-card>
                                 </v-dialog>
 
-                                <v-dialog v-model="actionDialogDelete" max-width="500px">
+                                <v-dialog
+                                  v-model="actionDialogDelete"
+                                  persistent
+                                  width="400"
+                                >
                                   <v-card>
-                                    <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                                    <v-card-title class="text-h6 primary white--text">
+                                      Are you sure you want to delete?
+                                    </v-card-title>
+
+                                    <v-divider></v-divider>
+
                                     <v-card-actions>
                                       <v-spacer></v-spacer>
-                                      <v-btn color="blue darken-1" text @click="closeActionDialogDelete">Cancel</v-btn>
-                                      <v-btn color="blue darken-1" text @click="actionDeleteItemConfirm">OK</v-btn>
-                                      <v-spacer></v-spacer>
+                                      <v-btn
+                                        color="primary"
+                                        text
+                                        @click="actionDialogDelete = false"
+                                      >
+                                        NO
+                                      </v-btn>
+                                      <v-btn
+                                        color="primary"
+                                        text
+                                        @click="actionDeleteItemConfirm(selectedAction.id)"
+                                      >
+                                        YES
+                                      </v-btn>
                                     </v-card-actions>
                                   </v-card>
                                 </v-dialog>
@@ -434,19 +461,33 @@
                 </v-tab-item>
             </v-tabs>
         </v-card>
+        <CircularLoader :loading="circularLoader"/>
     </v-container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import ApiService from '../../services/api'
+import {projectMixin} from '../../mixins/mixins'
+import Snackbar from '../../components/Snackbar.vue'
+import CircularLoader from '../../components/CircularLoader.vue'
+
 export default {
+
+  components: {Snackbar,CircularLoader},
+  
+  mixins: [projectMixin],
+
     data: () => ({
   
       //offence actions data
 
       actions: [],
       loadActionsData: true,
+
+      selectedAction:{},
+      selectedActionType: {},
+      selectedOffense: {},
 
       actionsHeaders: [
         {
@@ -562,19 +603,51 @@ export default {
         this.actionDialogDelete = false;
       },
 
-      actionDeleteItemConfirm(){
-        console.log("confirm deleting action");
+      actionDeleteItemConfirm(action_id){
+
+        this.clearAlerts();
+        this.actionDialogDelete = false;
+        this.circularLoader = true;
+
+        ApiService.delete('/offence-type-actions/'+action_id).then((response)=>{
+          if(response.status == 200){
+            this.circularLoader = false;
+            this.setAlert("success",true,response.data.message,5000);
+            this.$store.commit('REMOVE_ACTION',response.data.objects)
+            this.actions = this.OFFENSE_ACTIONS;
+          } else {
+
+            if(response.data.objects){
+
+              this.circularLoader = false;
+              this.setAlert("error",true,response.data.message,5000);
+
+            } else {
+
+              this.circularLoader = false;
+              this.setAlert("error",true,"There is internal server error",5000);
+            }
+          }
+        }).catch((error)=>{
+
+            this.circularLoader = false;
+            if(error.response.data.generalErrorCode){
+              this.setAlert("error",true,error.response.data.message,10000);
+            } else {
+              this.setAlert("error",true,"Client: There is internal error",10000);
+            }
+        });
       },
 
       deleteActionItem(action){
-        console.log("deleting action ")
+        
+        this.actionDialogDelete = true;
+        this.selectedAction = action;
       },
 
       editActionItem(action){
         console.log("deleting action ")
       },
-
-      //
 
       // offence types:
       async fetchOffenceTypes(){
