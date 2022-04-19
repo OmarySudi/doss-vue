@@ -45,6 +45,12 @@ export default {
         SET_ACTION(state,selectedAction){
             let index = state.offenseActions.findIndex((action)=>action.id == selectedAction.id)
             state.offenseActions[index] = selectedAction;
+        },
+
+        REPLACE_OFFENSE_TYPE(state,selectedOffenseType){
+
+            let index = state.offenseTypes.findIndex((type)=>type.id == selectedOffenseType.id)
+            state.offenseTypes[index] = selectedOffenseType;
         }
     },
 

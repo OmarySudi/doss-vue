@@ -251,6 +251,7 @@
                                   hide-details
                                 ></v-text-field>
                                 <v-spacer></v-spacer>
+                                
                                 <v-dialog
                                   v-model="offenceTypeDialog"
                                   max-width="500px"
@@ -315,6 +316,62 @@
                                         color="blue darken-1"
                                         text
                                         @click="saveOffenseType"
+                                      >
+                                        Save
+                                      </v-btn>
+                                    </v-card-actions>
+                                  </v-card>
+                                </v-dialog>
+
+                                <v-dialog
+                                  v-model="offenseTypeEditDialog"
+                                  max-width="500px"
+                                >
+                                  <v-card>
+                                    <v-toolbar>
+                                      <v-spacer></v-spacer>
+                                      <span class="font-weight-bold">EDIT OFFENSE TYPE</span>
+                                      <v-spacer></v-spacer>
+                                    </v-toolbar>
+                                    <v-card-text>
+                                      <v-container>
+                                        <v-row>
+                                          <v-col
+                                            cols="12"
+                                          >
+                                            <v-text-field
+                                              v-model="selectedOffenseTypeName"
+                                              label="Name"
+                                            ></v-text-field>
+                                          </v-col>
+                                          <v-col
+                                            cols="12"
+                                          >
+                                            <v-select
+                                              :items="offenseTypeActions"
+                                              label="Action"
+                                              v-model="selectedOffenseTypeAction"
+                                              solo
+                                            ></v-select>
+                                          </v-col>
+                                        </v-row>
+                                      </v-container>
+                                    </v-card-text>
+
+                                    <v-card-actions>
+                                      <v-spacer></v-spacer>
+                                      <v-btn
+                                        color="blue darken-1"
+                                        text
+                                        @click="offenseTypeEditDialog = false"
+                                      >
+                                        Cancel
+                                      </v-btn>
+                                      <v-btn
+                                        color="blue darken-1"
+                                        class="ml-2 mr-5"
+                                        text
+                                        @click="editOffenseType"
                                       >
                                         Save
                                       </v-btn>
@@ -574,6 +631,9 @@ export default {
       //offence types data
 
       offenceTypes: [],
+      selectedOffenseTypeAction:'',
+      selectedOffenseTypeName:'',
+      selectedOffenseTypeId:'',
       loadOffenseTypeData: true,
       offenceTypeSearch: '',
       offenceTypeHeaders: [
@@ -589,6 +649,7 @@ export default {
 
       offenceTypeDialog: false,
       offenceTypeDialogDelete: false,
+      offenseTypeEditDialog: false,
 
       offenceType: {
         name: '',
@@ -824,6 +885,58 @@ export default {
         });
       },
 
+
+      editOffenseType(){
+
+        this.clearAlerts();
+        this.offenseTypeEditDialog = false;
+        this.circularLoader = true;
+
+        let offense_type_action_id;
+
+        if(this.selectedOffenseTypeAction == 'SEND_SMS'){
+
+          offense_type_action_id = 1;
+        } else {
+          offense_type_action_id = 2;
+        }
+
+        let data = {
+          name: this.selectedOffenseTypeName,
+          offence_type_action_id: offense_type_action_id
+        }
+
+        ApiService.put('/offence-types/'+this.selectedOffenseTypeId,data).then((response)=>{
+          if(response.status == 200){
+            this.circularLoader = false;
+            this.setAlert("success",true,response.data.message,5000);
+            this.fetchOffenceTypes();
+            // this.$store.commit('REPLACE_OFFENSE_TYPE',response.data.objects)
+            // this.offenceTypes = this.OFFENSE_TYPES;
+          } else {
+
+            if(response.data.objects){
+
+              this.circularLoader = false;
+              this.setAlert("error",true,response.data.message,5000);
+
+            } else {
+
+              this.circularLoader = false;
+              this.setAlert("error",true,"There is internal server error",5000);
+            }
+          }
+        }).catch((error)=>{
+
+            this.circularLoader = false;
+            if(error.response.data.generalErrorCode){
+              this.setAlert("error",true,error.response.data.message,10000);
+            } else {
+              this.setAlert("error",true,"Client: There is internal error",10000);
+            }
+        });
+      },
+
       closeOffenseTypeDelete(){
 
         this.offenceTypeDialogDelete = false;
@@ -834,7 +947,12 @@ export default {
       },
 
       OffenseTypeEditItem(item){
-        console.log("edit item");
+
+        this.selectedOffenseTypeName = item.name;
+        this.selectedOffenseTypeAction = item.offence_type_action.action;
+        this.selectedOffenseTypeId = item.id;
+        this.offenseTypeEditDialog = true;
+
       },
 
       OffenseTypeDeleteItem(item){
