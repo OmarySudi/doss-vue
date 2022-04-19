@@ -347,7 +347,7 @@
                               >
                                 mdi-pencil
                               </v-icon>
-                              <v-icon
+                              <!-- <v-icon
                                 small
                                 class="ml-2 mr-5"
                                 size="large"
@@ -355,7 +355,7 @@
                                 @click="OffenseTypeDeleteItem(item)"
                               >
                                 mdi-delete
-                              </v-icon>
+                              </v-icon> -->
                               <!-- <v-btn color="green" small class="ml-3">
                                 <span style="color:white">VIEW</span>
                               </v-btn> -->
