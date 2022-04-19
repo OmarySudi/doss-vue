@@ -283,7 +283,7 @@
                    
                                           >
                                             <v-text-field
-                                              v-model="offenceType.name"
+                                              v-model="offenceTypeName"
                                               label="Name"
                                             ></v-text-field>
                                           </v-col>
@@ -294,7 +294,7 @@
                                             <v-select
                                               :items="offenseTypeActions"
                                               label="Action"
-                                              v-model="offenceType.offence_type_action.action"
+                                              v-model="offenceTypeAction"
                                               solo
                                           ></v-select>
                                           </v-col>
@@ -502,9 +502,9 @@
                                       >
                                         mdi-delete
                                       </v-icon>
-                                      <v-btn color="green" small class="ml-3">
+                                      <!-- <v-btn color="green" small class="ml-3">
                                         <span style="color:white">VIEW</span>
-                                      </v-btn>
+                                      </v-btn> -->
                                     </template>
                                   </v-data-table>
                                 </v-col>
@@ -594,6 +594,9 @@ export default {
         name: '',
         offence_type_action: {},
       },
+
+      offenceTypeName:'',
+      offenceTypeAction:'',
 
       //offence data
 
@@ -757,6 +760,7 @@ export default {
           if(response.status == 200){
               this.loadOffenseTypeData = false;
               this.offenceTypes = response.data.objects;
+              this.$store.commit('SET_OFFENSE_TYPES',response.data.objects)
           } else {
 
           }
@@ -771,7 +775,53 @@ export default {
       },
 
       saveOffenseType(){
-        console.log("save offense type");
+
+        this.clearAlerts();
+        this.offenceTypeDialog = false;
+        this.circularLoader = true;
+
+        let offense_type_action_id;
+
+        if(this.offenceTypeAction == 'SEND_SMS'){
+
+          offense_type_action_id = 1;
+        } else {
+          offense_type_action_id = 2;
+        }
+
+        let data = {
+          name: this.offenceTypeName,
+          offence_type_action_id: offense_type_action_id
+        }
+
+        ApiService.post('/offence-types/',data).then((response)=>{
+          if(response.status == 200){
+            this.circularLoader = false;
+            this.setAlert("success",true,response.data.message,5000);
+            this.$store.commit('ADD_OFFENSE_TYPE',response.data.objects)
+            this.offenceTypes = this.OFFENSE_TYPES;
+          } else {
+
+            if(response.data.objects){
+
+              this.circularLoader = false;
+              this.setAlert("error",true,response.data.message,5000);
+
+            } else {
+
+              this.circularLoader = false;
+              this.setAlert("error",true,"There is internal server error",5000);
+            }
+          }
+        }).catch((error)=>{
+
+            this.circularLoader = false;
+            if(error.response.data.generalErrorCode){
+              this.setAlert("error",true,error.response.data.message,10000);
+            } else {
+              this.setAlert("error",true,"Client: There is internal error",10000);
+            }
+        });
       },
 
       closeOffenseTypeDelete(){
@@ -836,18 +886,27 @@ export default {
 
     created(){
       //this.fetchOffenceTypesActions();
-      this.fetchOffenceTypes();
+      //this.fetchOffenceTypes();
       this.fetchOffenses();
     },
 
     beforeRouteEnter (to, from, next) {
       next(vm=>{
-        vm.fetchOffenceTypesActions();
+
         if(vm.OFFENSE_ACTIONS == null){
           vm.fetchOffenceTypesActions();
         } else {
+          vm.loadActionsData = false;
           vm.actions = vm.OFFENSE_ACTIONS;
         }
+
+        if(vm.OFFENSE_TYPES == null){
+            vm.fetchOffenceTypes();
+        } else {
+          vm.loadOffenseTypeData = false;
+          vm.offenceTypes = vm.OFFENSE_TYPES;
+        }
+
       })
     }
 

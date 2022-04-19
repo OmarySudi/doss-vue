@@ -34,6 +34,10 @@ export default {
             state.offenses = offenses
         },
 
+        ADD_OFFENSE_TYPE(state, offenseType){
+            state.offenseTypes.push(offenseType);
+        },
+
         REMOVE_ACTION(state,action){
             state.offenseActions =  state.offenseActions.filter((offense_action)=>offense_action.id != action.id)
         },
