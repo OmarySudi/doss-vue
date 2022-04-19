@@ -36,8 +36,12 @@ export default {
 
         REMOVE_ACTION(state,action){
             state.offenseActions =  state.offenseActions.filter((offense_action)=>offense_action.id != action.id)
-        }
+        },
 
+        SET_ACTION(state,selectedAction){
+            let index = state.offenseActions.findIndex((action)=>action.id == selectedAction.id)
+            state.offenseActions[index] = selectedAction;
+        }
     },
 
     actions: {

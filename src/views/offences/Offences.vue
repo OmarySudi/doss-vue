@@ -40,7 +40,7 @@
                                   v-model="actionDialog"
                                   max-width="500px"
                                 >
-                                  <template v-slot:activator="{ on, attrs }">
+                                  <!-- <template v-slot:activator="{ on, attrs }">
                                     <v-btn
                                       color="primary"
                                       dark
@@ -50,7 +50,7 @@
                                     >
                                       <v-icon>mdi-plus-box</v-icon>
                                     </v-btn>
-                                  </template>
+                                  </template> -->
 
                                   <v-card>
                                     <!-- <v-spacer></v-spacer>
@@ -107,33 +107,60 @@
                                   </v-card>
                                 </v-dialog>
 
-                                <v-dialog v-model="ActionViewDialog" width="800">
-                                  <!-- <v-toolbar>
-                                    <v-spacer></v-spacer>
-                                    <span class="font-weight-bold">{{selectedUser.name}}</span>
-                                    <v-spacer></v-spacer>
-                                  </v-toolbar> -->
-
-                                  <v-card width="800">
+                                <v-dialog
+                                  v-model="actionEditDialog"
+                                  max-width="500px"
+                                >
+                                  <v-card>
+                                    <v-toolbar>
+                                      <v-spacer></v-spacer>
+                                      <span class="font-weight-bold">EDIT ACTION</span>
+                                      <v-spacer></v-spacer>
+                                    </v-toolbar>
                                     <v-card-text>
-                                      <v-row>
-                                        <v-col cols="12">
-                                          <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
-                                            <p class="body-1 mb-1 ml-1 primary--text">Name</p>
-                                            <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedAction.name}}</p>
-                                          </v-card>
-                                        </v-col>
-
-                                        <v-col cols="12">
-                                          <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
-                                            <p class="body-1 mb-1 ml-1 primary--text">Description</p>
-                                            <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedAction.description}}</p>
-                                          </v-card>
-                                        </v-col>
-                                      </v-row>
+                                      <v-container>
+                                        <v-row>
+                                          <v-col
+                                            cols="12"
+                                          >
+                                            <v-text-field
+                                              v-model="selectedAction.action"
+                                              label="Action"
+                                            ></v-text-field>
+                                          </v-col>
+                                          <v-col
+                                            cols="12"
+                                          >
+                                            <v-textarea
+                                              v-model="selectedAction.description"
+                                              label="Description"
+                                            ></v-textarea>
+                                          </v-col>
+                                        </v-row>
+                                      </v-container>
                                     </v-card-text>
+
+                                    <v-card-actions>
+                                      <v-spacer></v-spacer>
+                                      <v-btn
+                                        color="blue darken-1"
+                                        text
+                                        @click="actionEditDialog = false"
+                                      >
+                                        Cancel
+                                      </v-btn>
+                                      <v-btn
+                                        color="blue darken-1"
+                                        class="ml-2 mr-5"
+                                        text
+                                        @click="saveEditAction"
+                                      >
+                                        Save
+                                      </v-btn>
+                                    </v-card-actions>
                                   </v-card>
                                 </v-dialog>
+
 
                                 <v-dialog
                                   v-model="actionDialogDelete"
@@ -171,14 +198,14 @@
                             </template>
 
                              <template v-slot:[`item.actions`]="{ item }">
-                              <v-icon
+                              <!-- <v-icon
                                 size="large"
                                 class="mr-5"
                                 color="primary"
                                 @click="editActionItem(item)"
                               >
                                 mdi-pencil
-                              </v-icon>
+                              </v-icon> -->
                               <v-icon
                                 class="ml-2 mr-5"
                                 size="large"
@@ -527,7 +554,10 @@ export default {
         { text: 'description', value: 'description' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
+
       actionDialog: false,
+      actionEditDialog: false,
+      actionDialogMode: 'add',
       ActionViewDialog: false,
       actionDialogDelete: false,
 
@@ -632,6 +662,42 @@ export default {
         this.actionDialogDelete = false;
       },
 
+      saveEditAction(){
+
+        this.clearAlerts();
+        this.actionEditDialog = false;
+        this.circularLoader = true;
+
+        ApiService.put('/offence-type-actions/'+this.selectedAction.id,this.selectedAction).then((response)=>{
+          if(response.status == 200){
+            this.circularLoader = false;
+            this.setAlert("success",true,response.data.message,5000);
+            this.$store.commit('SET_ACTION',response.data.objects)
+            this.actions = this.OFFENSE_ACTIONS;
+          } else {
+
+            if(response.data.objects){
+
+              this.circularLoader = false;
+              this.setAlert("error",true,response.data.message,5000);
+
+            } else {
+
+              this.circularLoader = false;
+              this.setAlert("error",true,"There is internal server error",5000);
+            }
+          }
+        }).catch((error)=>{
+
+            this.circularLoader = false;
+            if(error.response.data.generalErrorCode){
+              this.setAlert("error",true,error.response.data.message,10000);
+            } else {
+              this.setAlert("error",true,"Client: There is internal error",10000);
+            }
+        });
+      },
+
       actionDeleteItemConfirm(action_id){
 
         this.clearAlerts();
@@ -674,7 +740,8 @@ export default {
       },
 
       editActionItem(action){
-        console.log("deleting action ")
+        this.actionEditDialog = true;
+        this.selectedAction = action;
       },
 
       showAction(action){
