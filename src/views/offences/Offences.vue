@@ -107,6 +107,34 @@
                                   </v-card>
                                 </v-dialog>
 
+                                <v-dialog v-model="ActionViewDialog" width="800">
+                                  <!-- <v-toolbar>
+                                    <v-spacer></v-spacer>
+                                    <span class="font-weight-bold">{{selectedUser.name}}</span>
+                                    <v-spacer></v-spacer>
+                                  </v-toolbar> -->
+
+                                  <v-card width="800">
+                                    <v-card-text>
+                                      <v-row>
+                                        <v-col cols="12">
+                                          <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                                            <p class="body-1 mb-1 ml-1 primary--text">Name</p>
+                                            <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedAction.name}}</p>
+                                          </v-card>
+                                        </v-col>
+
+                                        <v-col cols="12">
+                                          <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                                            <p class="body-1 mb-1 ml-1 primary--text">Description</p>
+                                            <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedAction.description}}</p>
+                                          </v-card>
+                                        </v-col>
+                                      </v-row>
+                                    </v-card-text>
+                                  </v-card>
+                                </v-dialog>
+
                                 <v-dialog
                                   v-model="actionDialogDelete"
                                   persistent
@@ -159,9 +187,9 @@
                               >
                                 mdi-delete
                               </v-icon>
-                              <v-btn color="green" small class="ml-3">
+                              <!-- <v-btn color="green" small class="ml-3" @click="showAction(item)">
                                 <span style="color:white">VIEW</span>
-                              </v-btn>
+                              </v-btn> -->
                             </template>
                           </v-data-table>
                         </v-col>
@@ -301,9 +329,9 @@
                               >
                                 mdi-delete
                               </v-icon>
-                              <v-btn color="green" small class="ml-3">
+                              <!-- <v-btn color="green" small class="ml-3">
                                 <span style="color:white">VIEW</span>
-                              </v-btn>
+                              </v-btn> -->
                             </template>
                           </v-data-table>
                         </v-col>
@@ -500,6 +528,7 @@ export default {
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       actionDialog: false,
+      ActionViewDialog: false,
       actionDialogDelete: false,
 
       action: {
@@ -640,13 +669,17 @@ export default {
       },
 
       deleteActionItem(action){
-        
         this.actionDialogDelete = true;
         this.selectedAction = action;
       },
 
       editActionItem(action){
         console.log("deleting action ")
+      },
+
+      showAction(action){
+        this.selectedAction = action;
+        this.ActionViewDialog = true;
       },
 
       // offence types:
