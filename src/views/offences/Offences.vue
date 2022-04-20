@@ -613,7 +613,7 @@
                                               <v-btn
                                                 color="primary"
                                                 text
-                                                @click="OffenseDeleteItemConfirm(selectedOffense)"
+                                                @click="OffenseDeleteItemConfirm()"
                                               >
                                                 YES
                                               </v-btn>
@@ -633,7 +633,7 @@
                                       >
                                         mdi-pencil
                                       </v-icon>
-                                      <!-- <v-icon
+                                      <v-icon
                                         small
                                         class="ml-2 mr-5"
                                         size="large"
@@ -641,9 +641,9 @@
                                         @click="OffenseDeleteItem(item)"
                                       >
                                         mdi-delete
-                                      </v-icon> -->
+                                      </v-icon>
 
-                                      <!-- <v-btn color="green" small class="ml-3">
+                                       <!-- <v-btn color="green" small class="ml-3">
                                         <span style="color:white">VIEW</span>
                                       </v-btn> -->
                                     </template>
@@ -1169,8 +1169,39 @@ export default {
         this.offenseDialogDelete = false;
       },
 
-      OffenseDeleteItemConfirm(){
-        console.log("offense type delete")
+      async OffenseDeleteItemConfirm(){
+
+        this.clearAlerts();
+        this.offenseDialogDelete = false;
+        this.circularLoader = true;
+
+        await ApiService.delete('/offences/'+this.selectedOffenseId).then((response)=>{
+          if(response.status == 200){
+            this.circularLoader = false;
+            this.setAlert("success",true,response.data.message,5000);
+            this.fetchOffenses();
+          } else {
+
+            if(response.data.objects){
+
+              this.circularLoader = false;
+              this.setAlert("error",true,response.data.message,5000);
+
+            } else {
+
+              this.circularLoader = false;
+              this.setAlert("error",true,"There is internal server error",5000);
+            }
+          }
+        }).catch((error)=>{
+
+            this.circularLoader = false;
+            if(error.response.data.generalErrorCode){
+              this.setAlert("error",true,error.response.data.message,10000);
+            } else {
+              this.setAlert("error",true,"Client: There is internal error",10000);
+            }
+        });
       },
 
       OffenseEditItem(item){
@@ -1181,8 +1212,10 @@ export default {
       },
 
       OffenseDeleteItem(item){
-        console.log("delete item");
+        this.selectedOffenseId = item.id
+        this.offenseDialogDelete = true;
       },
+
     },
 
     created(){
