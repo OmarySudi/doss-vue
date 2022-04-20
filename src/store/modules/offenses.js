@@ -8,6 +8,7 @@ export default {
     state: {
         offenseActions: null,
         offenseTypes: null,
+        offenseTypeNames:[],
         offenses:null,
     },
 
@@ -18,6 +19,8 @@ export default {
         OFFENSE_TYPES: (state) => state.offenseTypes,
 
         OFFENSES: (state) => state.offenses,
+
+        OFFENSE_TYPE_NAMES: (state) => state.offenseTypeNames,
     },
 
     mutations: {
@@ -28,6 +31,10 @@ export default {
 
         SET_OFFENSE_TYPES(state, types){
             state.offenseTypes = types;
+        },
+
+        SET_OFFENSE_TYPE_NAMES(state, types){
+            state.offenseTypeNames = types;
         },
 
         SET_OFFENSES: (state, offenses)=>{

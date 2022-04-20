@@ -486,7 +486,7 @@
                           
                                                   >
                                                     <v-text-field
-                                                      v-model="offense.name"
+                                                      v-model="offenseName"
                                                       label="Name"
                                                     ></v-text-field>
                                                   </v-col>
@@ -497,7 +497,7 @@
                                                     <v-select
                                                       :items="offenseTypes"
                                                       label="Type"
-                                                      v-model="offense.offence_type.name"
+                                                      v-model="offenseTypeName"
                                                       solo
                                                   ></v-select>
                                                   </v-col>
@@ -525,18 +525,101 @@
                                           </v-card>
                                         </v-dialog>
 
-                                        <v-dialog v-model="offenseDialogDelete" max-width="500px">
+                                        <v-dialog
+                                          v-model="offenseEditDialog"
+                                          max-width="500px"
+                                        >
                                           <v-card>
-                                            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                                            <v-toolbar>
+                                              <v-spacer></v-spacer>
+                                              <span class="font-weight-bold">EDIT OFFENSE</span>
+                                              <v-spacer></v-spacer>
+                                            </v-toolbar>
+                                            <v-card-text>
+                                              <v-container>
+                                                <v-row>
+                                                  <v-col
+                                                    cols="12"
+                                                  >
+                                                    <v-text-field
+                                                      v-model="selectedOffenseName"
+                                                      label="Name"
+                                                    ></v-text-field>
+                                                  </v-col>
+
+                                                  <v-col cols="12">
+                                                    <v-select
+                                                      :items="offenseTypes"
+                                                      label="Type"
+                                                      v-model="selectedOffenseTypeName"
+                                                      solo
+                                                    >
+                                                    </v-select>
+                                                  </v-col>
+                                                  <!-- <v-col
+                                                    cols="12"
+                                                  >
+                                                    <v-textarea
+                                                      v-model="selectedAction.description"
+                                                      label="Description"
+                                                    ></v-textarea>
+                                                  </v-col> -->
+                                                </v-row>
+                                              </v-container>
+                                            </v-card-text>
+
                                             <v-card-actions>
                                               <v-spacer></v-spacer>
-                                              <v-btn color="blue darken-1" text @click="closeOffenseDelete">Cancel</v-btn>
-                                              <v-btn color="blue darken-1" text @click="OffenseDeleteItemConfirm">OK</v-btn>
-                                              <v-spacer></v-spacer>
+                                              <v-btn
+                                                color="blue darken-1"
+                                                text
+                                                @click="offenseEditDialog = false"
+                                              >
+                                                Cancel
+                                              </v-btn>
+                                              <v-btn
+                                                color="blue darken-1"
+                                                class="ml-2 mr-5"
+                                                text
+                                                @click="editOffense"
+                                              >
+                                                Save
+                                              </v-btn>
                                             </v-card-actions>
                                           </v-card>
                                         </v-dialog>
 
+                                        <v-dialog
+                                          v-model="offenseDialogDelete"
+                                          persistent
+                                          width="400"
+                                        >
+                                          <v-card>
+                                            <v-card-title class="text-h6 primary white--text">
+                                              Are you sure you want to delete?
+                                            </v-card-title>
+
+                                            <v-divider></v-divider>
+
+                                            <v-card-actions>
+                                              <v-spacer></v-spacer>
+                                              <v-btn
+                                                color="primary"
+                                                text
+                                                @click="closeOffenseDelete = false"
+                                              >
+                                                NO
+                                              </v-btn>
+                                              <v-btn
+                                                color="primary"
+                                                text
+                                                @click="OffenseDeleteItemConfirm(selectedOffense)"
+                                              >
+                                                YES
+                                              </v-btn>
+                                            </v-card-actions>
+                                          </v-card>
+                                        </v-dialog>
                                       </v-toolbar>
                                     </template>
 
@@ -550,7 +633,7 @@
                                       >
                                         mdi-pencil
                                       </v-icon>
-                                      <v-icon
+                                      <!-- <v-icon
                                         small
                                         class="ml-2 mr-5"
                                         size="large"
@@ -558,7 +641,8 @@
                                         @click="OffenseDeleteItem(item)"
                                       >
                                         mdi-delete
-                                      </v-icon>
+                                      </v-icon> -->
+
                                       <!-- <v-btn color="green" small class="ml-3">
                                         <span style="color:white">VIEW</span>
                                       </v-btn> -->
@@ -599,8 +683,7 @@ export default {
 
       selectedAction:{},
       selectedActionType: {},
-      selectedOffense: {},
-
+    
       actionsHeaders: [
         {
           text: 'Action',
@@ -631,9 +714,11 @@ export default {
       //offence types data
 
       offenceTypes: [],
+
       selectedOffenseTypeAction:'',
       selectedOffenseTypeName:'',
       selectedOffenseTypeId:'',
+
       loadOffenseTypeData: true,
       offenceTypeSearch: '',
       offenceTypeHeaders: [
@@ -678,21 +763,27 @@ export default {
 
         offenseDialog: false,
         offenseDialogDelete: false,
+        offenseEditDialog: false,
 
         offense: {
           name: '',
           offence_type: {},
         },
 
-        offenseTypes: [
-          "Kuchelewa"
-        ]
+        offenseName:'',
+        offenseTypeName:'',
+
+        selectedOffenseTypeName:'',
+        selectedOffenseName:'',
+        selectedOffenseId:'',
+
+        offenseTypes: []
       //end offense
 
     }),
 
       computed:{
-      ...mapGetters(['OFFENSE_ACTIONS','OFFENSE_TYPES','OFFENSES'])
+      ...mapGetters(['OFFENSE_ACTIONS','OFFENSE_TYPES','OFFENSES','OFFENSE_TYPE_NAMES'])
     },
 
     methods: {
@@ -819,9 +910,15 @@ export default {
           ApiService.get("/offence-types").then((response)=>{
 
           if(response.status == 200){
+
               this.loadOffenseTypeData = false;
               this.offenceTypes = response.data.objects;
               this.$store.commit('SET_OFFENSE_TYPES',response.data.objects)
+
+              const names = response.data.objects.map(({name})=>name)
+              this.$store.commit('SET_OFFENSE_TYPE_NAMES',names);
+              this.offenseTypes = this.OFFENSE_TYPE_NAMES;
+
           } else {
 
           }
@@ -968,7 +1065,8 @@ export default {
 
           if(response.status == 200){
               this.loadOffenseData = false;
-              this.offenses = response.data.objects;
+              this.$store.commit('SET_OFFENSES',response.data.objects)
+              this.offenses = this.OFFENSES
           } else {
 
           }
@@ -981,8 +1079,91 @@ export default {
         this.offenseDialog = false;
       },
 
-      saveOffense(){
-        console.log("save offense type");
+      async saveOffense(){
+
+        this.clearAlerts();
+        this.offenseDialog = false;
+        this.circularLoader = true;
+
+        let offenseType = this.OFFENSE_TYPES.find((offense_type)=>offense_type.name == this.offenseTypeName);
+       
+        let data = {
+          name: this.offenseName,
+          offence_type_id: offenseType.id
+        }
+
+        await ApiService.post('/offences/',data).then((response)=>{
+          if(response.status == 200){
+            this.circularLoader = false;
+            this.setAlert("success",true,response.data.message,5000);
+            this.fetchOffenses();
+          } else {
+
+            if(response.data.objects){
+
+              this.circularLoader = false;
+              this.setAlert("error",true,response.data.message,5000);
+
+            } else {
+
+              this.circularLoader = false;
+              this.setAlert("error",true,"There is internal server error",5000);
+            }
+          }
+        }).catch((error)=>{
+
+            this.circularLoader = false;
+            if(error.response.data.generalErrorCode){
+              this.setAlert("error",true,error.response.data.message,10000);
+            } else {
+              this.setAlert("error",true,"Client: There is internal error",10000);
+            }
+        });
+      },
+
+
+      async editOffense(){
+
+        this.clearAlerts();
+        this.offenseEditDialog = false;
+        this.circularLoader = true;
+
+        
+        let offenseType = this.OFFENSE_TYPES.find((offense_type)=>offense_type.name == this.selectedOffenseTypeName);
+      
+
+        let data = {
+          name: this.selectedOffenseName,
+          offence_type_id: offenseType.id
+        }
+
+        await ApiService.put('/offences/'+this.selectedOffenseId,data).then((response)=>{
+          if(response.status == 200){
+            this.circularLoader = false;
+            this.setAlert("success",true,response.data.message,5000);
+            this.fetchOffenses();
+          } else {
+
+            if(response.data.objects){
+
+              this.circularLoader = false;
+              this.setAlert("error",true,response.data.message,5000);
+
+            } else {
+
+              this.circularLoader = false;
+              this.setAlert("error",true,"There is internal server error",5000);
+            }
+          }
+        }).catch((error)=>{
+
+            this.circularLoader = false;
+            if(error.response.data.generalErrorCode){
+              this.setAlert("error",true,error.response.data.message,10000);
+            } else {
+              this.setAlert("error",true,"Client: There is internal error",10000);
+            }
+        });
       },
 
       closeOffenseDelete(){
@@ -994,7 +1175,10 @@ export default {
       },
 
       OffenseEditItem(item){
-        console.log("edit item");
+        this.selectedOffenseName = item.name;
+        this.selectedOffenseId = item.id;
+        this.selectedOffenseTypeName = item.offence_type.name
+        this.offenseEditDialog = true;
       },
 
       OffenseDeleteItem(item){
@@ -1005,7 +1189,7 @@ export default {
     created(){
       //this.fetchOffenceTypesActions();
       //this.fetchOffenceTypes();
-      this.fetchOffenses();
+      //this.fetchOffenses();
     },
 
     beforeRouteEnter (to, from, next) {
@@ -1023,6 +1207,13 @@ export default {
         } else {
           vm.loadOffenseTypeData = false;
           vm.offenceTypes = vm.OFFENSE_TYPES;
+        }
+
+        if(vm.OFFENSES == null){
+            vm.fetchOffenses();
+        } else {
+          vm.loadOffenseData = false;
+          vm.offenses = vm.OFFENSES;
         }
 
       })
