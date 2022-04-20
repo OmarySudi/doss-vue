@@ -1008,6 +1008,7 @@ export default {
             this.circularLoader = false;
             this.setAlert("success",true,response.data.message,5000);
             this.fetchOffenceTypes();
+            this.fetchOffenses();
             // this.$store.commit('REPLACE_OFFENSE_TYPE',response.data.objects)
             // this.offenceTypes = this.OFFENSE_TYPES;
           } else {
@@ -1128,10 +1129,8 @@ export default {
         this.offenseEditDialog = false;
         this.circularLoader = true;
 
-        
         let offenseType = this.OFFENSE_TYPES.find((offense_type)=>offense_type.name == this.selectedOffenseTypeName);
       
-
         let data = {
           name: this.selectedOffenseName,
           offence_type_id: offenseType.id
