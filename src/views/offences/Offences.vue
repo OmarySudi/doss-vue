@@ -606,7 +606,7 @@
                                               <v-btn
                                                 color="primary"
                                                 text
-                                                @click="closeOffenseDelete = false"
+                                                @click="offenseDialogDelete = false"
                                               >
                                                 NO
                                               </v-btn>
@@ -620,6 +620,7 @@
                                             </v-card-actions>
                                           </v-card>
                                         </v-dialog>
+
                                       </v-toolbar>
                                     </template>
 
@@ -1199,7 +1200,7 @@ export default {
             if(error.response.data.generalErrorCode){
               this.setAlert("error",true,error.response.data.message,10000);
             } else {
-              this.setAlert("error",true,"Client: There is internal error",10000);
+              this.setAlert("error",true,"Client: There is internal error",5000);
             }
         });
       },
