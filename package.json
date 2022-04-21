@@ -9,6 +9,7 @@
   "dependencies": {
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
+    "mikoa": "^1.0.8",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuelidate": "^0.7.7",

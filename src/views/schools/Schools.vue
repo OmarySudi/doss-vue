@@ -1,5 +1,13 @@
 <template>
   <v-container>
+
+    <Snackbar 
+      :type="snackbarType" 
+      :snackbar="snackbar" 
+      :text="snackbarText" 
+      :timeout="snackbarTimeout"
+    />
+
     <v-data-table
       :headers="headers"
       :items="schools"
@@ -26,7 +34,7 @@
           <v-dialog
             v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
             v-model="dialog"
-            max-width="500px"
+            max-width="550px"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -41,8 +49,7 @@
             </template>
 
             <v-card>
-              
-                <v-toolbar>
+              <v-toolbar>
                 <v-spacer></v-spacer>
                 <span class="font-weight-bold">ADD SCHOOL</span>
                 <v-spacer></v-spacer>
@@ -54,7 +61,6 @@
                     <v-col
                       cols="12"
                       sm="6"
-                      md="4"
                     >
                       <v-text-field
                         v-model="school.name"
@@ -64,60 +70,58 @@
                     <v-col
                       cols="12"
                       sm="6"
-                      md="4"
                     >
                       <v-text-field
                         v-model="school.email"
                         label="Code"
                       ></v-text-field>
                     </v-col>
-                         <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                       <v-select
-                        :items="regions"
-                        label="Region"
-                        v-model="school.phone_number"
-                        solo
-                      ></v-select>
-                    </v-col>
+                  </v-row>
+                  <v-row>
                     <v-col
                       cols="12"
                       sm="6"
-                      md="4"
                     >
-                      <!-- <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
-                      ></v-text-field> -->
+                       <v-select
+                        :items="region_names"
+                        label="Region"
+                        v-model="region"
+                        @change="setDistricts()"
+                        solo
+                      ></v-select>
+                    </v-col>
+
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
                       <v-select
                         :items="districts"
                         label="District"
-                        v-model="school.phone_number"
+                        v-model="district"
                         solo
                       ></v-select>
-
                     </v-col>
-                     <v-col
+                  </v-row>
+             
+                  <v-row>
+                    <v-col
                       cols="12"
                       sm="6"
-                      md="4"
                     >
-                      <!-- <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
-                      ></v-text-field> -->
-                      <v-select
+                      <!-- <v-select
                         :items="wards"
                         label="Ward"
                         v-model="school.phone_number"
                         solo
-                      ></v-select>
-
+                    ></v-select> -->
+                      <v-text-field
+                        v-model="ward"
+                        label="Ward"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
+
                 </v-container>
               </v-card-text>
 
@@ -134,6 +138,111 @@
                   color="blue darken-1"
                   text
                   @click="save"
+                >
+                  Save
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+
+          <v-dialog
+            v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
+            v-model="editDialog"
+            max-width="550px"
+          >
+            <v-card>
+              <v-toolbar>
+                <v-spacer></v-spacer>
+                <span class="font-weight-bold">EDIT SCHOOL</span>
+                <v-spacer></v-spacer>
+              </v-toolbar>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
+                      <v-text-field
+                        v-model="name"
+                        label="School Name"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
+                      <v-text-field
+                        v-model="code"
+                        label="Code"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
+                       <v-select
+                        :items="region_names"
+                        label="Region"
+                        v-model="region"
+                        @change="setDistricts()"
+                        solo
+                      ></v-select>
+                    </v-col>
+
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
+                      <v-select
+                        :items="districts"
+                        label="District"
+                        v-model="district"
+                        solo
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+             
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
+                      <!-- <v-select
+                        :items="wards"
+                        label="Ward"
+                        v-model="school.phone_number"
+                        solo
+                    ></v-select> -->
+                      <v-text-field
+                        v-model="ward"
+                        label="Ward"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="cancelEditing()"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="editSchool()"
                 >
                   Save
                 </v-btn>
@@ -181,11 +290,8 @@
           <span style="color:white">VIEW</span>
         </v-btn>
       </template>
-
-
-
-
     </v-data-table>
+    <CircularLoader :loading="circularLoader"/>
   </v-container>
 </template>
 
@@ -193,9 +299,17 @@
 
 import ApiService from '../../services/api'
 import {mapGetters} from 'vuex'
+import { region,district,wards } from 'mikoa'
+import {projectMixin} from '../../mixins/mixins'
+import Snackbar from '../../components/Snackbar.vue'
+import CircularLoader from '../../components/CircularLoader.vue'
 
 export default {
-   name: 'Users',
+    name: 'Users',
+
+    mixins: [projectMixin],
+
+    components: {Snackbar,CircularLoader},
 
     data: () => ({
   
@@ -214,6 +328,7 @@ export default {
       ],
 
       dialog: false,
+      editDialog: false,
       dialogDelete: false,
 
       school: {
@@ -223,25 +338,103 @@ export default {
         phone_number: '',
       },
 
-      regions: [
-        "DAR-ES-SALAAM"
-      ],
+      name:'',
+      district:'',
+      ward:'',
+      code:'',
+      selectedSchoolId:'',
 
-      districts: [
-        "TEMEKE",
-        "KINONDONI",
-        "ILALA",
-        "UBUNGO",
-        "KIGAMBONI"
-      ],
+      regions: [],
+      region_names:[],
+      region:'',
+      districts:[],
+      selectedRegionId:'',
 
-      wards: [
-        "MIBURANI"
-      ]
+
+      districts: [],
+      district:'',
+      ward:'',
+
+      wards: []
 
     }),
 
     methods: {
+      
+      resetForm(){
+        this.name = '';
+        this.region = '';
+        this.district = '';
+        this.ward = '';
+      },
+
+      cancelEditing(){
+        this.resetForm();
+        this.editDialog = false;
+      },
+
+      editSchool(){
+
+        if(this.region != '' && this.district != ''){
+          this.clearAlerts();
+          this.editDialog = false;
+          this.circularLoader = true;
+
+          const region = this.regions.find((region)=>region.name == this.region);
+          
+          let data = {
+            name: this.name,
+            region_id: region.id,
+            district: this.district,
+            ward:this.ward
+          }
+
+          ApiService.put('/schools/'+this.selectedSchoolId,data).then((response)=>{
+
+            if(response.status == 200){
+              this.circularLoader = false;
+              this.setAlert("success",true,response.data.message,5000);
+              //this.$store.commit('REMOVE_USER',response.data.objects)
+            } else {
+
+              if(response.data.objects){
+
+                this.circularLoader = false;
+                this.setAlert("error",true,response.data.message,10000);
+
+              } else {
+
+                this.circularLoader = false;
+                this.setAlert("error",true,"There is internal server error",5000);
+              }
+            }
+          }).catch((error)=>{
+
+              this.circularLoader = false;
+              if(error.response.data.generalErrorCode){
+                this.setAlert("error",true,error.response.data.message,10000);
+              } else {
+                this.setAlert("error",true,"Client: There is internal error",5000);
+              }
+          });
+        } else {
+          this.clearAlerts();
+          this.setAlert("warning",true,"Validation: Region and District are required",5000);
+        }
+      },
+      
+      setDistricts(){
+       
+        this.district = '';
+
+        let selectedRegion = this.regions.find((region) => region.name == this.region);
+
+        this.selectedRegionId = selectedRegion.id;
+
+        this.districts = district.region(this.selectedRegionId).map(({name})=>name)
+
+      },
+
       async fetchSchools(){
         ApiService.get("/schools").then((response)=>{
 
@@ -258,6 +451,28 @@ export default {
 
       deleteItem(){
         console.log("deleting a user")
+      },
+
+      editItem(item){
+
+        console.log(item)
+
+        this.selectedSchoolId = item.id;
+        this.name = item.name;
+        this.code = item.code;
+        this.district = item.district;
+        this.ward = item.ward ? item.ward: '';
+        this.region = item.region.name;
+      
+        if(item.region.name){
+
+          let selectedRegion = this.regions.find((region) => region.name == this.region);
+          this.selectedRegionId = selectedRegion.id;
+          this.districts = district.region(this.selectedRegionId).map(({name})=>name)
+
+        }
+        
+        this.editDialog = true;
       },
 
       deleteItemConfirm(){
@@ -280,11 +495,21 @@ export default {
       redirectToSchool(code){
 
         this.$router.push({name: 'School', params: {code: code}})
+      },
+
+      fetchRegions(){
+        this.regions = region.all();
+        this.region_names = this.regions.map(({name})=>name);
       }
+
     },
 
     computed: {
       ...mapGetters(['user']),
+    },
+
+    created(){
+      this.fetchRegions();
     },
 
     beforeRouteEnter (to, from, next) {
