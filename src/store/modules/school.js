@@ -50,8 +50,11 @@ export default {
 
         UPDATE_SCHOOL: (state, editSchool)=>{
            let index =  state.schools.findIndex((school)=> school.id == editSchool.id);
-           console.log(index);
            state.schools[index] = editSchool;
+        },
+
+        ADD_SCHOOL: (state,school)=>{
+            state.schools.push(school);
         }
     },
 

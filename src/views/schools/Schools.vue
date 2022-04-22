@@ -63,8 +63,9 @@
                       sm="6"
                     >
                       <v-text-field
-                        v-model="school.name"
+                        v-model="name"
                         label="School Name"
+                        required
                       ></v-text-field>
                     </v-col>
                     <v-col
@@ -72,8 +73,9 @@
                       sm="6"
                     >
                       <v-text-field
-                        v-model="school.email"
+                        v-model="code"
                         label="Code"
+                        required
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -99,6 +101,7 @@
                         :items="districts"
                         label="District"
                         v-model="district"
+                        required
                         solo
                       ></v-select>
                     </v-col>
@@ -109,12 +112,6 @@
                       cols="12"
                       sm="6"
                     >
-                      <!-- <v-select
-                        :items="wards"
-                        label="Ward"
-                        v-model="school.phone_number"
-                        solo
-                    ></v-select> -->
                       <v-text-field
                         v-model="ward"
                         label="Ward"
@@ -366,6 +363,7 @@ export default {
         this.region = '';
         this.district = '';
         this.ward = '';
+        this.code = '';
       },
 
       cancelEditing(){
@@ -376,6 +374,7 @@ export default {
       editSchool(){
 
         if(this.region != '' && this.district != ''){
+
           this.clearAlerts();
           this.editDialog = false;
           this.circularLoader = true;
@@ -384,6 +383,7 @@ export default {
           
           let data = {
             name: this.name,
+            code: this.code,
             region_id: region.id,
             district: this.district,
             ward:this.ward
@@ -486,12 +486,62 @@ export default {
       },
 
       close(){
-        console.log("close")
         this.dialog = false;
+        this.resetForm();
       },
 
       save(){
-        console.log("save")
+        if(this.region != '' && this.district != ''){
+          this.clearAlerts();
+          this.dialog = false;
+          this.circularLoader = true;
+
+          const region = this.regions.find((region)=>region.name == this.region);
+          
+          let data = {
+            name: this.name,
+            code: this.code,
+            region_id: region.id,
+            district: this.district,
+            ward:this.ward
+          }
+
+          ApiService.post('/schools',data).then((response)=>{
+
+            if(response.status == 200){
+
+              this.circularLoader = false;
+              this.setAlert("success",true,response.data.message,5000);
+              this.fetchSchools();
+              // this.$store.commit('ADD_SCHOOL',response.data.objects);
+              // this.schools = this.SCHOOL;
+
+            } else {
+
+              if(response.data.objects){
+
+                this.circularLoader = false;
+                this.setAlert("error",true,response.data.message,5000);
+
+              } else {
+
+                this.circularLoader = false;
+                this.setAlert("error",true,"There is internal server error",5000);
+              }
+            }
+          }).catch((error)=>{
+
+              this.circularLoader = false;
+              if(error.response.data.generalErrorCode){
+                this.setAlert("error",true,error.response.data.message,10000);
+              } else {
+                this.setAlert("error",true,"Client: There is internal error",5000);
+              }
+          });
+        } else {
+          this.clearAlerts();
+          this.setAlert("warning",true,"Validation: Region and District are required",5000);
+        }
       },
 
       redirectToSchool(code){
