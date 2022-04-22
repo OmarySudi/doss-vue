@@ -440,7 +440,9 @@ export default {
 
           if(response.status == 200){
             this.loadData = false;
-            this.schools = response.data.objects;
+            this.$store.commit('SET_SCHOOLS',response.data.objects)
+            this.schools = this.SCHOOLS;
+
           } else {
 
           }
@@ -505,7 +507,7 @@ export default {
     },
 
     computed: {
-      ...mapGetters(['user']),
+      ...mapGetters(['user','SCHOOLS']),
     },
 
     created(){
@@ -517,7 +519,13 @@ export default {
       // ...
       next(vm=>{  
         
-        vm.fetchSchools();
+        if(vm.SCHOOLS == null){
+           vm.fetchSchools();
+        } else {
+          vm.loadData = false;
+          vm.schools = vm.SCHOOLS;
+        }
+         
         
       });
 
