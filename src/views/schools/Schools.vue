@@ -394,13 +394,13 @@ export default {
             if(response.status == 200){
               this.circularLoader = false;
               this.setAlert("success",true,response.data.message,5000);
-              //this.$store.commit('REMOVE_USER',response.data.objects)
+              this.fetchSchools();
             } else {
 
               if(response.data.objects){
 
                 this.circularLoader = false;
-                this.setAlert("error",true,response.data.message,10000);
+                this.setAlert("error",true,response.data.message,5000);
 
               } else {
 

@@ -46,6 +46,12 @@ export default {
 
         SET_CLASS_LEVELS_NAMES: (state, class_levels_names)=>{
             state.class_levels_names = class_levels_names
+        },
+
+        UPDATE_SCHOOL: (state, editSchool)=>{
+           let index =  state.schools.findIndex((school)=> school.id == editSchool.id);
+           console.log(index);
+           state.schools[index] = editSchool;
         }
     },
 
