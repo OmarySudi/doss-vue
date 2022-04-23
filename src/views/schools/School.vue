@@ -2,15 +2,17 @@
   <v-container>
       <v-card class="mt-5">
 
-            <v-row justify="end" align="end">
-                <v-btn 
-                    color="primary" 
-                    class="mr-5"
-                    small
-                    @click.prevent="goBack()"
-                >
-                <v-icon>mdi-arrow-left-thick</v-icon>
-                </v-btn>
+            <v-row>
+                <v-col>
+                    <v-btn 
+                        color="primary" 
+                        class="ml-3"
+                        small
+                        @click.prevent="goBack()"
+                    >
+                    <v-icon>mdi-arrow-left-thick</v-icon>
+                    </v-btn>
+                </v-col>
             </v-row>
 
             <v-row>
