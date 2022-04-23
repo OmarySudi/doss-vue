@@ -55,90 +55,92 @@
                 <v-spacer></v-spacer>
               </v-toolbar>
 
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
-                      <v-text-field
-                        v-model="name"
-                        label="School Name"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
-                      <v-text-field
-                        v-model="code"
-                        label="Code"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
-                       <v-select
-                        :items="region_names"
-                        label="Region"
-                        v-model="region"
-                        @change="setDistricts()"
-                        solo
-                      ></v-select>
-                    </v-col>
+              <form ref="AddSchoolForm" @submit.prevent="save()">
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-text-field
+                          v-model="name"
+                          label="School Name"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-text-field
+                          v-model="code"
+                          label="Code"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-select
+                          :items="region_names"
+                          label="Region"
+                          v-model="region"
+                          @change="setDistricts()"
+                          solo
+                        ></v-select>
+                      </v-col>
 
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
-                      <v-select
-                        :items="districts"
-                        label="District"
-                        v-model="district"
-                        required
-                        solo
-                      ></v-select>
-                    </v-col>
-                  </v-row>
-             
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
-                      <v-text-field
-                        v-model="ward"
-                        label="Ward"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-select
+                          :items="districts"
+                          label="District"
+                          v-model="district"
+                          required
+                          solo
+                        ></v-select>
+                      </v-col>
+                    </v-row>
+              
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-text-field
+                          v-model="ward"
+                          label="Ward"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
 
-                </v-container>
-              </v-card-text>
+                  </v-container>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="close"
-                >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="save"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="close"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    type="submit"
+                  >
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </form>
             </v-card>
           </v-dialog>
 

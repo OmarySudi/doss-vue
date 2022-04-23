@@ -108,147 +108,152 @@
                             <v-card>
                             
                                 <v-toolbar>
-                                <v-spacer></v-spacer>
-                                <span class="font-weight-bold">ADD STUDENT</span>
-                                <v-spacer></v-spacer>
-                            </v-toolbar>
+                                    <v-spacer></v-spacer>
+                                    <span class="font-weight-bold">ADD STUDENT</span>
+                                    <v-spacer></v-spacer>
+                                </v-toolbar>
 
-                            <v-card-text>
-                                <v-container>
-                                <v-row>
-                                    <v-col
-                                    cols="12"
-                                    sm="6"
-                                    md="4"
-                                    >
-                                    <v-text-field
-                                        v-model="student.full_name"
-                                        label="Full Name"
-                                    ></v-text-field>
-                                    </v-col>
+                                <form ref="AddStudentForm" @submit.prevent="save()">
+                                    <v-card-text>
+                                        <v-container>
+                                            <v-row>
+                                                <v-col
+                                                cols="12"
+                                                sm="6"
+                                                md="4"
+                                                >
+                                                <v-text-field
+                                                    v-model="student.full_name"
+                                                    label="Full Name"
+                                                ></v-text-field>
+                                                </v-col>
 
-                                    <v-col
-                                    cols="12"
-                                    sm="6"
-                                    md="4"
-                                    >
-                                    <v-select
-                                        :items="genders"
-                                        label="Gender"
-                                        v-model="student.gender"
-                                        solo
-                                    ></v-select>
-                                    </v-col>
-                                        <v-col
-                                    cols="12"
-                                    sm="6"
-                                    md="4"
-                                    >
-                                    <v-select
-                                        :items="years"
-                                        label="Entry Year"
-                                        v-model="student.entry_year"
-                                        solo
-                                    ></v-select>
-                                    </v-col>
-                                    <v-col
-                                    cols="12"
-                                    sm="6"
-                                    md="4"
-                                    >
-                                    <!-- <v-text-field
-                                        v-model="editedItem.fat"
-                                        label="Fat (g)"
-                                    ></v-text-field> -->
-                                    <v-select
-                                        :items="years"
-                                        label="Leave Year"
-                                        v-model="student.leave_year"
-                                        solo
-                                    ></v-select>
+                                                <v-col
+                                                cols="12"
+                                                sm="6"
+                                                md="4"
+                                                >
+                                                <v-select
+                                                    :items="genders"
+                                                    label="Gender"
+                                                    v-model="student.gender"
+                                                    solo
+                                                ></v-select>
+                                                </v-col>
+                                                    <v-col
+                                                cols="12"
+                                                sm="6"
+                                                md="4"
+                                                >
+                                                <v-select
+                                                    :items="years"
+                                                    label="Entry Year"
+                                                    v-model="student.entry_year"
+                                                    solo
+                                                ></v-select>
+                                                </v-col>
+                                                <v-col
+                                                cols="12"
+                                                sm="6"
+                                                md="4"
+                                                >
+                                                <!-- <v-text-field
+                                                    v-model="editedItem.fat"
+                                                    label="Fat (g)"
+                                                ></v-text-field> -->
+                                                <v-select
+                                                    :items="years"
+                                                    label="Leave Year"
+                                                    v-model="student.leave_year"
+                                                    solo
+                                                ></v-select>
 
-                                    </v-col>
+                                                </v-col>
 
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="4"
-                                    >
-                                        <!-- <v-text-field
-                                            v-model="editedItem.fat"
-                                            label="Fat (g)"
-                                        ></v-text-field> -->
-                                        <v-text-field
-                                            v-model="student.parent_name"
-                                            label="Parent Name"
-                                        ></v-text-field>
-                                    </v-col>
+                                                <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="4"
+                                                >
+                                                    <!-- <v-text-field
+                                                        v-model="editedItem.fat"
+                                                        label="Fat (g)"
+                                                    ></v-text-field> -->
+                                                    <v-text-field
+                                                        v-model="student.parent_name"
+                                                        label="Parent Name"
+                                                    ></v-text-field>
+                                                </v-col>
 
-                                     <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="4"
-                                    >
-                                        <!-- <v-text-field
-                                            v-model="editedItem.fat"
-                                            label="Fat (g)"
-                                        ></v-text-field> -->
-                                        <v-text-field
-                                            v-model="student.parent_number"
-                                            label="Parent mobile"
-                                        ></v-text-field>
-                                    </v-col>
+                                                <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="4"
+                                                >
+                                                    <!-- <v-text-field
+                                                        v-model="editedItem.fat"
+                                                        label="Fat (g)"
+                                                    ></v-text-field> -->
+                                                    <v-text-field
+                                                        v-model="student.parent_number"
+                                                        label="Parent mobile"
+                                                    ></v-text-field>
+                                                </v-col>
 
-                                     <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="4"
-                                    >
-                                        <!-- <v-text-field
-                                            v-model="editedItem.fat"
-                                            label="Fat (g)"
-                                        ></v-text-field> -->
-                                        <v-text-field
-                                            v-model="student.chair_name"
-                                            label="Chair Name"
-                                        ></v-text-field>
-                                    </v-col>
+                                                <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="4"
+                                                >
+                                                    <!-- <v-text-field
+                                                        v-model="editedItem.fat"
+                                                        label="Fat (g)"
+                                                    ></v-text-field> -->
+                                                    <v-text-field
+                                                        v-model="student.chair_name"
+                                                        label="Chair Name"
+                                                    ></v-text-field>
+                                                </v-col>
 
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="4"
-                                    >
-                                        <!-- <v-text-field
-                                            v-model="editedItem.fat"
-                                            label="Fat (g)"
-                                        ></v-text-field> -->
-                                        <v-text-field
-                                            v-model="student.chair_mobile"
-                                            label="Chair Mobile"
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                </v-container>
-                            </v-card-text>
+                                                <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="4"
+                                                >
+                                                    <!-- <v-text-field
+                                                        v-model="editedItem.fat"
+                                                        label="Fat (g)"
+                                                    ></v-text-field> -->
+                                                    <v-text-field
+                                                        v-model="student.chair_mobile"
+                                                        label="Chair Mobile"
+                                                    ></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                        </v-container>
+                                    </v-card-text>
 
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="close"
-                                >
-                                Cancel
-                                </v-btn>
-                                <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="save"
-                                >
-                                Save
-                                </v-btn>
-                            </v-card-actions>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+
+                                        <v-btn
+                                            color="blue darken-1"
+                                            text
+                                            @click="close"
+                                        >
+                                            Cancel
+                                        </v-btn>
+
+                                        <v-btn
+                                            color="blue darken-1"
+                                            text
+                                            type="submit"
+                                        >
+                                            Save
+                                        </v-btn>
+
+                                    </v-card-actions>
+                                </form>
                             </v-card>
                         </v-dialog>
 
