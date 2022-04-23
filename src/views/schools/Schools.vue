@@ -401,13 +401,15 @@ export default {
           this.circularLoader = true;
 
           const region = this.regions.find((region)=>region.name == this.region);
+
+
           
           let data = {
             name: this.name,
             code: this.code,
             region_id: region.id,
             district: this.district,
-            ward:this.ward
+            ward:this.ward.toUpperCase()
           }
 
           ApiService.put('/schools/'+this.selectedSchoolId,data).then((response)=>{
