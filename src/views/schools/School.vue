@@ -1,6 +1,18 @@
 <template>
   <v-container>
       <v-card class="mt-5">
+
+            <v-row justify="end" align="end">
+                <v-btn 
+                    color="primary" 
+                    class="mr-5"
+                    small
+                    @click.prevent="goBack()"
+                >
+                <v-icon>mdi-arrow-left-thick</v-icon>
+                </v-btn>
+            </v-row>
+
             <v-row>
                 <!-- <v-col cols="6">
                     <v-btn 
@@ -14,8 +26,8 @@
                     <v-card class="ml-3 pl-3">
                         <div>SCHOOL : {{school.name}}</div>
                         <div>REGION : {{ school.region.name}}</div>
-                        <div>DISTRICT : KINONDONI</div>
-                        <div>WARD : UPANGA</div>
+                        <div v-if="school.district">DISTRICT : {{school.district}}</div>
+                        <div v-if="school.ward">WARD : {{ school.ward}}</div>
                     </v-card>
                 </v-col>
             </v-row>
@@ -45,8 +57,9 @@
                   </v-card>
               </v-col>
           </v-row>-->
-
-          <v-row></v-row>
+            
+      
+            
           <v-row>
               <v-col cols="12">
                   <v-data-table
@@ -72,6 +85,7 @@
                             hide-details
                         ></v-text-field>
                         <v-spacer></v-spacer>
+
                         <v-dialog
                             v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
                             v-model="dialog"
@@ -281,15 +295,23 @@
               </v-col>
           </v-row>
       </v-card>
+    <CircularLoader :loading="circularLoader"/>
   </v-container>
 </template>
 
 <script>
 import ApiService from '../../services/api'
 import {mapGetters} from 'vuex'
+import Snackbar from '../../components/Snackbar.vue'
+import CircularLoader from '../../components/CircularLoader.vue'
+import {projectMixin} from '../../mixins/mixins'
 
 export default {
+    
+    mixins: [projectMixin],
 
+    components: {Snackbar,CircularLoader},
+    
     data: () => ({
         school:{},
         students: [],
@@ -333,32 +355,71 @@ export default {
             this.$router.go(-1);
         },
 
-        async fetchSchool(code){
+        fetchSchool(code){
+            this.clearAlerts();
 
             ApiService.get("/schools/"+code).then((response)=>{
 
             if(response.status == 200){
+
                 this.school = response.data.objects;
-                console.log(this.school)
+
             } else {
 
+                if(response.data.objects){
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,response.data.message,5000);
+
+                } else {
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,"There is internal server error",5000);
+                }
             }
             }).catch(()=>{
 
+                this.circularLoader = false;
+                if(error.response.data.generalErrorCode){
+                    this.setAlert("error",true,error.response.data.message,10000);
+                } else {
+                    this.setAlert("error",true,"Client: There is internal error",5000);
+                }
             })
         },
 
-         async fetchStudents(code){
-
+         fetchStudents(code){
+            this.clearAlerts();
+            this.circularLoader = true;
             ApiService.get("/schools/"+code+"/students").then((response)=>{
+
             if(response.status == 200){
+
                 this.loadData = false;
+                this.circularLoader = false;
                 this.students = response.data.objects;
+
             } else {
 
+                if(response.data.objects){
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,response.data.message,5000);
+
+                } else {
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,"There is internal server error",5000);
+                }
             }
             }).catch(()=>{
 
+                this.circularLoader = false;
+                if(error.response.data.generalErrorCode){
+                    this.setAlert("error",true,error.response.data.message,10000);
+                } else {
+                    this.setAlert("error",true,"Client: There is internal error",5000);
+                }
             })
         },
 
@@ -395,22 +456,9 @@ export default {
     
         next(vm=>{  
 
-         vm.fetchSchool(to.params.code);
-
-         vm.fetchStudents(to.params.code);
-
-        // if(vm.LOAD_STAFFS == null){
-
-        //     // fetching a user from the server when page is reloaded
-        //     vm.fetchUser(to.params.id)
-
-        // } else {
-
-        //     // getting user from the store
-        //     vm.staff = vm.LOAD_STAFFS.find((staff)=>staff._id === to.params.id)
-
-        // }
-
+            vm.fetchSchool(to.params.code);
+            vm.fetchStudents(to.params.code);
+           
         });
     }
 }
