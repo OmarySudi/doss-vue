@@ -13,7 +13,7 @@
       :items="schools"
       :loading="loadData"
       :search="search"
-      sort-by="created_at"
+      sort-by="name"
       class="elevation-1 mt-3"
     >
 

@@ -1,29 +1,48 @@
 <template>
   <v-container>
       <v-card class="mt-5">
-
             <v-row>
-                <v-col>
-                    <v-btn 
-                        color="primary" 
-                        class="ml-3"
-                        small
-                        @click.prevent="goBack()"
-                    >
-                    <v-icon>mdi-arrow-left-thick</v-icon>
-                    </v-btn>
+                <v-col cols="12">
+                    <v-row>
+                        <v-btn 
+                            color="primary" 
+                            class="ml-3"
+                            small
+                            @click.prevent="goBack()"
+                        >
+                            <v-icon>mdi-arrow-left-thick</v-icon>
+                        </v-btn>
+
+                        <v-card class="ml-5" style="width:90%">
+                            <v-toolbar height="40" color="success" class="white--text">
+                                <v-spacer></v-spacer>
+                                <span class="font-weight-bold">{{school.name}}</span>
+                                <v-spacer></v-spacer>
+                            </v-toolbar>
+
+                            <v-row>
+                                <v-col cols="12" sm="6" md="4">
+                                    <div class="py-2 px-1">
+                                        <span>REGION: </span> <span>{{ school.region.name }}</span>
+                                    </div>
+                                </v-col>
+                                  <v-col cols="12" sm="6" md="4">
+                                     <div class="py-2 px-1">
+                                        <span>DISTRICT: </span> <span v-if="school.district">{{ school.district }}</span>
+                                    </div>
+                                </v-col>
+                                  <v-col cols="12" sm="6" md="4">
+                                    <div class="py-2 px-1">
+                                        <span>WARD : </span> <span v-if="school.ward">{{ school.ward }}</span>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+                    </v-row>
                 </v-col>
             </v-row>
 
-            <v-row>
-                <!-- <v-col cols="6">
-                    <v-btn 
-                    color="primary" 
-                    @click.prevent="goBack()"
-                    icon>
-                    <v-icon>mdi-arrow-left-thick</v-icon>
-                    </v-btn>
-                </v-col> -->
+            <!-- <v-row>
                 <v-col cols="12" sm="" md="3">
                     <v-card class="ml-3 pl-3">
                         <div>SCHOOL : {{school.name}}</div>
@@ -32,7 +51,7 @@
                         <div v-if="school.ward">WARD : {{ school.ward}}</div>
                     </v-card>
                 </v-col>
-            </v-row>
+            </v-row> -->
 
           <!-- <v-row>
                 <v-col cols="12" sm="6" md="3">
