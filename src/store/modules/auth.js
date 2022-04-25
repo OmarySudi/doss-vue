@@ -91,26 +91,26 @@ export default {
                         
                         case 'TEACHER':
 
-                                localStorage.setItem('phone_number',user.teacher.phone_number);
-                                localStorage.setItem('school',user.teacher.school.name);
+                                localStorage.setItem('phone_number',user.user.phone_number);
+                                localStorage.setItem('school',user.user.school.name);
                                 store.dispatch('attempt',user.accessToken)
                                 router.push('/user')
                             break;
 
                         case 'OFFICER':
-                                localStorage.setItem('phone_number',user.officer.phone_number);
+                                localStorage.setItem('phone_number',user.user.phone_number);
                                 store.dispatch('attempt',user.accessToken)
                                 router.push('/user')
                             break;
 
                         case 'ADMIN':
-                                localStorage.setItem('phone_number',user.admin.phone_number);
+                                localStorage.setItem('phone_number',user.user.phone_number);
                                 store.dispatch('attempt',user.accessToken)
                                 router.push('/users')
                             break;
 
                         case 'RESEARCHER':
-                                localStorage.setItem('phone_number',user.researcher.phone_number);
+                                localStorage.setItem('phone_number',user.user.phone_number);
                                 store.dispatch('attempt',user.accessToken)
                                 router.push('/user')
                             break;

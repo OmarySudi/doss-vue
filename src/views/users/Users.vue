@@ -345,7 +345,7 @@ export default {
         text: 'Name',
         align: 'start',
         sortable: false,
-        value: 'name',
+        value: 'user.name',
       },
       { text: 'Email',  value: 'email'},
       { text: 'Role (g)', value: 'user_type' },
@@ -356,7 +356,7 @@ export default {
     dialogDelete: false,
     selectedUser:{
       user:{
-        
+
       }
     },
     viewDialog: false,
