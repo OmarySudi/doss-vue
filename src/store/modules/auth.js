@@ -81,7 +81,7 @@ export default {
 
                     let user = response.data.objects;
 
-                    localStorage.setItem('name',user.name);
+                    localStorage.setItem('name',user.user.name);
                     localStorage.setItem('user_gid',user.user_gid);
                     localStorage.setItem('email',user.email);
                     localStorage.setItem('user_type',user.user_type);
