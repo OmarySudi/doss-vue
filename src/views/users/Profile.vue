@@ -388,26 +388,9 @@ export default {
 
             let userResponse = response.data.objects;
 
-            localStorage.setItem('name',userResponse.name);
+            localStorage.setItem('name',userResponse.user.name);
             localStorage.setItem('email',userResponse.email);
-
-            switch (userResponse.user_type) {
-
-              case 'TEACHER':
-                localStorage.setItem('phone_number',userResponse.teacher.phone_number);
-                break;
-              
-              case 'RESEARCHER':
-                localStorage.setItem('phone_number',userResponse.researcher.phone_number);
-                break;
-
-              case 'OFFICER':
-                localStorage.setItem('phone_number',userResponse.officer.phone_number);
-                break;
-            
-              default:
-                break;
-            }
+            localStorage.setItem('phone_number',userResponse.user.phone_number);
 
             let user = {
 
