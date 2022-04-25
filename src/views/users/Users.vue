@@ -472,7 +472,8 @@ export default {
         if(response.status == 200){
           this.circularLoader = false;
           this.setAlert("success",true,response.data.message,5000);
-          this.$store.commit('REMOVE_USER',response.data.objects)
+          this.$store.commit('REMOVE_USER',response.data.objects);
+          this.users = this.USERS;
         } else {
 
           if(response.data.objects){

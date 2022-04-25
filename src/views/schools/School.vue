@@ -13,7 +13,7 @@
                             <v-icon>mdi-arrow-left-thick</v-icon>
                         </v-btn>
 
-                        <v-card class="ml-5" style="width:90%">
+                        <v-card class="ml-5 mb-5" style="width:90%" elevation="4">
                             <v-toolbar height="40" color="success" class="white--text">
                                 <v-spacer></v-spacer>
                                 <span class="font-weight-bold">{{school.name}}</span>
@@ -23,12 +23,12 @@
                             <v-row>
                                 <v-col cols="12" sm="6" md="4">
                                     <div class="py-2 px-1">
-                                        <span>REGION: </span> <span>{{ school.region.name }}</span>
+                                        <span>REGION : </span> <span>{{ school.region.name }}</span>
                                     </div>
                                 </v-col>
                                   <v-col cols="12" sm="6" md="4">
                                      <div class="py-2 px-1">
-                                        <span>DISTRICT: </span> <span v-if="school.district">{{ school.district }}</span>
+                                        <span>DISTRICT : </span> <span v-if="school.district">{{ school.district }}</span>
                                     </div>
                                 </v-col>
                                   <v-col cols="12" sm="6" md="4">
@@ -37,6 +37,15 @@
                                     </div>
                                 </v-col>
                             </v-row>
+
+                            <v-row>
+                                <v-col cols="12" sm="6" md="4">
+                                    <div class="py-2 px-1">
+                                        <span>EDUCATIONAL OFFICER : </span> <span v-if="school.educationalOfficer != null">{{ school.educationalOfficer.name }}</span>
+                                    </div>
+                                </v-col>
+                            </v-row>
+
                         </v-card>
                     </v-row>
                 </v-col>
