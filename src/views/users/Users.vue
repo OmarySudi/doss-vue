@@ -10,7 +10,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="USERS"
+      :items="users"
       :loading="loadData"
       :search="search"
       sort-by="created_at"
@@ -337,7 +337,7 @@ export default {
 
   data: () => ({
 
-    //users: [],
+    users: [],
     loadData: true,
     search: '',
     headers: [
@@ -508,7 +508,8 @@ export default {
         if(response.status == 200){
           this.loadData = false;
           //this.users = response.data.objects;
-          this.$store.commit('SET_USERS',response.data.objects)
+          this.$store.commit('SET_USERS',response.data.objects);
+          this.users = this.USERS;
         } else {
 
           if(response.data.objects){
@@ -726,7 +727,13 @@ export default {
 
     // ...
     next(vm=>{  
-      vm.fetchUsers();
+
+      if(vm.USERS == null){
+        vm.fetchUsers();
+      } else {
+        vm.loadData = false;
+        vm.users = vm.USERS;
+      }
       
       if(vm.SCHOOLS == null){
         vm.FETCH_SCHOOLS;

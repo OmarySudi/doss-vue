@@ -6,7 +6,7 @@ import store from '..'
 export default {
 
     state: {
-        users: [],
+        users: null,
     },
 
     getters: {
