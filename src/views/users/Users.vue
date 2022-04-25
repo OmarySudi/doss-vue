@@ -267,24 +267,9 @@
             </v-col>
 
              <v-col  cols="12" sm="6" md="4">
-              <v-card v-if="selectedUser.user_type == 'TEACHER'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
                 <p class="body-1 mb-1 ml-1 primary--text">Mobile Number</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.teacher.phone_number}}</p>
-              </v-card>
-
-              <v-card v-if="selectedUser.user_type == 'ADMIN'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
-                <p class="body-1 mb-1 ml-1 primary--text">Mobile Number</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.admin.phone_number }}</p>
-              </v-card>
-
-              <v-card v-if="selectedUser.user_type == 'RESEARCHER'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
-                <p class="body-1 mb-1 ml-1 primary--text">Mobile Number</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.researcher.phone_number }}</p>
-              </v-card>
-
-              <v-card v-if="selectedUser.user_type == 'OFFICER'" class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
-                <p class="body-1 mb-1 ml-1 primary--text">Mobile Number</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.officer.phone_number }}</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.user.phone_number}}</p>
               </v-card>
             </v-col>
           </v-row>
@@ -293,8 +278,8 @@
             <v-col cols="12" sm="6" md="4" v-if="selectedUser.user_type == 'TEACHER'">
               <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
                 <p class="body-1 mb-1 ml-1 primary--text">SCHOOL</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text">Name: {{ selectedUser.teacher.school.name }}</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text">Code: {{ selectedUser.teacher.school.code }}</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">Name: {{ selectedUser.user.school.name }}</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">Code: {{ selectedUser.user.school.code }}</p>
               </v-card>
             </v-col>
 
@@ -307,7 +292,7 @@
 
                 <v-card-text>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4" v-for="(item,index) in selectedUser.officer.schools" :key="index">
+                    <v-col cols="12" sm="6" md="4" v-for="(item,index) in selectedUser.user.schools" :key="index">
                       <v-card class="ml-2 mt-1 mr-2 py-1 px-1"   :elevation="2">
                         <p class="subtitle-1 ml-1 font-weight-regular grey--text">Name: {{ item.name}}</p>
                         <p class="subtitle-1 ml-1 font-weight-regular grey--text">Code: {{ item.code}}</p>
@@ -369,7 +354,11 @@ export default {
 
     dialog: false,
     dialogDelete: false,
-    selectedUser:{},
+    selectedUser:{
+      user:{
+        
+      }
+    },
     viewDialog: false,
 
     user: {
