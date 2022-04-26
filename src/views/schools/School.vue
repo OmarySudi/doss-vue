@@ -39,8 +39,14 @@
                             </v-row>
 
                             <v-row>
-                                <v-col cols="12" sm="6" md="4">
-                                    <div class="py-2 px-1">
+                                 <v-col cols="12" sm="6">
+                                    <div class="py-1 px-1">
+                                        <span>HEAD TEACHER : </span> <span v-if="school.headTeacher != null">{{ school.headTeacher.teacher.name }}</span>
+                                    </div>
+                                </v-col>
+
+                                <v-col cols="12" sm="6">
+                                    <div class="py-1 px-1">
                                         <span>EDUCATIONAL OFFICER : </span> <span v-if="school.educationalOfficer != null">{{ school.educationalOfficer.name }}</span>
                                     </div>
                                 </v-col>
