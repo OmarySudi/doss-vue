@@ -39,11 +39,11 @@
                             </v-row>
 
                             <v-row>
-                                 <v-col cols="12" sm="6">
+                                 <!-- <v-col cols="12" sm="6">
                                     <div class="py-1 px-1">
-                                        <span>HEAD TEACHER : </span> <span v-if="school.headTeacher != null">{{ school.headTeacher.teacher.name }}</span>
+                                        <span>HEAD TEACHER : </span> <span v-if="school.headTeacher != null">{{ school.headTeacher.name }}</span>
                                     </div>
-                                </v-col>
+                                </v-col> -->
 
                                 <v-col cols="12" sm="6">
                                     <div class="py-1 px-1">
