@@ -85,7 +85,9 @@ export default {
                     localStorage.setItem('user_gid',user.user_gid);
                     localStorage.setItem('email',user.email);
                     localStorage.setItem('user_type',user.user_type);
+                    localStorage.setItem('teacher_category',user.teacher_category);
                     localStorage.setItem('code',user.code);
+                    
                     
                     switch(user.user_type){
                         
@@ -140,6 +142,7 @@ export default {
                     user_gid: localStorage.getItem('user_gid'),
                     email: localStorage.getItem('email'),
                     user_type: localStorage.getItem('user_type'),
+                    teacher_category: localStorage.getItem('teacher_category'),
                     code: localStorage.getItem('code'),
                     phone_number: localStorage.getItem('phone_number'),
                     school: localStorage.getItem('school'),
@@ -161,6 +164,7 @@ export default {
             localStorage.removeItem('user_gid')
             localStorage.removeItem('email')
             localStorage.removeItem('code')
+            localStorage.removeItem('teacher_category')
             localStorage.clear()
             
             // router.replace({

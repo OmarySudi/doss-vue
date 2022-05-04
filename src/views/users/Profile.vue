@@ -295,6 +295,8 @@ export default {
     user_type: '',
     user_gid:'',
 
+    teacher_category:'',
+
   }),
 
   computed:{
@@ -376,6 +378,7 @@ export default {
           email: this.email,
           phone_number: this.phone_number,
           user_type: this.user_type,
+          teacher_category: this.teacher_category
         }
 
         ApiService.put('users/update/'+this.user_gid,user).then((response)=>{
@@ -522,11 +525,13 @@ export default {
 
       next(vm=>{  
         if(vm.user != null){
+          console.log(vm.user)
           vm.name = vm.user.name;
           vm.phone_number = vm.user.phone_number;
           vm.email = vm.user.email;
           vm.user_type = vm.user.user_type;
           vm.user_gid = vm.user.user_gid;
+          vm.teacher_category = vm.user.teacher_category;
         }
       });
 
