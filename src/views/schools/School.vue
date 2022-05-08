@@ -1,5 +1,11 @@
 <template>
   <v-container>
+    <Snackbar 
+      :type="snackbarType" 
+      :snackbar="snackbar" 
+      :text="snackbarText" 
+      :timeout="snackbarTimeout"
+    />
       <v-card class="mt-5">
             <v-row>
                 <v-col cols="12">
@@ -291,6 +297,74 @@
                             </v-card>
                         </v-dialog>
 
+
+                        <v-dialog
+                            v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
+                            v-model="uploadDialog"
+                            max-width="500px"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="primary"
+                                dark
+                                class="mb-2 ml-2"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <!-- <v-icon>mdi-plus-box</v-icon> -->
+                                UPLOAD FILE
+                            </v-btn>
+                            </template>
+
+                            <v-card>
+                            
+                                <v-toolbar>
+                                    <v-spacer></v-spacer>
+                                    <span class="font-weight-bold">UPLOAD STUDENTS FILE</span>
+                                    <v-spacer></v-spacer>
+                                </v-toolbar>
+
+                                <form ref="AddStudentsFile" @submit.prevent="uploadFile()">
+                                    <v-card-text>
+                                        <v-container>
+                                            <v-row>
+                                                <v-col
+                                                cols="12"
+                                                >
+                                                    <v-file-input
+                                                        show-size
+                                                        label="File input"
+                                                        @change="selectFile"
+                                                    ></v-file-input>
+                                                </v-col> 
+                                            </v-row>
+                                        </v-container>
+                                    </v-card-text>
+
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+
+                                        <v-btn
+                                            color="blue darken-1"
+                                            text
+                                            @click="uploadDialog = false"
+                                        >
+                                            Cancel
+                                        </v-btn>
+
+                                        <v-btn
+                                            color="blue darken-1"
+                                            text
+                                            type="submit"
+                                        >
+                                            Upload
+                                        </v-btn>
+
+                                    </v-card-actions>
+                                </form>
+                            </v-card>
+                        </v-dialog>
+
                         <v-dialog v-model="dialogDelete" max-width="500px">
                             <v-card>
                             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
@@ -302,7 +376,6 @@
                             </v-card-actions>
                             </v-card>
                         </v-dialog>
-
                         </v-toolbar>
                     </template>
 
@@ -358,6 +431,8 @@ export default {
         students: [],
         loadData: true,
         search: '',
+        file: undefined,
+        fileInfos:[],
 
         student: {
             full_name: '',
@@ -368,12 +443,15 @@ export default {
 
         dialog: false,
         dialogDelete: false,
+        uploadDialog: false,
 
         years: [
             "2019","2020","2021","2022"
         ],
 
         genders: ["MALE","FEMALE"],
+
+        school_code:'',
 
         headers: [
         {
@@ -394,6 +472,69 @@ export default {
 
         goBack(){
             this.$router.go(-1);
+        },
+
+        uploadFile(){
+
+            if(!this.file){
+                this.circularLoader = false;
+                this.file = undefined;
+                this.setAlert("warning",true,"No file selected",5000);
+            } else {
+
+            this.clearAlerts();
+            this.uploadDialog = false;
+            this.circularLoader = true;
+
+            let formData = new FormData();
+
+            formData.append("file", this.file);
+
+            ApiService.post("/students/upload-student-file", formData,{
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then((response)=>{
+
+                if(response.status == 200){
+
+                    this.uploadDialog = false;
+                    this.circularLoader = false;
+                    this.setAlert("success",true,response.data.message,5000);
+                    this.fetchStudents(this.school.code);
+                    this.file = undefined;
+
+                } else {
+
+                    if(response.data.generalErrorCode){
+
+                        this.uploadDialog = false;
+                        this.circularLoader = false;
+                        this.file = undefined;
+                        this.setAlert("error",true,response.data.message,5000);
+
+                    } else {
+
+                        this.circularLoader = false;
+                        this.file = undefined;
+                        this.setAlert("error",true,"There is internal server error",5000);
+                    }
+                }
+                }).catch((error)=>{
+
+                    this.circularLoader = false;
+                    if(error.response.data.generalErrorCode){
+                        this.setAlert("error",true,error.response.data.message,5000);
+                    } else {
+                        this.setAlert("error",true,"Client: There is internal error",5000);
+                    }
+                })
+            }
+            
+        },
+
+        selectFile(file) {
+            this.file = file;
         },
 
         fetchSchool(code){
@@ -433,7 +574,7 @@ export default {
             this.clearAlerts();
             this.circularLoader = true;
             ApiService.get("/schools/"+code+"/students").then((response)=>{
-
+            
             if(response.status == 200){
 
                 this.loadData = false;
