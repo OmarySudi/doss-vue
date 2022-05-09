@@ -187,27 +187,10 @@
                                                 >
                                                 <v-select
                                                     :items="years"
-                                                    label="Entry Year"
+                                                    label="Start Year"
                                                     v-model="student.entry_year"
                                                     solo
                                                 ></v-select>
-                                                </v-col>
-                                                <v-col
-                                                cols="12"
-                                                sm="6"
-                                                md="4"
-                                                >
-                                                <!-- <v-text-field
-                                                    v-model="editedItem.fat"
-                                                    label="Fat (g)"
-                                                ></v-text-field> -->
-                                                <v-select
-                                                    :items="years"
-                                                    label="Leave Year"
-                                                    v-model="student.leave_year"
-                                                    solo
-                                                ></v-select>
-
                                                 </v-col>
 
                                                 <v-col
@@ -413,7 +396,7 @@
     <v-dialog v-model="viewDialog" width="800">
       <v-toolbar>
         <v-spacer></v-spacer>
-        <span class="font-weight-bold">{{selectedStudent.full_name}}</span>
+        <span class="font-weight-bold">{{full_name}}</span>
         <v-spacer></v-spacer>
       </v-toolbar>
 
@@ -423,7 +406,7 @@
             <v-col cols="12" sm="6" md="4">
               <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
                 <p class="body-1 mb-1 ml-1 primary--text">Gender</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedStudent.gender}}</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ gender}}</p>
               </v-card>
             </v-col>
 
@@ -478,14 +461,14 @@
             <v-col cols="12" sm="6">
                 <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
                     <p class="body-1 mb-1 ml-1 primary--text">Next of Kin Name</p>
-                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedStudent.next_of_kin_full_name}}</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ next_of_kin_full_name}}</p>
                 </v-card>
             </v-col>
 
             <v-col cols="12" sm="6">
                 <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
                     <p class="body-1 mb-1 ml-1 primary--text">Next of Kin Phone</p>
-                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedStudent.next_of_kin_phone_number}}</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ next_of_kin_phone_number}}</p>
                 </v-card>
             </v-col>
           </v-row>
@@ -552,8 +535,11 @@ export default {
         parent_phone:'',
         chair_name:'',
         chair_phone:'',
+        full_name:'',
+        gender:'',
+        next_of_kin_full_name:'',
+        next_of_kin_phone_number:'',
      
-
         headers: [
         {
           text: 'Name',
@@ -733,11 +719,13 @@ export default {
         showStudent(user){
 
             //set student details
-            this.selectedStudent = user;
-
             this.parent_name = user.parent.full_name;
             this.parent_phone = user.parent.phone_number;
-
+            this.full_name = user.full_name;
+            this.gender = user.gender;
+            this.next_of_kin_full_name = user.next_of_kin_full_name;
+            this.next_of_kin_phone_number = user.next_of_kin_phone_number;
+            
             if(user.chair != null){
                 this.chair_name = user.chair.full_name;
                 this.chair_phone = user.chair.phone_number;
