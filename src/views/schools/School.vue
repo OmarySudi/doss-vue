@@ -401,7 +401,7 @@
                         >
                         mdi-delete
                         </v-icon>
-                        <v-btn color="green" small class="ml-3">
+                        <v-btn color="green" small class="ml-3" @click="showStudent(item)">
                         <span style="color:white">VIEW</span>
                         </v-btn>
                     </template>
@@ -409,6 +409,91 @@
               </v-col>
           </v-row>
       </v-card>
+
+    <v-dialog v-model="viewDialog" width="800">
+      <v-toolbar>
+        <v-spacer></v-spacer>
+        <span class="font-weight-bold">{{selectedStudent.full_name}}</span>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+
+      <v-card width="800">
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" sm="6" md="4">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Gender</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedStudent.gender}}</p>
+              </v-card>
+            </v-col>
+
+             <v-col  cols="12" sm="6" md="4">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Class</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text"> FORM {{ class_level }}</p>
+              </v-card>
+            </v-col> 
+
+            <v-col  cols="12" sm="6" md="4">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">School</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text"> {{ school_name}}</p>
+              </v-card>
+            </v-col> 
+          </v-row>
+
+          <v-row>
+            <v-col cols="12" sm="6">
+                <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                    <p class="body-1 mb-1 ml-1 primary--text">Parent Name</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ parent_name}}</p>
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" sm="6">
+                <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                    <p class="body-1 mb-1 ml-1 primary--text">Parent Phone</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ parent_phone}}</p>
+                </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="chair_name != ''">
+            <v-col cols="12" sm="6">
+                <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                    <p class="body-1 mb-1 ml-1 primary--text">Chair Name</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ chair_name}}</p>
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" sm="6">
+                <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                    <p class="body-1 mb-1 ml-1 primary--text">Chair Phone</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ chair_phone}}</p>
+                </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="selectedStudent.next_of_kin_full_name != ''">
+            <v-col cols="12" sm="6">
+                <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                    <p class="body-1 mb-1 ml-1 primary--text">Next of Kin Name</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedStudent.next_of_kin_full_name}}</p>
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" sm="6">
+                <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                    <p class="body-1 mb-1 ml-1 primary--text">Next of Kin Phone</p>
+                    <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedStudent.next_of_kin_phone_number}}</p>
+                </v-card>
+            </v-col>
+          </v-row>
+
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    
     <CircularLoader :loading="circularLoader"/>
   </v-container>
 </template>
@@ -441,9 +526,15 @@ export default {
             leave_year:''
         },
 
+        classes:[],
+
         dialog: false,
         dialogDelete: false,
         uploadDialog: false,
+        viewDialog: false,
+
+        currentYear: '',
+        class_level: '',
 
         years: [
             "2019","2020","2021","2022"
@@ -452,6 +543,16 @@ export default {
         genders: ["MALE","FEMALE"],
 
         school_code:'',
+
+        selectedStudent:{},
+
+        //student details
+        school_name:'',
+        parent_name:'',
+        parent_phone:'',
+        chair_name:'',
+        chair_phone:'',
+     
 
         headers: [
         {
@@ -627,11 +728,53 @@ export default {
 
         deleteItem(){
             console.log("deleting an item")
-        }
+        },
+
+        showStudent(user){
+
+            //set student details
+            this.selectedStudent = user;
+
+            this.parent_name = user.parent.full_name;
+            this.parent_phone = user.parent.phone_number;
+
+            if(user.chair != null){
+                this.chair_name = user.chair.full_name;
+                this.chair_phone = user.chair.phone_number;
+            }
+           
+            this.school_name = user.school.name;
+            //
+            let class_level = (this.currentYear - user.class.year) + 1;
+
+            switch(class_level){
+                case 1:
+                    this.class_level = 'I';
+                break;
+
+                case 2:
+                    this.class_level = 'II';
+                break;
+
+                case 3:
+                    this.class_level = 'III';
+                break;
+
+                case 4:
+                    this.class_level = 'IV';
+                break;
+            }
+
+            this.viewDialog = true;
+        },
     },
 
     computed: {
-      ...mapGetters(['user']),
+      ...mapGetters(['user','STUDENT_CLASSES_NAMES']),
+    },
+
+    created(){ 
+        this.currentYear = new Date().getFullYear()
     },
 
     beforeRouteEnter(to,from,next){
@@ -640,7 +783,21 @@ export default {
 
             vm.fetchSchool(to.params.code);
             vm.fetchStudents(to.params.code);
-           
+
+            if(vm.STUDENT_CLASSES_NAMES.length > 0){
+
+                vm.classes = vm.STUDENT_CLASSES_NAMES;
+
+            } else {
+
+                ApiService.get("student_classes/").then((response)=>{
+                    if(response.status == 200){
+                        const years = response.data.objects.map(({year})=>year)
+                        vm.classes = years
+                    } 
+                });
+            }
+                
         });
     }
 }

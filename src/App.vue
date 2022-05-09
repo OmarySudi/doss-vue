@@ -29,27 +29,7 @@ export default {
 
   methods:{
 
-    ...mapActions(['FETCH_SCHOOLS','FETCH_CLASS_LEVELS']),
-
-    async fetchSchools(){
-      await ApiService.get("schools/").then((response)=>{
-          if(response.status == 200){
-              this.$store.commit('SET_SCHOOLS',response.data.objects)
-          } else {
-              this.$store.commit('SET_MESSAGE',response.data.message)
-          }
-      });
-    },
-
-    async fetchClassLevels(){
-      await ApiService.get("class-levels/").then((response)=>{
-          if(response.status == 200){
-              this.$store.commit('SET_CLASS_LEVELS',response.data.objects)
-          } else {
-              this.$store.commit('SET_MESSAGE',response.data.message)
-          }
-      });
-    }
+    ...mapActions(['FETCH_SCHOOLS','FETCH_CLASS_LEVELS','FETCH_STUDENT_CLASSES']),
   },
 
   created(){
@@ -57,6 +37,8 @@ export default {
     this.FETCH_SCHOOLS();
 
     this.FETCH_CLASS_LEVELS();
+
+    this.FETCH_STUDENT_CLASSES();
     
   }
 
