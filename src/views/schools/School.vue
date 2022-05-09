@@ -163,7 +163,7 @@
                                                 md="4"
                                                 >
                                                 <v-text-field
-                                                    v-model="student.full_name"
+                                                    v-model="full_name"
                                                     label="Full Name"
                                                 ></v-text-field>
                                                 </v-col>
@@ -176,7 +176,7 @@
                                                 <v-select
                                                     :items="genders"
                                                     label="Gender"
-                                                    v-model="student.gender"
+                                                    v-model="gender"
                                                     solo
                                                 ></v-select>
                                                 </v-col>
@@ -186,9 +186,9 @@
                                                 md="4"
                                                 >
                                                 <v-select
-                                                    :items="years"
-                                                    label="Start Year"
-                                                    v-model="student.entry_year"
+                                                    :items="classes"
+                                                    label="Entry Year"
+                                                    v-model="entry_year"
                                                     solo
                                                 ></v-select>
                                                 </v-col>
@@ -203,7 +203,7 @@
                                                         label="Fat (g)"
                                                     ></v-text-field> -->
                                                     <v-text-field
-                                                        v-model="student.parent_name"
+                                                        v-model="parent_name"
                                                         label="Parent Name"
                                                     ></v-text-field>
                                                 </v-col>
@@ -218,7 +218,7 @@
                                                         label="Fat (g)"
                                                     ></v-text-field> -->
                                                     <v-text-field
-                                                        v-model="student.parent_number"
+                                                        v-model="parent_phone"
                                                         label="Parent mobile"
                                                     ></v-text-field>
                                                 </v-col>
@@ -233,7 +233,7 @@
                                                         label="Fat (g)"
                                                     ></v-text-field> -->
                                                     <v-text-field
-                                                        v-model="student.chair_name"
+                                                        v-model="chair_name"
                                                         label="Chair Name"
                                                     ></v-text-field>
                                                 </v-col>
@@ -248,7 +248,7 @@
                                                         label="Fat (g)"
                                                     ></v-text-field> -->
                                                     <v-text-field
-                                                        v-model="student.chair_mobile"
+                                                        v-model="chair_phone"
                                                         label="Chair Mobile"
                                                     ></v-text-field>
                                                 </v-col>
@@ -393,6 +393,140 @@
           </v-row>
       </v-card>
 
+    <v-dialog
+        v-model="editDialog"
+        max-width="600px"
+    >
+        <template v-slot:activator="{ on, attrs }">
+        <v-btn
+            color="primary"
+            dark
+            class="mb-2"
+            v-bind="attrs"
+            v-on="on"
+        >
+            <v-icon>mdi-plus-box</v-icon>
+        </v-btn>
+        </template>
+
+        <v-card>
+        
+            <v-toolbar>
+                <v-spacer></v-spacer>
+                <span class="font-weight-bold">EDIT STUDENT</span>
+                <v-spacer></v-spacer>
+            </v-toolbar>
+
+            <form ref="AddStudentForm" @submit.prevent="editStudent()">
+                <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col
+                            cols="12"
+                            sm="6"
+                            md="4"
+                            >
+                            <v-text-field
+                                v-model="full_name"
+                                label="Full Name"
+                            ></v-text-field>
+                            </v-col>
+
+                            <v-col
+                            cols="12"
+                            sm="6"
+                            md="4"
+                            >
+                            <v-select
+                                :items="genders"
+                                label="Gender"
+                                v-model="gender"
+                                solo
+                            ></v-select>
+                            </v-col>
+                                <v-col
+                            cols="12"
+                            sm="6"
+                            md="4"
+                            >
+                            <v-select
+                                :items="classes"
+                                label="Entry Year"
+                                v-model="entry_year"
+                                solo
+                            ></v-select>
+                            </v-col>
+
+                            <v-col
+                                cols="12"
+                                sm="6"
+                                md="4"
+                            >
+                                <v-text-field
+                                    v-model="parent_name"
+                                    label="Parent Name"
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col
+                                cols="12"
+                                sm="6"
+                                md="4"
+                            >
+                                <v-text-field
+                                    v-model="parent_phone"
+                                    label="Parent mobile"
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col
+                                cols="12"
+                                sm="6"
+                                md="4"
+                            >
+                                <v-text-field
+                                    v-model="chair_name"
+                                    label="Chair Name"
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col
+                                cols="12"
+                                sm="6"
+                                md="4"
+                            >
+                                <v-text-field
+                                    v-model="chair_phone"
+                                    label="Chair Mobile"
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="closeEditDialog()"
+                    >
+                        Cancel
+                    </v-btn>
+
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        type="submit"
+                    >
+                        Save
+                    </v-btn>
+
+                </v-card-actions>
+            </form>
+        </v-card>
+    </v-dialog>
     <v-dialog v-model="viewDialog" width="800">
       <v-toolbar>
         <v-spacer></v-spacer>
@@ -502,12 +636,6 @@ export default {
         file: undefined,
         fileInfos:[],
 
-        student: {
-            full_name: '',
-            gender: '',
-            entry_year: '',
-            leave_year:''
-        },
 
         classes:[],
 
@@ -515,9 +643,11 @@ export default {
         dialogDelete: false,
         uploadDialog: false,
         viewDialog: false,
+        editDialog: false,
 
         currentYear: '',
         class_level: '',
+
 
         years: [
             "2019","2020","2021","2022"
@@ -539,6 +669,9 @@ export default {
         gender:'',
         next_of_kin_full_name:'',
         next_of_kin_phone_number:'',
+        entry_year:'',
+        student_gid:'',
+        //
      
         headers: [
         {
@@ -559,6 +692,15 @@ export default {
 
         goBack(){
             this.$router.go(-1);
+        },
+
+        closeEditDialog(){
+            this.resetStudentDetails();
+            this.editDialog = false;
+        },
+
+        editStudent(){
+
         },
 
         uploadFile(){
@@ -709,20 +851,23 @@ export default {
         },
 
         editItem(item){
-            console.log("edit a student")
+            this.setStudentDetails(item);
+            this.editDialog = true;
         },
 
         deleteItem(){
             console.log("deleting an item")
         },
 
-        showStudent(user){
+        setStudentDetails(user){
 
             //set student details
             this.parent_name = user.parent.full_name;
             this.parent_phone = user.parent.phone_number;
             this.full_name = user.full_name;
+            this.entry_year = user.class.year;
             this.gender = user.gender;
+            this.student_gid = user.student_gid;
             this.next_of_kin_full_name = user.next_of_kin_full_name;
             this.next_of_kin_phone_number = user.next_of_kin_phone_number;
             
@@ -733,6 +878,28 @@ export default {
            
             this.school_name = user.school.name;
             //
+        },
+
+        resetStudentDetails(){
+
+            //set student details
+            this.parent_name = '';
+            this.parent_phone = '';
+            this.full_name = '';
+            this.entry_year = '';
+            this.gender = '';
+            this.student_gid = '';
+            this.next_of_kin_full_name = '';
+            this.next_of_kin_phone_number = '';
+            this.chair_name = '';;
+            this.chair_phone = '';;
+            this.school_name = '';;
+        },
+
+        showStudent(user){
+
+            this.setStudentDetails(user);
+
             let class_level = (this.currentYear - user.class.year) + 1;
 
             switch(class_level){
