@@ -660,6 +660,7 @@ export default {
         student_gid:'',
         parent_id:'',
         chair_id:'',
+        class_id:'',
         //
      
         headers: [
@@ -707,6 +708,7 @@ export default {
                 chair_phone_number: this.chair_phone,
                 chair_id: this.chair_id,
                 parent_id: this.parent_id,
+                class_id: this.class_id,
             }
 
             ApiService.put("/students/"+this.student_gid,data).then((response)=>{
@@ -908,6 +910,7 @@ export default {
             this.entry_year = user.class.year;
             this.gender = user.gender;
             this.student_gid = user.student_gid;
+            this.class_id = user.class.id;
             
             this.next_of_kin_full_name = user.next_of_kin_full_name;
             this.next_of_kin_phone_number = user.next_of_kin_phone_number;
@@ -933,9 +936,12 @@ export default {
             this.student_gid = '';
             this.next_of_kin_full_name = '';
             this.next_of_kin_phone_number = '';
-            this.chair_name = '';;
-            this.chair_phone = '';;
-            this.school_name = '';;
+            this.chair_name = '';
+            this.chair_phone = '';
+            this.school_name = '';
+            this.parent_id = '';
+            this.chair_id = '';
+            this.class_id = '';
         },
 
         showStudent(user){
