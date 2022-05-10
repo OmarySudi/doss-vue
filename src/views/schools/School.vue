@@ -372,13 +372,29 @@
 
                         <v-dialog v-model="dialogDelete" max-width="500px">
                             <v-card>
-                            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                                <v-spacer></v-spacer>
-                            </v-card-actions>
+                                <v-card-title class="text-h6 primary white--text">
+                                    Are you sure you want to delete?
+                                </v-card-title>
+
+                                <v-divider></v-divider>
+
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                    color="primary"
+                                    text
+                                    @click="dialogDelete = false"
+                                    >
+                                    NO
+                                    </v-btn>
+                                    <v-btn
+                                    color="primary"
+                                    text
+                                    @click="deleteItemConfirm(selectedStudent.id)"
+                                    >
+                                    YES
+                                    </v-btn>
+                                </v-card-actions>
                             </v-card>
                         </v-dialog>
                         </v-toolbar>
@@ -982,7 +998,38 @@ export default {
         },
 
         deleteItemConfirm(){
-            console.log("confirm deleting a student")
+
+            this.clearAlerts();
+            this.dialogDelete = false;
+            this.circularLoader = true;
+
+            ApiService.delete('/students/'+this.selectedStudent.student_gid).then((response)=>{
+            if(response.status == 200){
+                this.circularLoader = false;
+                this.fetchStudents(this.school_code);
+                this.setAlert("success",true,response.data.message,5000);
+            } else {
+
+                if(response.data.objects){
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,response.data.message,5000);
+
+                } else {
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,"There is internal server error",5000);
+                }
+            }
+            }).catch((error)=>{
+
+                this.circularLoader = false;
+                if(error.response.data.generalErrorCode){
+                    this.setAlert("error",true,error.response.data.message,10000);
+                } else {
+                    this.setAlert("error",true,"Client: There is internal error",10000);
+                }
+            });
         },
 
         editItem(item){
@@ -990,8 +1037,9 @@ export default {
             this.editDialog = true;
         },
 
-        deleteItem(){
-            console.log("deleting an item")
+        deleteItem(item){
+            this.selectedStudent = item;
+            this.dialogDelete = true;
         },
 
         setStudentDetails(user){
