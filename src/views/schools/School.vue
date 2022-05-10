@@ -131,7 +131,7 @@
                         <v-dialog
                             v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
                             v-model="dialog"
-                            max-width="500px"
+                            max-width="600px"
                         >
                             <template v-slot:activator="{ on, attrs }">
                             <v-btn
@@ -397,20 +397,7 @@
         v-model="editDialog"
         max-width="600px"
     >
-        <template v-slot:activator="{ on, attrs }">
-        <v-btn
-            color="primary"
-            dark
-            class="mb-2"
-            v-bind="attrs"
-            v-on="on"
-        >
-            <v-icon>mdi-plus-box</v-icon>
-        </v-btn>
-        </template>
-
         <v-card>
-        
             <v-toolbar>
                 <v-spacer></v-spacer>
                 <span class="font-weight-bold">EDIT STUDENT</span>
@@ -671,6 +658,8 @@ export default {
         next_of_kin_phone_number:'',
         entry_year:'',
         student_gid:'',
+        parent_id:'',
+        chair_id:'',
         //
      
         headers: [
@@ -701,6 +690,56 @@ export default {
 
         editStudent(){
 
+            this.editDialog = false;
+            this.circularLoader = true;
+            this.clearAlerts();
+
+            let data = {
+
+                full_name: this.full_name,
+                gender: this.gender,
+                next_of_kin_full_name: this.next_of_kin_full_name,
+                next_of_kin_phone_number: this.next_of_kin_phone_number,
+                entry_year: this.entry_year,
+                parent_full_name: this.parent_name,
+                parent_phone_number: this.parent_phone,
+                chair_full_name: this.chair_name,
+                chair_phone_number: this.chair_phone,
+                chair_id: this.chair_id,
+                parent_id: this.parent_id,
+            }
+
+            ApiService.put("/students/"+this.student_gid,data).then((response)=>{
+
+            if(response.status == 200){
+
+                this.circularLoader = false;
+                this.setAlert("success",true,response.data.message,5000);
+                //this.fetchStudents(this.school_code);
+                //this.$store.commit('ADD_USER',response.data.objects)
+
+            } else {
+
+                if(response.data.objects){
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,response.data.message,5000);
+
+                } else {
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,"There is internal server error",5000);
+                }
+            }
+            }).catch(()=>{
+
+                this.circularLoader = false;
+                if(error.response.data.generalErrorCode){
+                    this.setAlert("error",true,error.response.data.message,10000);
+                } else {
+                    this.setAlert("error",true,"Client: There is internal error",5000);
+                }
+            })
         },
 
         uploadFile(){
@@ -864,14 +903,17 @@ export default {
             //set student details
             this.parent_name = user.parent.full_name;
             this.parent_phone = user.parent.phone_number;
+            this.parent_id = user.parent.id;
             this.full_name = user.full_name;
             this.entry_year = user.class.year;
             this.gender = user.gender;
             this.student_gid = user.student_gid;
+            
             this.next_of_kin_full_name = user.next_of_kin_full_name;
             this.next_of_kin_phone_number = user.next_of_kin_phone_number;
             
             if(user.chair != null){
+                this.chair_id = user.chair.id;
                 this.chair_name = user.chair.full_name;
                 this.chair_phone = user.chair.phone_number;
             }
@@ -938,6 +980,7 @@ export default {
 
             vm.fetchSchool(to.params.code);
             vm.fetchStudents(to.params.code);
+            vm.school_code = to.params.code;
 
             if(vm.STUDENT_CLASSES_NAMES.length > 0){
 
