@@ -228,6 +228,28 @@
                                                     sm="6"
                                                     md="4"
                                                 >
+                                                    <v-text-field
+                                                        v-model="next_of_kin_full_name"
+                                                        label="Nex of Kin Name"
+                                                    ></v-text-field>
+                                                </v-col>
+
+                                                <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="4"
+                                                >
+                                                    <v-text-field
+                                                        v-model="next_of_kin_phone_number"
+                                                        label="Next of kin Phone"
+                                                    ></v-text-field>
+                                                </v-col>
+
+                                                <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="4"
+                                                >
                                                     <!-- <v-text-field
                                                         v-model="editedItem.fat"
                                                         label="Fat (g)"
@@ -463,6 +485,28 @@
                                 <v-text-field
                                     v-model="parent_phone"
                                     label="Parent mobile"
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col
+                                cols="12"
+                                sm="6"
+                                md="4"
+                            >
+                                <v-text-field
+                                    v-model="next_of_kin_full_name"
+                                    label="Nex of Kin Name"
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col
+                                cols="12"
+                                sm="6"
+                                md="4"
+                            >
+                                <v-text-field
+                                    v-model="next_of_kin_phone_number"
+                                    label="Next of kin Phone"
                                 ></v-text-field>
                             </v-col>
 
@@ -716,8 +760,8 @@ export default {
             if(response.status == 200){
 
                 this.circularLoader = false;
+                this.fetchStudents(this.school_code);
                 this.setAlert("success",true,response.data.message,5000);
-                //this.fetchStudents(this.school_code);
                 //this.$store.commit('ADD_USER',response.data.objects)
 
             } else {
@@ -880,7 +924,57 @@ export default {
         },
 
         save(){
-            console.log("save a student")
+            
+            //console.log("save a student")
+            this.dialog = false;
+            this.circularLoader = true;
+            this.clearAlerts();
+
+            let data = {
+
+                full_name: this.full_name,
+                gender: this.gender,
+                next_of_kin_full_name: this.next_of_kin_full_name,
+                next_of_kin_phone_number: this.next_of_kin_phone_number,
+                entry_year: this.entry_year,
+                parent_full_name: this.parent_name,
+                parent_phone_number: this.parent_phone,
+                chair_full_name: this.chair_name,
+                chair_phone_number: this.chair_phone,
+                school_id: this.school.id,
+            }
+
+            ApiService.post("/students/",data).then((response)=>{
+
+            if(response.status == 200){
+
+                this.circularLoader = false;
+                this.fetchStudents(this.school_code);
+                this.setAlert("success",true,response.data.message,5000);
+                //this.$store.commit('ADD_USER',response.data.objects)
+
+            } else {
+
+                if(response.data.objects){
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,response.data.message,5000);
+
+                } else {
+
+                    this.circularLoader = false;
+                    this.setAlert("error",true,"There is internal server error",5000);
+                }
+            }
+            }).catch(()=>{
+
+                this.circularLoader = false;
+                if(error.response.data.generalErrorCode){
+                    this.setAlert("error",true,error.response.data.message,10000);
+                } else {
+                    this.setAlert("error",true,"Client: There is internal error",5000);
+                }
+            })
         },
 
         closeDelete(){
@@ -943,7 +1037,7 @@ export default {
             this.chair_id = '';
             this.class_id = '';
         },
-        
+
         showStudent(user){
 
             this.setStudentDetails(user);
