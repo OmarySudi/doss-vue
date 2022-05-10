@@ -943,7 +943,7 @@ export default {
             this.chair_id = '';
             this.class_id = '';
         },
-
+        
         showStudent(user){
 
             this.setStudentDetails(user);
