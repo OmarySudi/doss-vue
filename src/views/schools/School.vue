@@ -19,14 +19,14 @@
                             <v-icon>mdi-arrow-left-thick</v-icon>
                         </v-btn>
 
-                        <v-card class="ml-5 mb-5" style="width:90%" elevation="4">
+                        <v-card v-if="school.region" class="ml-5 mb-5" style="width:90%" elevation="4">
                             <v-toolbar height="40" color="success" class="white--text">
                                 <v-spacer></v-spacer>
-                                <span v-if="school.region" class="font-weight-bold">{{school.name}}</span>
+                                <span class="font-weight-bold">{{school.name}}</span>
                                 <v-spacer></v-spacer>
                             </v-toolbar>
 
-                            <v-row v-if="school.region">
+                            <v-row>
                                 <v-col cols="12" sm="6" md="4">
                                     <div class="py-2 px-1">
                                         <span>REGION : </span> <span>{{ school.region.name }}</span>
