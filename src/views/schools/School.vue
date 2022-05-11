@@ -426,6 +426,10 @@
                         <span style="color:white">VIEW</span>
                         </v-btn>
                     </template>
+
+                     <template v-slot:[`item.student_level`]="{ item }">
+                        FORM {{item.student_level}}
+                    </template>
                 </v-data-table>
               </v-col>
           </v-row>
@@ -594,7 +598,7 @@
              <v-col  cols="12" sm="6" md="4">
               <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
                 <p class="body-1 mb-1 ml-1 primary--text">Class</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text"> FORM {{ class_level }}</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text"> FORM {{ student_level }}</p>
               </v-card>
             </v-col> 
 
@@ -676,13 +680,13 @@ export default {
     components: {Snackbar,CircularLoader},
     
     data: () => ({
+
         school:{},
         students: [],
         loadData: true,
         search: '',
         file: undefined,
         fileInfos:[],
-
 
         classes:[],
 
@@ -694,7 +698,7 @@ export default {
 
         currentYear: '',
         class_level: '',
-
+        student_level: '',
 
         years: [
             "2019","2020","2021","2022"
@@ -731,8 +735,7 @@ export default {
           value: 'full_name',
         },
         { text: 'Gender', value: 'gender' },
-        { text: 'Entry Year', value: 'entry_year' },
-        { text: 'Leave Year', value: 'leave_year' },
+        { text: 'Level', value: 'student_level' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       
@@ -902,7 +905,7 @@ export default {
 
          fetchStudents(code){
             this.clearAlerts();
-            this.circularLoader = true;
+            //this.circularLoader = true;
             ApiService.get("/schools/"+code+"/students").then((response)=>{
             
             if(response.status == 200){
@@ -1053,6 +1056,7 @@ export default {
             this.gender = user.gender;
             this.student_gid = user.student_gid;
             this.class_id = user.class.id;
+            this.student_level = user.student_level;
             
             this.next_of_kin_full_name = user.next_of_kin_full_name;
             this.next_of_kin_phone_number = user.next_of_kin_phone_number;
@@ -1084,6 +1088,7 @@ export default {
             this.parent_id = '';
             this.chair_id = '';
             this.class_id = '';
+            this.student_level = '';
         },
 
         showStudent(user){
@@ -1127,6 +1132,7 @@ export default {
         next(vm=>{  
 
             vm.fetchSchool(to.params.code);
+            vm.circularLoader = true;
             vm.fetchStudents(to.params.code);
             vm.school_code = to.params.code;
 
