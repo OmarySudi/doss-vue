@@ -549,7 +549,7 @@
 
                                                   <v-col cols="12">
                                                     <v-select
-                                                      :items="offenseTypes"
+                                                      :items="offenseTypeNames"
                                                       label="Type"
                                                       v-model="selectedOffenseTypeName"
                                                       solo
@@ -778,7 +778,8 @@ export default {
         selectedOffenseName:'',
         selectedOffenseId:'',
 
-        offenseTypes: []
+        offenseTypes: [],
+        offenseTypeNames:[],
       //end offense
 
     }),
@@ -918,7 +919,7 @@ export default {
 
               const names = response.data.objects.map(({name})=>name)
               this.$store.commit('SET_OFFENSE_TYPE_NAMES',names);
-              this.offenseTypes = this.OFFENSE_TYPE_NAMES;
+              this.offenseTypeNames = this.OFFENSE_TYPE_NAMES;
 
           } else {
 
@@ -1240,6 +1241,7 @@ export default {
         } else {
           vm.loadOffenseTypeData = false;
           vm.offenceTypes = vm.OFFENSE_TYPES;
+          vm.offenseTypeNames = vm.OFFENSE_TYPE_NAMES;
         }
 
         if(vm.OFFENSES == null){
