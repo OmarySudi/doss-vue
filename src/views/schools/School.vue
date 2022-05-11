@@ -833,8 +833,8 @@ export default {
 
                     this.uploadDialog = false;
                     this.circularLoader = false;
-                    this.setAlert("success",true,response.data.message,5000);
                     this.fetchStudents(this.school.code);
+                    this.setAlert("success",true,response.data.message,5000);
                     this.file = undefined;
 
                 } else {
