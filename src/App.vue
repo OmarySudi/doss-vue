@@ -34,7 +34,7 @@ export default {
 
   created(){
 
-    this.FETCH_SCHOOLS();
+    //this.FETCH_SCHOOLS();
 
     this.FETCH_CLASS_LEVELS();
 

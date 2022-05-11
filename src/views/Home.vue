@@ -128,11 +128,15 @@ import {mapActions, mapGetters} from 'vuex'
     },
 
     methods: {
-      ...mapActions(['logout'])
+      ...mapActions(['logout','FETCH_SCHOOLS'])
     },
 
     components: {
       
+    },
+
+    created(){
+      this.FETCH_SCHOOLS();
     },
 
     beforeRouteEnter (to, from, next) {
