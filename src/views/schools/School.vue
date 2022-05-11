@@ -22,11 +22,11 @@
                         <v-card class="ml-5 mb-5" style="width:90%" elevation="4">
                             <v-toolbar height="40" color="success" class="white--text">
                                 <v-spacer></v-spacer>
-                                <span class="font-weight-bold">{{school.name}}</span>
+                                <span v-if="school.region" class="font-weight-bold">{{school.name}}</span>
                                 <v-spacer></v-spacer>
                             </v-toolbar>
 
-                            <v-row>
+                            <v-row v-if="school.region">
                                 <v-col cols="12" sm="6" md="4">
                                     <div class="py-2 px-1">
                                         <span>REGION : </span> <span>{{ school.region.name }}</span>
@@ -871,8 +871,8 @@ export default {
         },
 
         fetchSchool(code){
-            this.clearAlerts();
 
+            this.clearAlerts();
             ApiService.get("/schools/"+code).then((response)=>{
 
             if(response.status == 200){
@@ -905,7 +905,6 @@ export default {
 
          fetchStudents(code){
             this.clearAlerts();
-            //this.circularLoader = true;
             ApiService.get("/schools/"+code+"/students").then((response)=>{
             
             if(response.status == 200){
@@ -1132,7 +1131,6 @@ export default {
         next(vm=>{  
 
             vm.fetchSchool(to.params.code);
-            vm.circularLoader = true;
             vm.fetchStudents(to.params.code);
             vm.school_code = to.params.code;
 
