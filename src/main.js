@@ -13,7 +13,7 @@ Vue.use(Vuelidate);
 
 //ApiService.init("http://localhost:8000/api")
 // ApiService.init("http://ringlesoft.com:8007/api")
-ApiService.init("https://afdd-197-250-199-29.ngrok.io")
+ApiService.init("https://afdd-197-250-199-29.ngrok.io/api")
 
 
 require('@/store/subscriber');
