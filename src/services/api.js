@@ -16,7 +16,10 @@ const ApiService = {
     },
 
     setHeader() {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${TokenService.getToken()}`
+        axios.defaults.headers.common["Authorization"] = `Bearer ${TokenService.getToken()}`;
+        // axios.defaults.headers.common['Content-Type'] = 'application/json';
+        // axios.defaults.headers.common['Accept'] = '*/*';
+        // axios.defaults.headers.common['Connection'] = 'keep-alive';
     },
 
     removeHeader() {
