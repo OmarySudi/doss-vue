@@ -111,10 +111,10 @@ import {mapActions, mapGetters} from 'vuex'
         
         { text: 'Profile', icon: 'mdi-finance', link:'/user', roles:["TEACHER","OFFICER"]},
         { text: 'Users', icon: 'mdi-account-multiple', link:'/users', roles:['ADMIN']},
-        { text: 'Schools', icon: 'mdi-finance', link:'/schools', roles:["ADMIN","OFFICER"]},
-        { text: 'Offences', icon: 'mdi-finance', link:'/offences', roles:["ADMIN"]},
-        { text: 'Students', icon: 'mdi-finance', link:'/schools/S0101', roles:["TEACHER"]},
-        { text: 'Reports', icon: 'mdi-finance', link:'/schools/report/S0101', roles:["TEACHER","OFFICER","ADMIN"]},
+        { text: 'Schools', icon: 'mdi-school', link:'/schools', roles:["ADMIN","OFFICER"]},
+        { text: 'Offences', icon: 'mdi-alert-outline', link:'/offences', roles:["ADMIN"]},
+        { text: 'Students', icon: 'mdi-account-school', link:'/schools/S0101', roles:["TEACHER"]},
+        { text: 'Reports', icon: 'mdi-chart-areaspline-variant', link:'/schools/report/S0101', roles:["TEACHER","OFFICER","ADMIN"]},
       ],
     
     }),
