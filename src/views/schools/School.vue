@@ -912,6 +912,7 @@ export default {
                 this.loadData = false;
                 this.circularLoader = false;
                 this.students = response.data.objects;
+                
 
             } else {
 

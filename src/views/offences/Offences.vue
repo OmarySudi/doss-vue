@@ -495,7 +495,7 @@
                                           
                                                   >
                                                     <v-select
-                                                      :items="offenseTypes"
+                                                      :items="offenseTypeNames"
                                                       label="Type"
                                                       v-model="offenseTypeName"
                                                       solo
@@ -1072,6 +1072,16 @@ export default {
               this.offenses = this.OFFENSES
           } else {
 
+              if(response.data.objects){
+
+                this.circularLoader = false;
+                this.setAlert("error",true,response.data.message,5000);
+
+              } else {
+
+                this.circularLoader = false;
+                this.setAlert("error",true,"There is internal server error",5000);
+              }
           }
           }).catch(()=>{
 
