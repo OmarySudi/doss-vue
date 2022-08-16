@@ -89,15 +89,14 @@
                                       <v-btn
                                         color="blue darken-1"
                                         text
-                                        @click="addDialog = false"
-                                      >
+                                        @click="cancelAddDialog()"                                      >
                                         Cancel
                                       </v-btn>
                                       <v-btn
                                         color="blue darken-1"
                                         class="ml-2 mr-5"
                                         text
-                                        @click="saveTemplate"
+                                        @click="saveTemplate()"
                                       >
                                         Save
                                       </v-btn>
@@ -199,6 +198,7 @@ import {projectMixin} from '../../mixins/mixins'
 import Snackbar from '../../components/Snackbar.vue'
 import CircularLoader from '../../components/CircularLoader.vue'
 
+
 export default {
   components: {Snackbar,CircularLoader},
   
@@ -260,7 +260,7 @@ export default {
                 this.setAlert("error",true,"There is internal server error",5000);
           }
         }
-        }).catch(()=>{
+        }).catch((error)=>{
 
             this.circularLoader = false;
             if(error.response.data.generalErrorCode){
@@ -294,7 +294,7 @@ export default {
                 this.setAlert("error",true,"There is internal server error",5000);
               }
           }
-          }).catch(()=>{
+          }).catch((error)=>{
               this.circularLoader = false;
               if(error.response.data.generalErrorCode){
                     this.setAlert("error",true,error.response.data.message,10000);
@@ -306,46 +306,67 @@ export default {
 
       async saveTemplate(){
 
-        let data = {
-          structure: this.selectedTemplateStructure
-        };
+        if(this.messageStructure == "" || this.offenseTypeName == ""){
 
-        this.circularLoader = true;
-         ApiService.put("/structures/"+this.selectedTemplateId,data).then((response)=>{
+           this.setAlert("warning",true,"Fill all data",5000);
 
-          if(response.status == 200){
+        } else {
 
-              this.offenseTypes = response.data.objects;
-              this.$store.commit('SET_OFFENSE_TYPES',response.data.objects)
-              const names = response.data.objects.map(({name})=>name)
-              this.$store.commit('SET_OFFENSE_TYPE_NAMES',names);
-              this.offenseTypeNames = this.OFFENSE_TYPE_NAMES;
-            
-          } else {
-            if(response.data.objects){
-                this.circularLoader = false;
-                this.setAlert("error",true,response.data.message,5000);
-              } else {
-                this.circularLoader = false;
-                this.setAlert("error",true,"There is internal server error",5000);
-              }
-          }
-          }).catch(()=>{
+          this.circularLoader = true;
+
+          let offenseType = this.offenseTypes.find((offenseType)=>offenseType.name == this.offenseTypeName);
+        
+
+          let data = {
+            structure: this.messageStructure,
+            offence_type_id: offenseType.id
+          };
+
+        
+          ApiService.post("/structures/",data).then((response)=>{
+
+            if(response.status == 200){
+                
               this.circularLoader = false;
-              if(error.response.data.generalErrorCode){
-                    this.setAlert("error",true,error.response.data.message,10000);
-              } else {
-                    this.setAlert("error",true,"Client: There is internal error",5000);
-              }
-          })
+              this.addDialog = false;
+              this.setAlert("success",true,response.data.message,5000); 
+              this.fetchMessageStructures();
+              
+            } else {
+              if(response.data.objects){
+                  this.circularLoader = false;
+                  this.setAlert("error",true,response.data.message,5000);
+                } else {
+                  this.circularLoader = false;
+                  this.setAlert("error",true,"There is internal server error",5000);
+                }
+            }
+            }).catch((error)=>{
+                this.circularLoader = false;
+                this.addDialog = false;
+                if(error.response.data.generalErrorCode){
+                      this.setAlert("error",true,error.response.data.message,10000);
+                } else {
+                      this.setAlert("error",true,"Client: There is internal error",5000);
+                }
+            })
+        }
+         
+        
       },
 
       setEditTemplate(item){
        
         this.selectedTemplateStructure = item.structure;
+        this.selectedTemplateOffenseType = item.offense.name;
         this.selectedTemplateId = item.offense.id;
 
         this.editDialog = true;
+      },
+
+      cancelAddDialog(){
+        this.messageStructure = "";
+        this.offenseTypeName = "";
       },
 
 
@@ -374,7 +395,7 @@ export default {
                 this.setAlert("error",true,"There is internal server error",5000);
               }
           }
-          }).catch(()=>{
+          }).catch((error)=>{
               this.circularLoader = false;
               if(error.response.data.generalErrorCode){
                     this.setAlert("error",true,error.response.data.message,10000);
