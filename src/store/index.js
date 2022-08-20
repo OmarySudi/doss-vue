@@ -5,6 +5,7 @@ import school from './modules/school'
 import users from './modules/users'
 import offenses from './modules/offenses'
 import students from './modules/students'
+import messages from './modules/messages'
 import templates from './modules/templates'
 
 Vue.use(Vuex)
@@ -19,6 +20,7 @@ export default new Vuex.Store({
   modules: {
     auth,
     school,
+    messages,
     users,
     offenses,
     students,

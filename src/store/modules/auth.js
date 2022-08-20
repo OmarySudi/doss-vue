@@ -95,6 +95,7 @@ export default {
 
                                 localStorage.setItem('phone_number',user.user.phone_number);
                                 localStorage.setItem('school',user.user.school.name);
+                                localStorage.setItem('school_id',user.user.school.id);
                                 store.dispatch('attempt',user.accessToken)
                                 router.push('/user')
                             break;
