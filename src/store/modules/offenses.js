@@ -10,6 +10,7 @@ export default {
         offenseTypes: null,
         offenseTypeNames:[],
         offenses:null,
+        schoolOffenses: null,
     },
 
     getters: {
@@ -21,6 +22,8 @@ export default {
         OFFENSES: (state) => state.offenses,
 
         OFFENSE_TYPE_NAMES: (state) => state.offenseTypeNames,
+
+        SCHOOL_OFFENSES: (state)=>state.schoolOffenses
     },
 
     mutations: {
@@ -58,11 +61,23 @@ export default {
 
             let index = state.offenseTypes.findIndex((type)=>type.id == selectedOffenseType.id)
             state.offenseTypes[index] = selectedOffenseType;
+        },
+
+        SET_SCHOOL_OFFENSES(state,schoolOffenses){
+            state.schoolOffenses = schoolOffenses;
         }
     },
 
     actions: {
 
-        
+        async FETCH_SCHOOL_OFFENSES({commit}){
+            await ApiService.get("messages/fetch-messages/OUTBOUND/"+localStorage.getItem('school_id')).then((response)=>{
+                if(response.status == 200){
+                    commit('SET_OUTBOUND_MESSAGES',response.data.objects);
+                } else {
+                    commit('SET_MESSAGE',response.data.message)
+                }
+            });
+        },
     },
 }
