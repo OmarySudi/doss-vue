@@ -131,7 +131,7 @@
                         <v-dialog
                             v-if="user.user_type == 'ADMIN' || user.user_type == 'TEACHER'"
                             v-model="dialog"
-                            max-width="600px"
+                            max-width="1000px"
                         >
                             <template v-slot:activator="{ on, attrs }">
                             <v-btn
@@ -187,8 +187,8 @@
                                                 >
                                                 <v-select
                                                     :items="classes"
-                                                    label="Entry Year"
-                                                    v-model="entry_year"
+                                                    label="Leave Year"
+                                                    v-model="leave_year"
                                                     solo
                                                 ></v-select>
                                                 </v-col>
@@ -428,7 +428,7 @@
                     </template>
 
                      <template v-slot:[`item.student_level`]="{ item }">
-                        FORM {{item.student_level}}
+                        {{item.student_level}}
                     </template>
                 </v-data-table>
               </v-col>
@@ -481,7 +481,7 @@
                             <v-select
                                 :items="classes"
                                 label="Entry Year"
-                                v-model="entry_year"
+                                v-model="leave_year"
                                 solo
                             ></v-select>
                             </v-col>
@@ -598,7 +598,7 @@
              <v-col  cols="12" sm="6" md="4">
               <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
                 <p class="body-1 mb-1 ml-1 primary--text">Class</p>
-                <p class="subtitle-1 ml-1 font-weight-regular grey--text"> FORM {{ student_level }}</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ student_level }}</p>
               </v-card>
             </v-col> 
 
@@ -720,7 +720,7 @@ export default {
         gender:'',
         next_of_kin_full_name:'',
         next_of_kin_phone_number:'',
-        entry_year:'',
+        leave_year:'',
         student_gid:'',
         parent_id:'',
         chair_id:'',
@@ -764,7 +764,7 @@ export default {
                 gender: this.gender,
                 next_of_kin_full_name: this.next_of_kin_full_name,
                 next_of_kin_phone_number: this.next_of_kin_phone_number,
-                entry_year: this.entry_year,
+                leave_year: this.leave_year,
                 parent_full_name: this.parent_name,
                 parent_phone_number: this.parent_phone,
                 chair_full_name: this.chair_name,
@@ -955,7 +955,7 @@ export default {
                 gender: this.gender,
                 next_of_kin_full_name: this.next_of_kin_full_name,
                 next_of_kin_phone_number: this.next_of_kin_phone_number,
-                entry_year: this.entry_year,
+                leave_year: this.leave_year,
                 parent_full_name: this.parent_name,
                 parent_phone_number: this.parent_phone,
                 chair_full_name: this.chair_name,
@@ -1052,7 +1052,7 @@ export default {
             this.parent_phone = user.parent.phone_number;
             this.parent_id = user.parent.id;
             this.full_name = user.full_name;
-            this.entry_year = user.class.year;
+            this.leave_year = user.class.year;
             this.gender = user.gender;
             this.student_gid = user.student_gid;
             this.class_id = user.class.id;
@@ -1077,7 +1077,7 @@ export default {
             this.parent_name = '';
             this.parent_phone = '';
             this.full_name = '';
-            this.entry_year = '';
+            this.leave_year = '';
             this.gender = '';
             this.student_gid = '';
             this.next_of_kin_full_name = '';
