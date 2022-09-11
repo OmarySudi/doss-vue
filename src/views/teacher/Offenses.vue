@@ -66,7 +66,7 @@
                         <v-row>
                             <v-col cols="12">
                                 <v-row>
-                                    <v-col cols="4"><span class="font-weight-medium">Name:</span><span class="ml-2">{{offense.name}}</span></v-col>
+                                    <v-col cols="4"><span class="font-weight-medium">Offense:</span><span class="ml-2">{{offense.name}}</span></v-col>
                                     <v-col cols="4"><span class="font-weight-medium">Type:</span><span class="ml-2">{{offense.type}}</span></v-col>
                                     <v-col cols="4"><span class="font-weight-medium">Action:</span><span class="ml-2">{{offense.action}}</span></v-col>
                                 </v-row>

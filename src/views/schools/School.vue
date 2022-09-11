@@ -892,7 +892,7 @@ export default {
                     this.setAlert("error",true,"There is internal server error",5000);
                 }
             }
-            }).catch(()=>{
+            }).catch((error)=>{
 
                 this.circularLoader = false;
                 if(error.response.data.generalErrorCode){
@@ -927,7 +927,7 @@ export default {
                     this.setAlert("error",true,"There is internal server error",5000);
                 }
             }
-            }).catch(()=>{
+            }).catch((error)=>{
 
                 this.circularLoader = false;
                 if(error.response.data.generalErrorCode){
