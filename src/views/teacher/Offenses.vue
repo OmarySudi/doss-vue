@@ -373,12 +373,8 @@ export default {
                 this.message_reply_icon_color = "red"
             }
                 
+            this.offense.resolution = item.resolution; 
             
-            if(item.resolution !=null){
-                this.offense.resolution = item.resolution; 
-            }
-                
-
             this.show_offense = true;
         }
     },
