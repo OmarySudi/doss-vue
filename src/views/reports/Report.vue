@@ -1,12 +1,15 @@
 <template>
   <v-container>
-      school's report
+      Reports
   </v-container>
 </template>
 
 <script>
-export default {
+//import BarChart from '../../components/BarChart.vue';
 
+export default {
+  name: 'Report',
+  //components: { BarChart }
 }
 </script>
 
