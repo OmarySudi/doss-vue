@@ -1235,7 +1235,7 @@ export default {
       //this.fetchOffenceTypes();
       //this.fetchOffenses();
     },
-
+    
     beforeRouteEnter (to, from, next) {
       next(vm=>{
 

@@ -7,12 +7,12 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "apexcharts": "^3.35.5",
     "axios": "^0.24.0",
-    "chart.js": "^3.9.1",
     "core-js": "^3.6.5",
     "mikoa": "^1.0.8",
     "vue": "^2.6.11",
-    "vue-chartjs": "^4.1.1",
+    "vue-apexcharts": "^1.6.2",
     "vue-router": "^3.2.0",
     "vuelidate": "^0.7.7",
     "vuetify": "^2.4.0",

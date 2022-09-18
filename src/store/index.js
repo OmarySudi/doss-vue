@@ -8,6 +8,7 @@ import students from './modules/students'
 import messages from './modules/messages'
 import offenseOccurrences from './modules/offenseOccurrences'
 import templates from './modules/templates'
+import report from './modules/report'
 
 Vue.use(Vuex)
 
@@ -26,7 +27,8 @@ export default new Vuex.Store({
     offenses,
     students,
     offenseOccurrences,
-    templates
+    templates,
+    report
   }
 
 })

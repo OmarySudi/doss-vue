@@ -116,7 +116,7 @@ import {mapActions, mapGetters} from 'vuex'
         { text: 'Students', icon: 'mdi-account-school', link:'/schools/S0101', roles:["TEACHER"]},
         { text: 'Offenses', icon: 'mdi-alert-outline', link:'/school/offenses', roles:["TEACHER"]},
         { text: 'Messages', icon: 'mdi-inbox', link:'/messages', roles:["TEACHER"]},
-        // { text: 'Reports', icon: 'mdi-chart-areaspline-variant', link:'/schools/report/S0101', roles:["TEACHER"]},
+        { text: 'Reports', icon: 'mdi-chart-areaspline-variant', link:'/schools/report/S0101', roles:["TEACHER"]},
         { text: 'Settings', icon: 'mdi-cog-outline', link:'/settings', roles:["ADMIN"]},
       ],
     
