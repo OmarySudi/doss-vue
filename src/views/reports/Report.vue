@@ -1,11 +1,21 @@
 <template>
   <v-container>
     <v-row>
+      <v-col cols="12">
+        <v-toolbar dense>
+          <v-toolbar-title>Title</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+      </v-col>
+    </v-row>
+
+    <v-row>
       <v-col cols="3"></v-col>
       <v-col cols="9">
         <apexchart 
           v-if="offense_loaded"
           width="500" 
+          height="200"
           type="bar" 
           :options="offenseByCategoryOptions" 
           :series="offenseByCategorySeries"
@@ -120,7 +130,12 @@ export default {
               position: 'bottom'
             }
           }
-        }]
+        }],
+        plotOptions:{
+          pie: {
+            customScale: 0.8
+          }
+        }
       }
 
       this.offenseByGenderSeries = this.SCHOOL_GENDER.data

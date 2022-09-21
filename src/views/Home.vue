@@ -113,10 +113,10 @@ import {mapActions, mapGetters} from 'vuex'
         { text: 'Users', icon: 'mdi-account-multiple', link:'/users', roles:['ADMIN']},
         { text: 'Schools', icon: 'mdi-school', link:'/schools', roles:["ADMIN","OFFICER"]},
         { text: 'Offenses', icon: 'mdi-alert-outline', link:'/offenses', roles:["ADMIN"]},
-        { text: 'Students', icon: 'mdi-account-school', link:'/schools/S0101', roles:["TEACHER"]},
+        { text: 'Students', icon: 'mdi-account-school', link:'/schools/'+localStorage.getItem('school_code'), roles:["TEACHER"]},
         { text: 'Offenses', icon: 'mdi-alert-outline', link:'/school/offenses', roles:["TEACHER"]},
         { text: 'Messages', icon: 'mdi-inbox', link:'/messages', roles:["TEACHER"]},
-        { text: 'Reports', icon: 'mdi-chart-areaspline-variant', link:'/schools/report/S0101', roles:["TEACHER"]},
+        { text: 'Reports', icon: 'mdi-chart-areaspline-variant', link:'/schools/report/'+localStorage.getItem('school_code'), roles:["TEACHER"]},
         { text: 'Settings', icon: 'mdi-cog-outline', link:'/settings', roles:["ADMIN"]},
       ],
     
