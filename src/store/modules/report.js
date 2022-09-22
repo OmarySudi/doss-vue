@@ -33,7 +33,7 @@ export default{
     actions: {
 
         async FETCH_SCHOOL_OFFENSE_REPORT({commit}){
-            await ApiService.get("reports/school").then((response)=>{
+            await ApiService.get("reports/school/"+localStorage.getItem("school_code")).then((response)=>{
                 if(response.status == 200){
                     commit('SET_SCHOOL_OFFENSE',response.data.objects.offense);
                     commit('SET_SCHOOL_GENDER',response.data.objects.gender);
