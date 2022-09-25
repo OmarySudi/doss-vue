@@ -39,7 +39,7 @@
                                 </v-col>
                                   <v-col cols="12" sm="6" md="4">
                                     <div class="py-2 px-1">
-                                        <span>WARD : </span> <span v-if="school.ward">{{ school.ward }}</span>
+                                        <span>WARD : </span> <span v-if="school.ward">{{ school.ward.name }}</span>
                                     </div>
                                 </v-col>
                             </v-row>

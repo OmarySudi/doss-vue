@@ -332,7 +332,7 @@
     <v-dialog v-model="viewDialog" width="800">
       <v-toolbar>
         <v-spacer></v-spacer>
-        <span class="font-weight-bold">{{selectedUser.name}}</span>
+        <span class="font-weight-bold">{{selectedUser.user.name}}</span>
         <v-spacer></v-spacer>
       </v-toolbar>
 
