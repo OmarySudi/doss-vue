@@ -361,37 +361,46 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="selectedUser.user_type == 'TEACHER' || selectedUser.user_type == 'OFFICER'">
-            <v-col cols="12" sm="6" md="4" v-if="selectedUser.user_type == 'TEACHER'">
+          <v-row v-if="selectedUser.user_type == 'TEACHER'">
+            <v-col cols="12" sm="6" md="4">
               <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
                 <p class="body-1 mb-1 ml-1 primary--text">SCHOOL</p>
                 <p class="subtitle-1 ml-1 font-weight-regular grey--text">Name: {{ selectedUser.user.school.name }}</p>
                 <p class="subtitle-1 ml-1 font-weight-regular grey--text">Code: {{ selectedUser.user.school.code }}</p>
               </v-card>
             </v-col>
+          </v-row>
 
-            <v-col cols="12" v-if="selectedUser.user_type == 'OFFICER'">
-              <v-card>
+          <v-row v-if="selectedUser.user_type == 'OFFICER'">
+            <v-col cols="12" sm="6" md="4">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Officer Type</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.user.officer_type}}</p>
+              </v-card>
+            </v-col>
 
-                <v-card-title class="text-subtitle-2 text-center blue--text">
-                  <v-spacer>SCHOOLS</v-spacer>
-                </v-card-title>
+             <v-col  cols="12" sm="6" md="4">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Region</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.user.region.name}}</p>
+              </v-card>
+            </v-col>
 
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4" v-for="(item,index) in selectedUser.user.schools" :key="index">
-                      <v-card class="ml-2 mt-1 mr-2 py-1 px-1"   :elevation="2">
-                        <p class="subtitle-1 ml-1 font-weight-regular grey--text">Name: {{ item.name}}</p>
-                        <p class="subtitle-1 ml-1 font-weight-regular grey--text">Code: {{ item.code}}</p>
-                      </v-card>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
+             <v-col  cols="12" sm="6" md="4">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">District</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.user.district}}</p>
+              </v-card>
+            </v-col>
+
+            <v-col  cols="12" sm="6" md="4" v-if="selectedUser.user.officer_type == 'WARD_OFFICER'">
+              <v-card class="ml-2 mt-2 mr-2 py-1 px-1" :elevation="2">
+                <p class="body-1 mb-1 ml-1 primary--text">Ward</p>
+                <p class="subtitle-1 ml-1 font-weight-regular grey--text">{{ selectedUser.user.ward}}</p>
               </v-card>
             </v-col>
 
           </v-row>
-
         </v-card-text>
       </v-card>
     </v-dialog>
