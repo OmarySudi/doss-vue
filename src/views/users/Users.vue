@@ -64,13 +64,16 @@
                       >
                         <v-text-field
                           v-model="name"
-                          label="Full Name"
                           required
                           :error-messages="nameErrors"
                           @input="$v.name.$touch()"
                           @blur="$v.name.$touch()"
                           v-on:keyup.enter="saveUser()"
-                        ></v-text-field>
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Full Name
+                        </template>
+                      </v-text-field>
                       </v-col>
                       <v-col
                         cols="12"
@@ -84,7 +87,11 @@
                           @input="$v.email.$touch()"
                           @blur="$v.email.$touch()"
                           v-on:keyup.enter="saveUser()"
-                        ></v-text-field>
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Email
+                        </template>
+                      </v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
@@ -100,7 +107,11 @@
                           @input="$v.phone_number.$touch()"
                           @blur="$v.phone_number.$touch()"
                           v-on:keyup.enter="saveUser()"
-                        ></v-text-field>
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Phone Number
+                        </template>
+                      </v-text-field>
                       </v-col>
                       <v-col
                         cols="12"
@@ -115,11 +126,15 @@
                           @input="$v.user_type.$touch()"
                           @blur="$v.user_type.$touch()"
                           v-on:keyup.enter="saveUser()"
-                        ></v-select>
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Role
+                        </template>
+                      </v-select>
                       </v-col>
                     </v-row>
 
-                    <v-row v-if="user_type == 'TEACHER' || user_type == 'OFFICER'">
+                    <v-row v-if="user_type == 'TEACHER'">
 
                       <v-col cols="12" sm="6" v-if="user_type == 'TEACHER'">
                         <v-select
@@ -127,7 +142,11 @@
                           label="Teacher Category"
                           v-model="teacher_category"
                           solo
-                        ></v-select>
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Teacher Category
+                        </template>
+                      </v-select>
                       </v-col>
 
                       <v-col cols="12" sm="6">
@@ -138,7 +157,75 @@
                           v-model="schools"
                           @change="changeSchool()"
                           solo
-                        ></v-select>
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>School
+                        </template>
+                      </v-select>
+                      </v-col>
+                    </v-row>
+
+                    <v-row v-if="user_type == 'OFFICER'">
+
+                      <v-col cols="12" sm="6">
+                        <v-select
+                          :items="officerCategories"
+                          label="Officer Category"
+                          v-model="officer_category"
+                          solo
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Officer Category
+                        </template>
+                        </v-select>
+                      </v-col>
+
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-select
+                          :items="region_names"
+                          label="Region"
+                          v-model="region"
+                          @change="setDistricts()"
+                          solo
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Region
+                        </template>
+                      </v-select>
+                      </v-col>
+
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-select
+                          :items="districts"
+                          label="District"
+                          v-model="district"
+                          solo
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>District
+                        </template>
+                      </v-select>
+                      </v-col>
+
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        v-if="officer_category == 'WARD_OFFICER'"
+                      >
+                        <v-text-field
+                          v-model="ward"
+                          label="Ward"
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Ward
+                        </template>
+                      </v-text-field>
                       </v-col>
                     </v-row>
 
@@ -226,7 +313,7 @@
           @click="editItem(item)"
         >
           mdi-pencil
-        </v-icon>-->
+        </v-icon> -->
         <v-icon
           small
           size="medium"
@@ -321,6 +408,7 @@ import { required, email, numeric,minLength,maxLength} from 'vuelidate/lib/valid
 import {projectMixin} from '../../mixins/mixins'
 import Snackbar from '../../components/Snackbar.vue'
 import CircularLoader from '../../components/CircularLoader.vue'
+import { region,district,wards } from 'mikoa'
 
 export default {
   name: 'Users',
@@ -361,6 +449,15 @@ export default {
     },
     viewDialog: false,
 
+    // data for the officer
+    region:'',
+    officer_category:'',
+    district:'',
+    region_names:[],
+    districts:[],
+    ward:'',
+    selectedRegionId:'',
+
     user: {
       name: '',
       email: '',
@@ -392,20 +489,12 @@ export default {
       'HEAD_TEACHER',
     ],
 
-    changeSchool(){
-      this.school_ids = [];
+    officerCategories: [
+      'WARD_OFFICER',
+      'DISTRICT_OFFICER'
+    ],
 
-      this.schools.forEach(element => {
-          let school = this.SCHOOLS.find((school)=>school.name == element);
-          this.school_ids.push(school.id)
-      });
-    },
-
-    changeClassLevel(){
-      let selectedClassLevel = this.CLASS_LEVELS.find((classLevel)=>classLevel.name == this.class_level);
-      this.class_level_id = selectedClassLevel.id;
-    },
-
+    
   }),
 
   computed:{
@@ -457,6 +546,37 @@ export default {
   methods: {
 
     ...mapActions(['FETCH_SCHOOLS','FETCH_CLASS_LEVELS','setCircularLoader','ADD_USER']),
+
+    setDistricts(){
+       
+       this.district = '';
+
+       let selectedRegion = this.regions.find((region) => region.name == this.region);
+
+       this.selectedRegionId = selectedRegion.id;
+
+       this.districts = district.region(this.selectedRegionId).map(({name})=>name)
+
+    },
+
+    fetchRegions(){
+      this.regions = region.all();
+      this.region_names = this.regions.map(({name})=>name);
+    },
+
+    changeSchool(){
+      this.school_ids = [];
+
+      this.schools.forEach(element => {
+          let school = this.SCHOOLS.find((school)=>school.name == element);
+          this.school_ids.push(school.id)
+      });
+    },
+
+    changeClassLevel(){
+      let selectedClassLevel = this.CLASS_LEVELS.find((classLevel)=>classLevel.name == this.class_level);
+      this.class_level_id = selectedClassLevel.id;
+    },
 
     showUser(user){
       this.selectedUser = user;
@@ -675,28 +795,56 @@ export default {
            //sends officer,admin details
           if(this.user_type == 'OFFICER'){
 
-            if(this.school_ids.length != 0){
+            this.clearAlerts();
 
-              //sends officer 
-              this.clearAlerts();
+            if(this.officer_category == 'WARD_OFFICER'){
 
-              let user = {
-                name: this.name,
-                email: this.email,
-                user_type: this.user_type,
-                phone_number: this.phone_number,
-                school_ids: this.school_ids
+              if(this.region != '' && this.district != '' && this.ward != ''){
+
+                let user = {
+                  name: this.name,
+                  email: this.email,
+                  user_type: this.user_type,
+                  phone_number: this.phone_number,
+                  region: this.region,
+                  district: this.district,
+                  ward: this.ward
+                }
+
+                this.registerUser(user);
+
+              }else {
+                this.clearAlerts();
+
+                this.setAlert("warning",true,"region,district and ward should be filled",10000);
               }
+             
 
-              this.registerUser(user);
+            } else if(this.officer_category == 'DISTRICT_OFFICER'){
 
+              
+              if(this.region != '' && this.district != ''){
+                let user = {
+                  name: this.name,
+                  email: this.email,
+                  user_type: this.user_type,
+                  phone_number: this.phone_number,
+                  region: this.region,
+                  district: this.district,
+                }
+
+                this.registerUser(user);
+              }else{
+                
+                this.clearAlerts();
+
+                this.setAlert("warning",true,"region and district should be filled",10000);
+              }
             } else {
-
               this.clearAlerts();
 
-              this.setAlert("warning",true,"School should be filled before submit",10000);
+              this.setAlert("warning",true,"officer category should be filled",10000);
             }
-
           } else {
 
             //sends admin, researcher
@@ -722,6 +870,10 @@ export default {
       }
 
     }
+  },
+
+  mounted() {
+    this.fetchRegions();
   },
 
   beforeRouteEnter (to, from, next) {
