@@ -205,6 +205,7 @@
                           :items="districts"
                           label="District"
                           v-model="district"
+                          @change="setWards()"
                           solo
                         >
                         <template #label>
@@ -221,11 +222,29 @@
                         <v-text-field
                           v-model="ward"
                           label="Ward"
+                          v-show="enterWardName"
                         >
                         <template #label>
                           <span class="red--text"><strong>* </strong></span>Ward
                         </template>
                       </v-text-field>
+                      <v-select
+                        :items="wards"
+                        label="Ward"
+                        v-model="ward"
+                        v-show="!enterWardName"
+                        solo
+                        >
+                        <template #label>
+                          <span class="red--text"><strong>* </strong></span>Ward
+                        </template>
+                      </v-select>
+                      </v-col>
+                      <v-col v-if="officer_category == 'WARD_OFFICER'">
+                        <v-checkbox
+                          v-model="enterWardName"
+                          label="Enter ward manually if not listed"
+                        ></v-checkbox>
                       </v-col>
                     </v-row>
 
@@ -465,8 +484,11 @@ export default {
     region_names:[],
     districts:[],
     ward:'',
+    wards:[],
     selectedRegionId:'',
 
+    enterWardName: false,
+    
     user: {
       name: '',
       email: '',
@@ -566,6 +588,28 @@ export default {
 
        this.districts = district.region(this.selectedRegionId).map(({name})=>name)
 
+    },
+
+    setWards(){
+      ApiService.get("/wards/"+this.region+"/"+this.district).then((response)=>{
+
+      if(response.status == 200){
+        this.wards = response.data.objects.map(({name})=>name);
+      } else {
+        if(response.data.objects){
+          this.setAlert("error",true,response.data.message,10000);
+        } else {
+          this.setAlert("error",true,"There is internal server error",10000);
+        }
+      }
+      }).catch((error)=>{
+        if(error.response.data.generalErrorCode){
+          this.setAlert("error",true,error.response.data.message,10000);
+        } else {
+          this.setAlert("error",true,"Client: There is internal error",10000);
+        }
+
+      });
     },
 
     fetchRegions(){
