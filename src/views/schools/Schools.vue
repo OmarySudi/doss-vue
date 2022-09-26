@@ -104,6 +104,7 @@
                           v-model="district"
                           required
                           solo
+                          @change="setWards()"
                         ></v-select>
                       </v-col>
                     </v-row>
@@ -116,7 +117,36 @@
                         <v-text-field
                           v-model="ward"
                           label="Ward"
-                        ></v-text-field>
+                          v-show="enterWardName"
+                        >
+                          <template #label>
+                            <span class="red--text"><strong>* </strong></span>Ward
+                          </template>
+                        </v-text-field>
+                        
+                        <v-select
+                          :items="wards"
+                          label="Ward"
+                          v-model="ward"
+                          v-show="!enterWardName"
+                          solo
+                          >
+                          <template #label>
+                            <span class="red--text"><strong>* </strong></span>Ward
+                          </template>
+                        </v-select>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col 
+                        cols="12"
+
+                      >
+                        <v-checkbox
+                          v-model="enterWardName"
+                          label="Enter ward manually if not listed"
+                        ></v-checkbox>
                       </v-col>
                     </v-row>
 
@@ -213,12 +243,6 @@
                       cols="12"
                       sm="6"
                     >
-                      <!-- <v-select
-                        :items="wards"
-                        label="Ward"
-                        v-model="school.phone_number"
-                        solo
-                    ></v-select> -->
                       <v-text-field
                         v-model="ward"
                         label="Ward"
@@ -248,7 +272,6 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-
 
           <v-dialog
               v-model="dialogDelete"
@@ -370,6 +393,8 @@ export default {
       districts:[],
       selectedRegionId:'',
 
+      enterWardName: false,
+      
 
       districts: [],
       district:'',
@@ -459,6 +484,28 @@ export default {
         this.districts = district.region(this.selectedRegionId).map(({name})=>name)
 
       },
+
+      setWards(){
+        ApiService.get("/wards/"+this.region+"/"+this.district).then((response)=>{
+
+        if(response.status == 200){
+          this.wards = response.data.objects.map(({name})=>name);
+        } else {
+          if(response.data.objects){
+            this.setAlert("error",true,response.data.message,10000);
+          } else {
+            this.setAlert("error",true,"There is internal server error",10000);
+          }
+        }
+        }).catch((error)=>{
+          if(error.response.data.generalErrorCode){
+            this.setAlert("error",true,error.response.data.message,10000);
+          } else {
+            this.setAlert("error",true,"Client: There is internal error",10000);
+          }
+
+        });
+     },
 
       async fetchSchools(){
         ApiService.get("/schools").then((response)=>{
