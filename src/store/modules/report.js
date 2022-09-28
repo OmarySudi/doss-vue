@@ -56,7 +56,7 @@ export default{
 
         DISTRICT_LEVEL: (state) => state.district_level,
 
-        DISTRICT_WARDs: (state) => state.district_wards,
+        DISTRICT_WARDS: (state) => state.district_wards,
 
         // general
         SCHOOL: (state) => state.school,
