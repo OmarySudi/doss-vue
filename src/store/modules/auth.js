@@ -103,6 +103,7 @@ export default {
 
                         case 'OFFICER':
                                 localStorage.setItem('phone_number',user.user.phone_number);
+                                localStorage.setItem('officer_type',user.user.officer_type);
                                 store.dispatch('attempt',user.accessToken)
                                 router.push('/user')
                             break;

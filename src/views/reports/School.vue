@@ -21,7 +21,7 @@
         ></v-select>
       </v-col>
     </v-row>
-
+    
     <v-row>
       <v-col cols="6">
         <apexchart 
@@ -307,7 +307,7 @@ export default {
 
   async mounted(){
     this.school = localStorage.getItem('school');
-
+    
     if(this.SCHOOL_OFFENSE == null || this.SCHOOL_GENDER == null || this.SCHOOL_LEVEL == null){
 
       this.circularLoader = true;

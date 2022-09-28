@@ -117,6 +117,7 @@ import {mapActions, mapGetters} from 'vuex'
         { text: 'Offenses', icon: 'mdi-alert-outline', link:'/school/offenses', roles:["TEACHER"]},
         { text: 'Messages', icon: 'mdi-inbox', link:'/messages', roles:["TEACHER"]},
         { text: 'Reports', icon: 'mdi-chart-areaspline-variant', link:'/schools/report/'+localStorage.getItem('school_code'), roles:["TEACHER"]},
+        { text: 'Reports', icon: 'mdi-chart-areaspline-variant', link:'/reports/officer', roles:["OFFICER"]},
         { text: 'Settings', icon: 'mdi-cog-outline', link:'/settings', roles:["ADMIN"]},
       ],
     
