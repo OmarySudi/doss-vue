@@ -78,7 +78,7 @@ export default {
                     commit('SET_MESSAGE',response.data.message)
 
                 } else {
-
+                   
                     let user = response.data.objects;
 
                     localStorage.setItem('name',user.user.name);
@@ -125,9 +125,12 @@ export default {
 
                 }
             }).catch((error)=>{
-                // console.log("inside a function")
-                // console.log(error.response.data)
-                //commit('SET_MESSAGE',"Server: There is internal server error")
+
+                if(error.response.data.generalErrorCode){
+                  commit('SET_MESSAGE',error.response.data.message)
+                } else {
+                  commit('SET_MESSAGE',"Server: There is internal server error")
+                }
             });
         },
 
