@@ -514,7 +514,8 @@ export default {
     userTypes: [
       'ADMIN',
       'TEACHER',
-      'OFFICER'
+      'OFFICER',
+      'RESEARCHER'
     ],
 
     teacherCategories: [
@@ -873,7 +874,8 @@ export default {
                   phone_number: this.phone_number,
                   region: this.region,
                   district: this.district,
-                  ward: this.ward
+                  ward: this.ward,
+                  officer_category: this.officer_category
                 }
 
                 this.registerUser(user);
@@ -896,6 +898,7 @@ export default {
                   phone_number: this.phone_number,
                   region: this.region,
                   district: this.district,
+                  officer_category: this.officer_category
                 }
 
                 this.registerUser(user);
