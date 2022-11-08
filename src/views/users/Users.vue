@@ -152,9 +152,8 @@
                       <v-col cols="12" sm="6">
                         <v-select
                           :items="SCHOOL_NAMES"
-                          multiple
                           label="School"
-                          v-model="schools"
+                          v-model="school"
                           @change="changeSchool()"
                           solo
                         >
@@ -505,6 +504,8 @@ export default {
     class_level_id:'',
     teacher_category:'',
     schools:[],
+    school:'',
+    school_id:'',
     school_ids:[],
     class_level:'',
     //
@@ -618,12 +619,10 @@ export default {
     },
 
     changeSchool(){
-      this.school_ids = [];
 
-      this.schools.forEach(element => {
-          let school = this.SCHOOLS.find((school)=>school.name == element);
-          this.school_ids.push(school.id)
-      });
+      let school = this.SCHOOLS.find((school)=>school.name == this.school);
+      console.log("school selected "+school);
+      this.school_id = school.id;
     },
 
     changeClassLevel(){
@@ -785,7 +784,7 @@ export default {
 
               if(this.teacher_category == 'CLASS_TEACHER'){
 
-                if(this.school_ids.length != 0 && this.class_level != ''){
+                if(this.school_id != '' && this.class_level != ''){
 
                     //sends class teacher details
                   this.clearAlerts();
@@ -794,7 +793,7 @@ export default {
                     email: this.email,
                     user_type: this.user_type,
                     phone_number: this.phone_number,
-                    school_ids: this.school_ids,
+                    school_id: this.school_id,
                     teacher_category: this.teacher_category,
                     class_levels_id: this.class_level_id
                   }
@@ -812,7 +811,7 @@ export default {
 
               } else {
 
-                if(this.school_ids.length != 0){
+                if(this.school_id != ''){
 
                   this.clearAlerts();
                   //sends head teacher details
@@ -821,7 +820,7 @@ export default {
                     email: this.email,
                     user_type: this.user_type,
                     phone_number: this.phone_number,
-                    school_ids: this.school_ids,
+                    school_id: this.school_id,
                     teacher_category: this.teacher_category
                   }
 
