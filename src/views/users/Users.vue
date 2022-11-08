@@ -587,8 +587,8 @@ export default {
         this.name = ''; this.email = ''; this.user_type = ''; this.phone_number = '';
         this.school_id = ''; this.class_level_id = ''; this.teacher_category='';
         this.schools = []; this.school=''; this.school_id =''; this.school_ids = [];
-        this.class_level =''; this.region_names = []; this.region=''; this.officer_category =''; this.districts = [];
-        this.district =''; this.wards = []; this.ward=''; this.selectedRegionId =''; this.districts = [];
+        this.class_level ='';this.region=''; this.officer_category ='';
+        this.district ='';this.ward=''; this.selectedRegionId ='';
       }
 
     },
