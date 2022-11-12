@@ -14,6 +14,7 @@
           :items="years"
           label="Year"
           v-model="selected_year"
+          @change="fetchLevelReports()"
         ></v-select>
       </v-col>
       <v-col cols="4" class="text-subtitle-2">
@@ -114,7 +115,6 @@ export default {
       ...mapActions(['FETCH_SCHOOL_OFFENSE_REPORT']),
 
       async fetchLevelReports(){
-
         this.offense_loaded =false,
         this.gender_loaded = false,
         this.level_loaded = false,
@@ -122,7 +122,7 @@ export default {
 
         if(this.selected_level != "All levels"){
 
-            await ApiService.get('/reports/school/'+localStorage.getItem("school_code")+'/'+this.selected_level).then((response)=>{
+            await ApiService.get('/reports/school/'+localStorage.getItem("school_code")+'/'+this.selected_level+'/'+this.selected_year).then((response)=>{
 
             if(response.status == 200){
              
@@ -157,7 +157,7 @@ export default {
             });
 
           } else {
-            await this.FETCH_SCHOOL_OFFENSE_REPORT();
+            await this.FETCH_SCHOOL_OFFENSE_REPORT(this.selected_year);
 
             this.setReportData(this.SCHOOL_OFFENSE,this.SCHOOL_GENDER,this.SCHOOL_LEVEL);
           }
@@ -333,7 +333,7 @@ export default {
 
       this.circularLoader = true;
 
-      await this.FETCH_SCHOOL_OFFENSE_REPORT();
+      await this.FETCH_SCHOOL_OFFENSE_REPORT(this.selected_year);
 
       this.setReportData(this.SCHOOL_OFFENSE,this.SCHOOL_GENDER,this.SCHOOL_LEVEL);
     

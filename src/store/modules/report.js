@@ -135,8 +135,8 @@ export default{
 
     actions: {
 
-        async FETCH_SCHOOL_OFFENSE_REPORT({commit}){
-            await ApiService.get("reports/school/"+localStorage.getItem("school_code")).then((response)=>{
+        async FETCH_SCHOOL_OFFENSE_REPORT({commit},year){
+            await ApiService.get("reports/school/"+localStorage.getItem("school_code")+"/"+year).then((response)=>{
                 if(response.status == 200){
                     commit('SET_SCHOOL_OFFENSE',response.data.objects.offense);
                     commit('SET_SCHOOL_GENDER',response.data.objects.gender);
@@ -149,7 +149,7 @@ export default{
         },
 
         async WARD_OFFENSE_REPORT({commit}){
-            await ApiService.get("reports/ward").then((response)=>{
+            await ApiService.get("reports/ward/"+new Date().getFullYear()).then((response)=>{
                 if(response.status == 200){
                     commit('SET_WARD_OFFENSE',response.data.objects.offense);
                     commit('SET_WARD_GENDER',response.data.objects.gender);
@@ -164,7 +164,7 @@ export default{
         },
 
         async DISTRICT_OFFENSE_REPORT({commit}){
-            await ApiService.get("reports/district").then((response)=>{
+            await ApiService.get("reports/district/"+new Date().getFullYear()).then((response)=>{
                 if(response.status == 200){
                     commit('SET_DISTRICT_OFFENSE',response.data.objects.offense);
                     commit('SET_DISTRICT_GENDER',response.data.objects.gender);
