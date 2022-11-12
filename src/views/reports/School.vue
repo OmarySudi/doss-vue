@@ -7,7 +7,14 @@
         </v-card>
       </v-col>
       <v-col cols="4">
-
+        <v-select
+          height="20"
+          width="30"
+          solo
+          :items="years"
+          label="Year"
+          v-model="selected_year"
+        ></v-select>
       </v-col>
       <v-col cols="4" class="text-subtitle-2">
         <v-select
@@ -66,6 +73,7 @@
 import CircularLoader from '../../components/CircularLoader.vue'
 import ApiService from '../../services/api'
 import { mapGetters,mapActions} from 'vuex';
+import { join } from 'path';
 
 export default {
   name: 'Report',
@@ -94,10 +102,13 @@ export default {
       offenseByGenderSeries: null,
       offenseByLevelOptions: null,
       offenseByLevelSeries: null,
+
+      years: [],
+      selected_year: new Date().getFullYear(),
     }
   },
   computed:{
-      ...mapGetters(['SCHOOL_OFFENSE','SCHOOL_GENDER','SCHOOL_LEVEL'])
+      ...mapGetters(['SCHOOL_OFFENSE','SCHOOL_GENDER','SCHOOL_LEVEL']),
   },
   methods: {
       ...mapActions(['FETCH_SCHOOL_OFFENSE_REPORT']),
@@ -157,6 +168,13 @@ export default {
         this.setOffenseByCategoryData(school_offense);
         this.setOffenseByGenderData(school_gender);
         this.setOffenseByLevelData(school_level);
+      },
+
+      getLastFiveYears(){
+        var currentYear  = new Date().getFullYear();
+        for(var i = currentYear; i >= (currentYear - 4) ; i--){
+          this.years.push(i);
+        }
       },
 
       setOffenseByCategoryData(school_offense){
@@ -305,7 +323,10 @@ export default {
       }
   },
 
-  async mounted(){
+  async mounted(){ 
+    
+    this.getLastFiveYears();
+
     this.school = localStorage.getItem('school');
     
     if(this.SCHOOL_OFFENSE == null || this.SCHOOL_GENDER == null || this.SCHOOL_LEVEL == null){
