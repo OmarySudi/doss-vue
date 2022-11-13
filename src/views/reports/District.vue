@@ -1,10 +1,21 @@
 <template>
   <v-container>
     <v-row v-if="OFFICER_DISTRICT">
-      <v-col cols="12">
+      <v-col cols="6">
         <v-card height="50" class="pl-3 pt-2 text-center font-weight-bold">
           <span class="text-subtitle-2 font-weight-bold"><span>DISTRICT: </span>{{OFFICER_DISTRICT}}</span>
         </v-card>
+      </v-col>
+      <v-col cols="6">
+        <v-select
+          height="20"
+          width="30"
+          solo
+          :items="years"
+          label="Year"
+          v-model="selected_year"
+          @change="fetchReports()"
+        ></v-select>
       </v-col>
     </v-row>
     
@@ -89,6 +100,9 @@ export default {
       offenseByLevelSeries: null,
       offenseByWardOptions: null,
       offenseByWardSeries: null,
+
+      years: [],
+      selected_year: new Date().getFullYear(),
     }
   },
 
@@ -104,6 +118,21 @@ export default {
       this.setOffenseByGenderData(district_gender);
       this.setOffenseByLevelData(district_level);
       this.setOffenseByWardData(district_wards);
+    },
+
+    getLastFiveYears(){
+        var currentYear  = new Date().getFullYear();
+        for(var i = currentYear; i >= (currentYear - 4) ; i--){
+          this.years.push(i);
+        }
+    },
+
+    async fetchReports(){
+      this.circularLoader = true;
+
+      await this.DISTRICT_OFFENSE_REPORT(this.selected_year);;
+
+      this.setReportData(this.DISTRICT_OFFENSE,this.DISTRICT_GENDER,this.DISTRICT_LEVEL,this.DISTRICT_WARDS);
     },
 
     setOffenseByCategoryData(district_offense){
@@ -286,11 +315,13 @@ export default {
 
   async mounted(){
 
+    this.getLastFiveYears();
+
     if(this.DISTRICT_OFFENSE == null || this.DISTRICT_GENDER == null || this.DISTRICT_LEVEL == null || this.DISTRICT_WARDS == null){
 
       this.circularLoader = true;
 
-      await this.DISTRICT_OFFENSE_REPORT();;
+      await this.DISTRICT_OFFENSE_REPORT(this.selected_year);;
 
       this.setReportData(this.DISTRICT_OFFENSE,this.DISTRICT_GENDER,this.DISTRICT_LEVEL,this.DISTRICT_WARDS);
 

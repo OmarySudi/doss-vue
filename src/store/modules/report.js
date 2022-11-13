@@ -163,8 +163,8 @@ export default{
             });
         },
 
-        async DISTRICT_OFFENSE_REPORT({commit}){
-            await ApiService.get("reports/district/"+new Date().getFullYear()).then((response)=>{
+        async DISTRICT_OFFENSE_REPORT({commit},year){
+            await ApiService.get("reports/district/"+year).then((response)=>{
                 if(response.status == 200){
                     commit('SET_DISTRICT_OFFENSE',response.data.objects.offense);
                     commit('SET_DISTRICT_GENDER',response.data.objects.gender);
