@@ -1,10 +1,21 @@
 <template>
   <v-container>
     <v-row v-if="OFFICER_WARD">
-      <v-col cols="12">
+      <v-col cols="6">
         <v-card height="50" class="pl-3 pt-2 text-center font-weight-bold">
           <span class="text-subtitle-2 font-weight-bold"><span>WARD: </span>{{OFFICER_WARD.name}}</span>
         </v-card>
+      </v-col>
+      <v-col cols="6">
+        <v-select
+          height="20"
+          width="30"
+          solo
+          :items="years"
+          label="Year"
+          v-model="selected_year"
+          @change="fetchReports()"
+        ></v-select>
       </v-col>
     </v-row>
     
@@ -89,6 +100,9 @@ export default {
       offenseByLevelSeries: null,
       offenseBySchoolOptions: null,
       offenseBySchoolSeries: null,
+
+      years: [],
+      selected_year: new Date().getFullYear(),
     }
   },
 
@@ -105,6 +119,13 @@ export default {
       this.setOffenseByLevelData(ward_level);
       this.setOffenseBySchoolData(ward_schools);
     },
+
+    getLastFiveYears(){
+        var currentYear  = new Date().getFullYear();
+        for(var i = currentYear; i >= (currentYear - 4) ; i--){
+          this.years.push(i);
+        }
+      },
 
     setOffenseByCategoryData(ward_offense){
 
@@ -179,6 +200,17 @@ export default {
 
         this.circularLoader = false
         this.gender_loaded = true
+      },
+
+      async  fetchReports(){
+
+        this.circularLoader = true;
+
+        console.log(this.selected_year);
+
+        await this.WARD_OFFENSE_REPORT(this.selected_year);
+
+        this.setReportData(this.WARD_OFFENSE,this.WARD_GENDER,this.WARD_LEVEL,this.WARD_SCHOOLS);
       },
 
       setOffenseByLevelData(ward_level){
@@ -286,11 +318,13 @@ export default {
 
   async mounted(){
 
+    this.getLastFiveYears();
+
     if(this.WARD_OFFENSE == null || this.WARD_GENDER == null || this.WARD_LEVEL == null || this.WARD_SCHOOLS == null){
 
       this.circularLoader = true;
 
-      await this.WARD_OFFENSE_REPORT();;
+      await this.WARD_OFFENSE_REPORT(this.selected_year);
 
       this.setReportData(this.WARD_OFFENSE,this.WARD_GENDER,this.WARD_LEVEL,this.WARD_SCHOOLS);
 

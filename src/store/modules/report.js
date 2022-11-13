@@ -148,8 +148,8 @@ export default{
             });
         },
 
-        async WARD_OFFENSE_REPORT({commit}){
-            await ApiService.get("reports/ward/"+new Date().getFullYear()).then((response)=>{
+        async WARD_OFFENSE_REPORT({commit},year){
+            await ApiService.get("reports/ward/"+year).then((response)=>{
                 if(response.status == 200){
                     commit('SET_WARD_OFFENSE',response.data.objects.offense);
                     commit('SET_WARD_GENDER',response.data.objects.gender);
