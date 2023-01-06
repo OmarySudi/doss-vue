@@ -286,7 +286,7 @@ export default {
             bar: {
               barHeight: '100%',
               distributed: true,
-              horizontal: true,
+              //horizontal: true,
               dataLabels: {
                 position: 'bottom'
               },

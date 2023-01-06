@@ -57,7 +57,7 @@
       <v-col cols="6">
         <apexchart 
           v-if="offense_loaded"
-          height="200"
+          height="250"
           type="bar" 
           :options="offenseByCategoryOptions" 
           :series="offenseByCategorySeries"
@@ -251,7 +251,7 @@ export default {
           bar: {
             barHeight: '100%',
             distributed: true,
-            horizontal: true,
+            //horizontal: true,
             dataLabels: {
               position: 'bottom'
             },

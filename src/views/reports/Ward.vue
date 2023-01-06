@@ -24,7 +24,7 @@
         <apexchart 
           v-if="school_loaded"
           width="500" 
-          height="200"
+          height="250"
           type="bar" 
           :options="offenseBySchoolOptions" 
           :series="offenseBySchoolSeries"
@@ -37,7 +37,7 @@
           class="ml-5"
           v-if="gender_loaded"
           type="pie" 
-          width="400"
+          width="70%"
           :options="offenseByGenderOptions" 
           :series="offenseByGenderSeries"
         >
@@ -48,7 +48,7 @@
         <apexchart 
           v-if="level_loaded"
           type="bar" 
-          height="220" 
+          height="180" 
           :options="offenseByLevelOptions" 
           :series="offenseByLevelSeries">
         </apexchart>
@@ -57,8 +57,7 @@
       <v-col cols="6">
         <apexchart 
           v-if="offense_loaded"
-          width="400" 
-          height="200"
+          height="250"
           type="bar" 
           :options="offenseByCategoryOptions" 
           :series="offenseByCategorySeries"
@@ -128,42 +127,73 @@ export default {
       },
 
     setOffenseByCategoryData(ward_offense){
-
-      this.offenseByCategoryOptions = {
-
-        chart: {
-          id: 'offensesByCategory',
-        },
-        title: {
-          text: 'Offenses By Category',
-          align: 'center',
-          floating: true
-      },
-        xaxis: {
-          categories: ward_offense.labels
-        },
-        dataLabels: {
-          enabled: true,
-          formatter: function (val) {
-            return val + "%"
+        
+        this.offenseByCategoryOptions = {
+          chart: {
+            id: 'offensesByCategory',
+            type: 'bar',
           },
-        }
-      }
+          title: {
+            text: 'Offenses By Category',
+            align: 'center',
+            floating: true
+          },
+          xaxis: {
+            categories: ward_offense.labels
+          },
 
+          plotOptions: {
+            bar: {
+              barHeight: '100%',
+              //distributed: true,
+              horizontal: true,
+              dataLabels: {
+                position: 'bottom'
+              },
+            }
+          },
+          //colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa',],
+
+          yaxis: {
+            labels: {
+              show: true
+            }
+          },
+          
+          stroke: {
+            width: 1,
+            colors: ['#fff']
+          },
+
+          dataLabels: {
+            enabled: true,
+            distributed: true,
+            style: {
+              colors: ['#fff'],
+            },
+            offsetX: 5,
+            dropShadow: {
+              enabled: true
+            },
+            formatter: function (val) {
+              return val + "%"
+            },
+          },
+      }
+      
       this.offenseByCategorySeries = [{
         name: 'categories',
         data: ward_offense.data
       }]
-
+      
       this.circularLoader = false
       this.offense_loaded = true
-      },
+    },
 
       setOffenseByGenderData(ward_gender){
 
         this.offenseByGenderOptions = {
           chart: {
-            width: 400,
             type: 'pie',
           },
           title: {
@@ -191,7 +221,7 @@ export default {
           dataLabels: {
             enabled: true,
             formatter: function (val) {
-              return val + "%"
+              return Math.round(val) + "%"
             },
           }
         }
@@ -219,13 +249,12 @@ export default {
         chart: {
           id: 'offensesByLevel',
           type: 'bar',
-          height: 400
         },
         plotOptions: {
           bar: {
             barHeight: '100%',
             distributed: true,
-            horizontal: true,
+            //horizontal: true,
             dataLabels: {
               position: 'bottom'
             },
@@ -283,36 +312,100 @@ export default {
         this.level_loaded = true
       },
 
+      // setOffenseBySchoolData(ward_schools){
+
+      //   this.offenseBySchoolOptions = {
+
+      //     chart: {
+      //       id: 'offensesBySchool',
+      //     },
+      //     title: {
+      //       text: 'Offenses By School',
+      //       align: 'center',
+      //       floating: true
+      //   },
+      //     xaxis: {
+      //       categories: ward_schools.labels
+      //     },
+      //     dataLabels: {
+      //       enabled: true,
+      //       formatter: function (val) {
+      //         return val + "%"
+      //       },
+      //     }
+      //   }
+
+      //   this.offenseBySchoolSeries = [{
+      //     name: 'categories',
+      //     data: ward_schools.data
+      //   }]
+
+      //   this.circularLoader = false
+      //   this.school_loaded = true
+      //   },
+
       setOffenseBySchoolData(ward_schools){
 
-        this.offenseBySchoolOptions = {
+          this.offenseBySchoolOptions = {
 
-          chart: {
-            id: 'offensesBySchool',
-          },
-          title: {
-            text: 'Offenses By School',
-            align: 'center',
-            floating: true
-        },
-          xaxis: {
-            categories: ward_schools.labels
-          },
-          dataLabels: {
-            enabled: true,
-            formatter: function (val) {
-              return val + "%"
+            chart: {
+              id: 'offensesBySchool',
+              type: 'bar',
             },
+            title: {
+              text: 'Offenses By School',
+              align: 'center',
+              floating: true
+          },
+            xaxis: {
+              categories: ward_schools.labels
+            },
+            dataLabels: {
+              enabled: true,
+              distributed: true,
+              style: {
+                colors: ['#fff'],
+              },
+              offsetX: 5,
+              dropShadow: {
+                enabled: true
+              },
+              formatter: function (val) {
+                return val + "%"
+              },
+            },
+
+            plotOptions: {
+              bar: {
+                barHeight: '100%',
+                //distributed: true,
+                horizontal: true,
+                dataLabels: {
+                  position: 'bottom'
+                },
+              }
+            },
+
+            yaxis: {
+            labels: {
+              show: true
+            }
+            },
+          
+            stroke: {
+              width: 1,
+              colors: ['#fff']
+            },
+
           }
-        }
 
-        this.offenseBySchoolSeries = [{
-          name: 'categories',
-          data: ward_schools.data
-        }]
+          this.offenseBySchoolSeries = [{
+            name: 'categories',
+            data: ward_schools.data
+          }]
 
-        this.circularLoader = false
-        this.school_loaded = true
+          this.circularLoader = false
+          this.school_loaded = true
         },
   },
 
