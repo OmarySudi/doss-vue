@@ -37,7 +37,7 @@
           class="ml-5"
           v-if="gender_loaded"
           type="pie" 
-          width="400"
+          width="70%"
           :options="offenseByGenderOptions" 
           :series="offenseByGenderSeries"
         >
@@ -48,7 +48,7 @@
         <apexchart 
           v-if="level_loaded"
           type="bar" 
-          height="220" 
+          height="180" 
           :options="offenseByLevelOptions" 
           :series="offenseByLevelSeries">
         </apexchart>
@@ -57,7 +57,6 @@
       <v-col cols="6">
         <apexchart 
           v-if="offense_loaded"
-          width="400" 
           height="200"
           type="bar" 
           :options="offenseByCategoryOptions" 
@@ -135,43 +134,74 @@ export default {
       this.setReportData(this.DISTRICT_OFFENSE,this.DISTRICT_GENDER,this.DISTRICT_LEVEL,this.DISTRICT_WARDS);
     },
 
-    setOffenseByCategoryData(district_offense){
-
-      this.offenseByCategoryOptions = {
-
-        chart: {
-          id: 'offensesByCategory',
-        },
-        title: {
-          text: 'Offenses By Category',
-          align: 'center',
-          floating: true
-      },
-        xaxis: {
-          categories: district_offense.labels
-        },
-        dataLabels: {
-          enabled: true,
-          formatter: function (val) {
-            return val + "%"
+      setOffenseByCategoryData(district_offense){
+        
+        this.offenseByCategoryOptions = {
+          chart: {
+            id: 'offensesByCategory',
+            type: 'bar',
           },
-        }
-      }
+          title: {
+            text: 'Offenses By Category',
+            align: 'center',
+            floating: true
+          },
+          xaxis: {
+            categories: district_offense.labels
+          },
 
+          plotOptions: {
+            bar: {
+              barHeight: '100%',
+              //distributed: true,
+              horizontal: true,
+              dataLabels: {
+                position: 'bottom'
+              },
+            }
+          },
+          //colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa',],
+
+          yaxis: {
+            labels: {
+              show: true
+            }
+          },
+          
+          stroke: {
+            width: 1,
+            colors: ['#fff']
+          },
+
+          dataLabels: {
+            enabled: true,
+            distributed: true,
+            style: {
+              colors: ['#fff'],
+            },
+            offsetX: 5,
+            dropShadow: {
+              enabled: true
+            },
+            formatter: function (val) {
+              return val + "%"
+            },
+          },
+      }
+      
       this.offenseByCategorySeries = [{
         name: 'categories',
         data: district_offense.data
       }]
-
+      
       this.circularLoader = false
       this.offense_loaded = true
-      },
+    },
 
       setOffenseByGenderData(district_gender){
 
         this.offenseByGenderOptions = {
           chart: {
-            width: 400,
             type: 'pie',
           },
           title: {
@@ -199,7 +229,7 @@ export default {
           dataLabels: {
             enabled: true,
             formatter: function (val) {
-              return val + "%"
+              return Math.round(val) + "%"
             },
           }
         }
@@ -216,7 +246,6 @@ export default {
         chart: {
           id: 'offensesByLevel',
           type: 'bar',
-          height: 400
         },
         plotOptions: {
           bar: {

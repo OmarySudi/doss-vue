@@ -59,7 +59,7 @@
         <apexchart 
           v-if="gender_loaded"
           type="pie" 
-          width="80%"
+          width="70%"
           :options="offenseByGenderOptions" 
           :series="offenseByGenderSeries"
         >
