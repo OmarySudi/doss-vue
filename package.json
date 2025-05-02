@@ -10,6 +10,7 @@
     "apexcharts": "^3.35.5",
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
+    "doos": "file:",
     "mikoa": "^1.0.8",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.2",
