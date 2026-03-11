@@ -16,6 +16,7 @@ Vue.component('apexchart', VueApexCharts)
 
 //ApiService.init("http://localhost:8000/api")
 ApiService.init("https://doss.ringlesoft.com/api")
+//ApiService.init("http://doss-backend.test/api")
 //ApiService.init("https://4e75-102-215-31-51.ngrok.io/api")
 
 
